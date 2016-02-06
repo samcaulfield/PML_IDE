@@ -4,29 +4,18 @@
 
 	<link rel="stylesheet" href="StyleSheet.css" type="text/css"/>
 	<title>ACE in Action</title>
-	<style type="text/css" media="screen">
-    	#editor 
-	{ 
-        	position: absolute;
-        	top: 0;
-        	right: 0;
-        	bottom: 0;
-        	left: 0;
-	}
-	</style>
 	</head>
 <body>
 
 	<div id="navigation">
-	<a href="#">PML Check</a>
+	<a href="javascript: void(0)" id="button">PML Check</a>
 	</div>
 
-	<div id="editor" style="position: absolute; top: 30px;">
-                function foo(items)
-                {
-                        var x = "All this is syntax highlighted";
-                        return x;
-                }
+	<div id="editor">function foo(items)
+{
+	var x = "All this is syntax highlighted";
+	return x;
+}
         </div>
     
 	<script src="./thirdparty/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>

@@ -6,6 +6,15 @@ body
 	font-size: 12px;
 }
 
+#editor
+{
+	position: absolute;
+        top: 50px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+}
+
 #navigation 
 {
 	z-index: 1;
