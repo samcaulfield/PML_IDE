@@ -3,20 +3,23 @@ Date: 6-02-2016
 
 Contents:
 1. Overview
-2. Requirements
-3. Progress
-4. Setup
+2. Features
+3. Setup
 
 
  
 1. Overview
+The Zero Velocity Release is the first increment of the project. It's purpose is to implement
+any infrastructure required by the project to test and deploy the product, without actually delivering any real functionality.
+
+2. Features: 
 The features of the Zero Velocity Release are to capture PML code in a text area, submit
 the code to the backend, and display the output from the pmlcheck analysis tool when run 
 with the code as input.
 Source code for pmlcheck is taken from the GitHub pml/check directory.
 
-2. Requiremts: 
+3. Setup
+* 
+* 
+* 
 
-* Server running on
-*
-*
