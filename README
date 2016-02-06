@@ -32,6 +32,7 @@ Install the following packages from the Ubuntu repository by running the followi
 	libapache2-mod-auth-mysql
 	php5
 	php5-mysql
+	libjs-jquery
 	
 During installation, MySQL will prompt for a password. Note this password.
 
