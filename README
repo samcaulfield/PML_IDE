@@ -19,7 +19,7 @@ with the code as input.
 Source code for pmlcheck is taken from the GitHub pml/check directory.
 
 3. Setup
-These instructions are for installing this software on Ubuntu 14.04.
+These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
 Ensure the target system is up to date by running the following commands as root:
 	apt-get update && apt-get upgrade
