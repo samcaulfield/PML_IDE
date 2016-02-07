@@ -51,6 +51,7 @@ function check() {
 	<script src="./thirdparty/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script>
     		var editor = ace.edit("editor");
+		editor.getSession().setUseWorker(false);
     		editor.setTheme("ace/theme/monokai");
     		editor.getSession().setMode("ace/mode/javascript");
 	</script>
