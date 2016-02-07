@@ -42,9 +42,14 @@ Setup MySQL by running the following commands as root:
 	
 The mysql_secure_installation program will prompt for the MySQL password.
 
-Now the required system dependencies are installed. Next, run the "install.sh" script as root to copy
-the required files to Apache's working directory. Run "verify_installation.sh" to verify that the files
+This software can coexist with other services running on the server. With each instance of the IDE
+is a project name. This name must be supplied as the first argument to each of the maintenance scrips.
+
+Now the required system dependencies are installed. Next, run the "install.sh projectName" script as root to copy
+the required files to Apache's working directory. Run "verify_installation.sh projectName" to verify that the files
 were installed correctly.
 
-The software should now be deployed on the system. Accessing "localhost" in a browser should display the IDE.
-	
+The software should now be deployed on the system. Accessing "localhost/projectName" in a browser should display the IDE.
+
+The "clean.sh projectName" script will delete the project folder.
+
