@@ -42,7 +42,7 @@ Setup MySQL by running the following commands as root:
 	
 The mysql_secure_installation program will prompt for the MySQL password.
 
-Now the requires system dependencies are installed. Next, run the "install.sh" script as root to copy
+Now the required system dependencies are installed. Next, run the "install.sh" script as root to copy
 the required files to Apache's working directory.
 
 The software should now be deployed on the system. Accessing "localhost" in a browser should display the IDE.
