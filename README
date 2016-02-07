@@ -5,8 +5,7 @@ Contents:
 1. Overview
 2. Features
 3. Setup
-
-
+4. Thirdparty Software
  
 1. Overview
 The Zero Velocity Release is the first increment of the project. It's purpose is to implement
@@ -54,4 +53,10 @@ The software should now be deployed on the system. Accessing "localhost/projectN
 should display the IDE.
 
 The "clean.sh projectName" script will delete the project folder.
+
+4. Thirdparty Software
+This project makes use of a number of third party programs:
+	Ace: A JavaScript editor for the web: https://ace.c9.io/
+	pmlcheck: A PML syntax analyser: https://github.com/jnoll/peos
+All credit for these programs goes to their respective owners.
 
