@@ -27,20 +27,8 @@ Install the following packages from the Ubuntu repository by running the followi
 	apt-get install <packagename>
 
 	apache2
-	mysql-server
-	libapache2-mod-auth-mysql
 	php5
-	php5-mysql
-	libjs-jquery
 	
-During installation, MySQL will prompt for a password. Note this password.
-
-Setup MySQL by running the following commands as root:
-	mysql_install_db
-	/usr/bin/mysql_secure_installation
-	
-The mysql_secure_installation program will prompt for the MySQL password.
-
 This software can coexist with other services running on the server. Each instance of the IDE must
 be given a project name (referred to as projectName) This name must be supplied as the first
 argument to each of the maintenance scrips.
