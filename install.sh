@@ -16,7 +16,9 @@ projectPath=/var/www/html/$projectName
 
 mkdir $projectPath
 cp index.html $projectPath
+cp login.html $projectPath
 cp StyleSheet.css $projectPath
+cp login_style.css $projectPath
 cp check.php $projectPath
 cp -R thirdparty/ $projectPath
 
