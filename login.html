@@ -1,28 +1,37 @@
 <!-- Adapted from http://codepen.io/matthu185/pen/myyvgr -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Log in</title>
-        <link rel="stylesheet" href="css/normalize.css">
-        <link href='http://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="login_style.css">
-    </head>
-    <body>
 
-      <form action="index.html" method="post">
-      
-        <h1>Log in</h1>
-        
-          <label for="mail">Email:</label>
-          <input type="email" id="mail" name="user_email">
-          
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="user_password">
-        <button type="submit">Log in</button>
+<head>
+<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Log in</title>
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="login_style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+
+<body>
+	<script>
+	function login() {
+		var email = document.getElementById("mail").value;
+		var password = document.getElementById("password").value;
+		$.post(
+			"login.php",
+			{email: email, password: password},
+			function(response) {
+				alert(response);
+			});
+	}
+	</script>
+
+	<h1>Log in</h1>
+	<label for="mail">Email:</label>
+	<input type="email" id="mail">
+	<label for="password">Password:</label>
+	<input type="password" id="password">
+	<button type="submit" onclick="login()">Log in</button>
 	<a href="register.html">Don't have an account?</a>
-      </form>
-      
     </body>
 </html>
+
