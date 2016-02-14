@@ -21,5 +21,13 @@ cp register.html $projectPath
 cp StyleSheet.css $projectPath
 cp login_style.css $projectPath
 cp check.php $projectPath
+cp register.php $projectPath
 cp -R thirdparty/ $projectPath
+
+# Create the database.
+touch $projectPath/user.db
+# Make it writeable to the server's PHP scripts (all users).
+chmod a+w $projectPath/user.db
+
+chmod +777 $projectPath
 

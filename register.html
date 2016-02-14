@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Register</title>
-        <link rel="stylesheet" href="css/normalize.css">
-        <link href='http://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="login_style.css">
-    </head>
-    <body>
 
-      <form action="index.html" method="post">
-      
-        <h1>Register</h1>
-        
-          <label for="mail">Email:</label>
-          <input type="email" id="mail" name="user_email">
-          
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="user_password">
-        <button type="submit">Register</button>
-      </form>
-      
-    </body>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Register</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="login_style.css">
+</head>
+
+<body>
+	<script>
+	function register() {
+		var emailAddress = document.getElementById("mail").value;
+		var password = document.getElementById("password").value;
+		$.post(
+			"register.php",
+			{email: emailAddress, password: password},
+			function(response) {
+				alert(response);
+			});
+	}
+	</script>
+
+	<h1>Register</h1>
+	<label for="mail">Email:</label>
+	<input type="email" id="mail">
+	<label for="password">Password:</label>
+	<input type="password" id="password">
+	<button type="submit" onclick="register()">Register</button>
+</body>
 </html>
 

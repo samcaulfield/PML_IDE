@@ -28,6 +28,7 @@ Install the following packages from the Ubuntu repository by running the followi
 
 	apache2
 	php5
+	php5-sqlite
 	
 This software can coexist with other services running on the server. Each instance of the IDE must
 be given a project name (referred to as projectName) This name must be supplied as the first
