@@ -20,7 +20,19 @@
 			"login.php",
 			{email: email, password: password},
 			function(response) {
-				alert(response);
+				var str0 = "Success!"; // This doesn't have a NULL-terminator.
+				var str1 = response.substring(0, response.length - 1); // The response has a NULL-terminator.
+				// The NULL-terminator affects the comparison.
+				if (str0 == str1) {
+					// Login succeeded.
+					var cookie0 = "username=";
+					var cookie1 = cookie0 + email + ";path=/;";
+					document.cookie = cookie1;
+					document.location.href = "index.html";
+				} else {
+					// Login did not succeed.
+					alert("Login unsuccessful.");
+				}
 			});
 	}
 	</script>
