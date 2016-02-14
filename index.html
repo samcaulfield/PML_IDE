@@ -24,7 +24,10 @@ function check() {
 
 	<div id="navigation">
 	<a href="login.html">Log in</a>
-	<a href="javascript: void(0)" onclick="check()" id="button">Check PML</a>
+	<a href="javascript: void(0)" id="button" onclick="check()">Check PML</a>
+	<a href="javascript: void(0)" id="button" onclick="ace_edit(editor)">ACE</a>
+	<a href="javascript: void(0)" id="button" onclick="vim(editor)">VIM</a>
+	<a href="javascript: void(0)" id="button" onclick="emac(editor)">EMAC</a>
 	</div>
 
 	<div id="editor">process Diabetes_assessment {
@@ -50,11 +53,28 @@ function check() {
         </div>
     
 	<script src="./thirdparty/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
+	</script src="//code.jquery.com/jquery-git.js">
 	<script>
     		var editor = ace.edit("editor");
 		editor.getSession().setUseWorker(false);
     		editor.setTheme("ace/theme/monokai");
     		editor.getSession().setMode("ace/mode/javascript");
+
+		function ace_edit(editor)
+		{
+			editor.setKeyboardHandler();
+		}
+
+		function vim(editor)
+		{
+			editor.setKeyboardHandler("ace/keyboard/vim");
+		}
+		
+		function emac(editor)
+		{
+			editor.setKeyboardHandler("ace/keyboard/emacs");
+		}
+
 	</script>
 
 </body>
