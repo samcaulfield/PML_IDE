@@ -1,3 +1,5 @@
+/*mostly taken from swift mode and adapted to pml*/
+
 define("ace/mode/doc_comment_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
@@ -48,7 +50,7 @@ exports.DocCommentHighlightRules = DocCommentHighlightRules;
 
 });
 
-define("ace/mode/swift_highlight_rules",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
+define("ace/mode/pml_highlight_rules",["require","exports","module","ace/lib/oop","ace/lib/lang","ace/mode/doc_comment_highlight_rules","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -56,11 +58,10 @@ var lang = require("../lib/lang");
 var DocCommentHighlightRules = require("./doc_comment_highlight_rules").DocCommentHighlightRules;
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-var SwiftHighlightRules = function() {
+var PmlHighlightRules = function() {
    var keywordMapper = this.createKeywordMapper({
         "variable.language": "",
-        "keyword": "__COLUMN__|__FILE__|__FUNCTION__|__LINE__"
-            + "|action|process|branch|requires|provides|script|iteration|agent|selection|sequence",
+        "keyword": "|action|process|branch|requires|provides|script|iteration|agent|selection|sequence",
     }, "identifier");
     
     function string(start, options) {
@@ -196,9 +197,9 @@ var SwiftHighlightRules = function() {
 };
 
 
-oop.inherits(SwiftHighlightRules, TextHighlightRules);
+oop.inherits(PmlHighlightRules, TextHighlightRules);
 
-exports.HighlightRules = SwiftHighlightRules;
+exports.HighlightRules = PmlHighlightRules;
 });
 
 define("ace/mode/behaviour/cstyle",["require","exports","module","ace/lib/oop","ace/mode/behaviour","ace/token_iterator","ace/lib/lang"], function(require, exports, module) {
@@ -698,12 +699,12 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-define("ace/mode/swift",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/swift_highlight_rules","ace/mode/behaviour/cstyle","ace/mode/folding/cstyle"], function(require, exports, module) {
+define("ace/mode/pml",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/pml_highlight_rules","ace/mode/behaviour/cstyle","ace/mode/folding/cstyle"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
-var HighlightRules = require("./swift_highlight_rules").HighlightRules;
+var HighlightRules = require("./pml_highlight_rules").HighlightRules;
 var CstyleBehaviour = require("./behaviour/cstyle").CstyleBehaviour;
 var FoldMode = require("./folding/cstyle").FoldMode;
 
@@ -718,7 +719,7 @@ oop.inherits(Mode, TextMode);
     this.lineCommentStart = "//";
     this.blockComment = {start: "/*", end: "*/", nestable: true};
     
-    this.$id = "ace/mode/swift"
+    this.$id = "ace/mode/pml"
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

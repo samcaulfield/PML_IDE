@@ -8,7 +8,7 @@ var DocCommentHighlightRules = function() {
     this.$rules = {
         "start" : [ {
             token : "comment.doc.tag",
-            regex : "@[\\w\\d_]+" 
+            regex : "@[\\w\\d_]+" // TODO: fix email addresses
         }, 
         DocCommentHighlightRules.getTagRule(),
         {
@@ -60,7 +60,20 @@ var SwiftHighlightRules = function() {
    var keywordMapper = this.createKeywordMapper({
         "variable.language": "",
         "keyword": "__COLUMN__|__FILE__|__FUNCTION__|__LINE__"
-            + "|action|process|branch|requires|provides|script|iteration|agent|selection|sequence",
+            + "|action|process|branch|requires|provides|continue|default|deinit|didSet"
+            + "|do|dynamicType|else|enum|extension|fallthrough|for|func|get|if|import"
+            + "|in|infix|init|inout|is|left|let|let|mutating|new|none|nonmutating"
+            + "|operator|override|postfix|precedence|prefix|protocol|return|right"
+            + "|safe|Self|self|set|struct|subscript|switch|Type|typealias"
+            + "|unowned|unsafe|var|weak|where|while|willSet"
+            + "|convenience|dynamic|final|infix|lazy|mutating|nonmutating|optional|override|postfix"
+            + "|prefix|required|static|guard|defer",
+        "storage.type": "bool|double|Double"
+            + "|extension|float|Float|int|Int|private|public|string|String",
+        "constant.language":
+            "false|Infinity|NaN|nil|no|null|null|off|on|super|this|true|undefined|yes",
+        "support.function":
+            ""
     }, "identifier");
     
     function string(start, options) {

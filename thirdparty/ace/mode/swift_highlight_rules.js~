@@ -41,7 +41,7 @@ var SwiftHighlightRules = function() {
    var keywordMapper = this.createKeywordMapper({
         "variable.language": "",
         "keyword": "__COLUMN__|__FILE__|__FUNCTION__|__LINE__"
-            + "|process|action|script|requires|provides|continue|default|deinit|didSet"
+            + "|as|associativity|break|case|class|continue|default|deinit|didSet"
             + "|do|dynamicType|else|enum|extension|fallthrough|for|func|get|if|import"
             + "|in|infix|init|inout|is|left|let|let|mutating|new|none|nonmutating"
             + "|operator|override|postfix|precedence|prefix|protocol|return|right"
