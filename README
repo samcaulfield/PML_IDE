@@ -32,7 +32,7 @@ Install the following packages from the Ubuntu repository by running the followi
 	
 This software can coexist with other services running on the server. Each instance of the IDE must
 be given a project name (referred to as projectName) This name must be supplied as the first
-argument to each of the maintenance scrips.
+argument to each of the maintenance scripts.
 
 Now the required system dependencies are installed. Next, run the "install.sh projectName" script as
 root to copy the required files to Apache's working directory. Run
