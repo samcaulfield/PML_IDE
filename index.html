@@ -70,6 +70,7 @@
 	<a href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
 	<a href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
 	<a href="javascript: void(0)" id="button" onclick="emac(editor)">Emacs</a>
+	<a href="javascript: void(0)" id="button" onclick="error_annot(editor)">Error Highlight</a>
 	<input type="file" id="fileInput" multiple/>
 	</div>
 
@@ -101,7 +102,32 @@
 		editor.getSession().setUseWorker(false);
     		editor.setTheme("ace/theme/monokai");
     		editor.getSession().setMode("ace/mode/pml");
+		var arrayOfAnnos = []
+		function error_annot(editor){
+                        $.post(
+                                "check.php",
+                                {value: editor.getSession().getValue()},
+                                function(data, status) {
+				var arrr = data.split("/tmp/");
+				for(var i=1; i< arrr.length; i++){
+					var start_pos = arrr[i].indexOf(':') + 1;
+					var end_pos = arrr[i].indexOf(':',start_pos);
+					var text_to_get = arrr[i].substring(start_pos,end_pos)
 
+					var error_text = arrr[i].split(":").pop().split(";").shift();
+					var arrStr = arrr[i].split(/[:]/);
+
+						var gutterAnno = {
+						row: text_to_get-1,	
+						column: 10,
+						text: error_text,
+						type: "error"
+						}
+					arrayOfAnnos.push(gutterAnno);
+				}
+					editor.getSession().setAnnotations(arrayOfAnnos);				 							
+                                });
+		}
 		function ace_edit(editor)
 		{
 			editor.setKeyboardHandler();
