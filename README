@@ -1,51 +1,28 @@
-README: Zero Velocity Release 
-Date: 6-02-2016
+A web-based IDE for PML
 
 Contents:
-1. Overview
-2. Features
-3. Setup
-4. Thirdparty Software
+1. Features
+2. Setup
  
-1. Overview
-The Zero Velocity Release is the first increment of the project. It's purpose is to implement
-any infrastructure required by the project to test and deploy the product, without actually delivering any real functionality.
+Features:
+	- Key binding emulation for Vim and Emacs.
+	- File upload.
+	- Syntax checking using the pmlcheck tool.
 
-2. Features: 
-The features of the Zero Velocity Release are to capture PML code in a text area, submit
-the code to the backend, and display the output from the pmlcheck analysis tool when run 
-with the code as input.
-Source code for pmlcheck is taken from the GitHub pml/check directory.
-
-3. Setup
+Setup:
 These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
-Ensure the target system is up to date by running the following commands as root:
-	apt-get update && apt-get upgrade
+Ensure the required packages are installed:
+	sudo ./install_dependencies.sh
 
-Install the following packages from the Ubuntu repository by running the following command as root:
-	apt-get install <packagename>
+Choose a project name and deploy the IDE:
+	sudo ./install.sh projectName
 
-	apache2
-	php5
-	php5-sqlite
-	
-This software can coexist with other services running on the server. Each instance of the IDE must
-be given a project name (referred to as projectName) This name must be supplied as the first
-argument to each of the maintenance scripts.
+Check that the installation went OK:
+	./verify_installation projectName
 
-Now the required system dependencies are installed. Next, run the "install.sh projectName" script as
-root to copy the required files to Apache's working directory. Run
-"verify_installation.sh projectName" to verify that the files were installed correctly.
+Access the IDE by visiting localhost/projectName
 
-The software should now be deployed on the system. Accessing "localhost/projectName" in a browser
-should display the IDE.
-
-The "clean.sh projectName" script will delete the project folder.
-
-4. Thirdparty Software
-This project makes use of a number of third party programs:
-	Ace: A JavaScript editor for the web: https://ace.c9.io/
-	pmlcheck: A PML syntax analyser: https://github.com/jnoll/peos
-All credit for these programs goes to their respective owners.
+Remove the IDE at any time by running:
+	sudo ./clean.sh projectName
 
