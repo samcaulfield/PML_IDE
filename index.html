@@ -21,6 +21,24 @@
 			window.location.href = "index.html";
 		}
 
+		function readFile(evt) {
+			var files = evt.target.files;
+			if (files) {
+				var file = files[0]; // Only consider the first file.
+				var reader = new FileReader();
+				reader.onload = (
+					function (file) {
+						return function (e) {
+							editor.setValue(e.target.result);
+						};
+					}
+				)(file);
+				reader.readAsText(file);
+			} else {
+				alert('No file!');
+			}
+		}
+
 		window.onload = function onload() {
 			var username = getCookie("username");
 			if (username) {
@@ -28,6 +46,7 @@
 				document.getElementById("login_button").insertAdjacentHTML("afterend", '<a href="index.html" onclick="logout()">Log out</a>');
 			} else {
 			}
+			document.getElementById('fileInput').addEventListener('change', readFile, false);
 		}
 	</script>
 </head>
@@ -51,6 +70,7 @@
 	<a href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
 	<a href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
 	<a href="javascript: void(0)" id="button" onclick="emac(editor)">Emacs</a>
+	<input type="file" id="fileInput" multiple/>
 	</div>
 
 	<div id="editor">process Diabetes_assessment {
