@@ -102,8 +102,9 @@
 		editor.getSession().setUseWorker(false);
     		editor.setTheme("ace/theme/monokai");
     		editor.getSession().setMode("ace/mode/pml");
-		var arrayOfAnnos = []
+		
 		function error_annot(editor){
+			var arrayOfAnnos = [];
                         $.post(
                                 "check.php",
                                 {value: editor.getSession().getValue()},
