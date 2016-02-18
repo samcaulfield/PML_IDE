@@ -65,14 +65,15 @@
 	</script>
 
 	<div id="navigation">
-	<a href="login.html" id="login_button">Log in</a>
-	<a href="javascript: void(0)" id="button" onclick="check()">Check PML</a>
-	<a href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
-	<a href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
-	<a href="javascript: void(0)" id="button" onclick="emac(editor)">Emacs</a>
-	<a href="javascript: void(0)" id="button" onclick="error_annot(editor)">Error Highlight</a>
-	<input type="file" id="fileInput" multiple/>
+	<a class="alignright" href="login.html" id="login_button">Log in</a>
+	<a class="alignleft" href="javascript: void(0)" id="button" onclick="check()">Check PML</a>
+	<a class="alignleft" href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
+	<a class="alignleft" href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
+	<a class="alignleft" href="javascript: void(0)" id="button" onclick="emac(editor)">Emacs</a>
+	<a class="alignleft" href="javascript: void(0)" id="button" onclick="error_annot(editor)">Error Highlight</a>
+	<input class="alignleft" type="file" id="fileInput" multiple/>
 	</div>
+	<div style="clear: both;"></div>
 
 	<div id="editor">process Diabetes_assessment {
         action Assess_patient_symptoms {

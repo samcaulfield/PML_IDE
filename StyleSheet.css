@@ -48,7 +48,15 @@ body
 	color: white;
 	text-decoration: none;
 }
-
+.alignleft {
+    float: left;
+}
+.aligncenter {
+    float: left;
+}
+.alignright {
+    float: right;
+}
 #navigation a:hover 
 {
 	color: grey;
