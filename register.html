@@ -20,6 +20,9 @@
 			{email: emailAddress, password: password},
 			function(response) {
 				alert(response);
+				if (response.substring(0, 5) == "A new") {
+					document.location.href = "login.html";
+				}
 			});
 	}
 	</script>
