@@ -7,9 +7,14 @@ $password = $_POST["password"];
 
 $db = new SQLite3('user.db');
 $db->query('create table if not exists user(email varchar(255), password varchar(255), primary key(email))');
-$queryResult = $db->querySingle("select * from user where email='$email' and password='$password';");
+$queryResult = $db->querySingle("select password from user where email='$email';");
 if ($queryResult) {
-	printf("Success!");
+	$loginResult = password_verify($password, $queryResult);
+	if ($loginResult) {
+		printf("Success!");
+	} else {
+		printf("Nope.");
+	}
 } else {
 	printf("No account with those details exists.\n");
 }
