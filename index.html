@@ -43,7 +43,7 @@
 			var username = getCookie("username");
 			if (username) {
 				document.getElementById("login_button").innerHTML = "<a href='javascript: void(0)'>" + username + "</a>";
-				document.getElementById("login_button").insertAdjacentHTML("afterend", '<a href="index.html" onclick="logout()">Log out</a>');
+				document.getElementById("login_button").insertAdjacentHTML("beforebegin", '<a class="alignright href="index.html" onclick="logout()">Log out</a>');
 			} else {
 			}
 			document.getElementById('fileInput').addEventListener('change', readFile, false);
