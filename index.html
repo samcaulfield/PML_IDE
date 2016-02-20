@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="StyleSheet.css" type="text/css"/>
 	<title>PML IDE</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script src="http://danml.com/js/download.js"></script>
 	<script type="text/javascript">
 		/* Taken from http://www.sitepoint.com/how-to-deal-with-cookies-in-javascript/ */
 		function getCookie(name) {
@@ -62,6 +63,10 @@
 					alert(data);
 				});
 		}
+
+		function download_file() {
+			download(editor.getValue(), 'file.pml', 'text/plain');
+		}
 	</script>
 
 	<div id="navigation">
@@ -70,6 +75,7 @@
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="emac(editor)">Emacs</a>
+	<a class="alignleft" href="javascript: void(0)" id="button" onclick="download_file()">Download</a>
 	<input class="alignleft" type="file" id="fileInput" multiple/>
 	</div>
 	<div style="clear: both;"></div>
