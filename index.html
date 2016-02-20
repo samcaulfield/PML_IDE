@@ -255,15 +255,17 @@ document.getElementById("dialogContents").innerHTML = "<a href='#close' title='C
 					var start_pos = arrr[i].indexOf(':') + 1;
 					var end_pos = arrr[i].indexOf(':',start_pos);
 					var text_to_get = arrr[i].substring(start_pos,end_pos)
-
 					var error_text = arrr[i].split(":").pop().split(";").shift();
 					var arrStr = arrr[i].split(/[:]/);
-
+					var error_words_arr = error_text.split(" ");
+						var type = "warning";
+						if(error_words_arr[2] == "error"){ 
+                                                        type = "error";}
 						var gutterAnno = {
 						row: text_to_get-1,	
 						column: 10,
 						text: error_text,
-						type: "error"
+						type: type
 						}
 					arrayOfAnnos.push(gutterAnno);
 				}
