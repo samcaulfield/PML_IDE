@@ -19,7 +19,7 @@ Choose a project name and deploy the IDE:
 	sudo ./install.sh projectName
 
 Check that the installation went OK:
-	./verify_installation projectName
+	./verify_installation.sh projectName
 
 Access the IDE by visiting localhost/projectName
 
