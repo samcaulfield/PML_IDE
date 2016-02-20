@@ -41,6 +41,15 @@
 			}
 		}
 
+		function isLoggedIn() {
+			var username = getCookie("username");
+			if (username) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		window.onload = function onload() {
 			var username = getCookie("username");
 			if (username) {
@@ -113,12 +122,39 @@
 			} else if (type == "login") {
 				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Log In</h1><label for='mail'>Email:</label></br><input type='email' id='mail'></br><label for='password'>Password:</label></br><input type='password' id='password'></br><button type='submit' onclick='login()'>Log In</button>";
 
+			} else if (type == "upload") {
+document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Upload File</h1><label for='mail'>File Name:</label></br><input type='text' id='fileName'></br><button type='submit' onclick='uploadFile()'>Upload</button>";
+			}
+		}
+
+		function upload() {
+			if (isLoggedIn()) {
+				switchDialogContents("upload");
+				document.getElementById("login_button").click(); // Open the upload screen.
+			} else {
+				document.getElementById("login_button").click();
+			}
+		}
+
+		function uploadFile() {
+			if (isLoggedIn()) {
+				var username = getCookie('username');
+				var fileName = document.getElementById('fileName').value;
+				$.post(
+					"uploadFile.php",
+					{email: username, fileName: fileName, fileContents: editor.getValue()},
+					function(response) {
+						alert(response);
+					});
+				alert(fileName);
+			} else {
 			}
 		}
 	</script>
 
 	<div id="navigation">
 	<a class="alignright" id="login_button" href="#openModal">Log In</a>
+	<a class="alignleft" href="javascript: void(0)" onclick="upload()">Upload</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="error_annot(editor)">Check PML</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
