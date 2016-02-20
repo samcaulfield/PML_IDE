@@ -4,6 +4,7 @@
 <head>
 
 	<link rel="stylesheet" href="StyleSheet.css" type="text/css"/>
+	<link rel="stylesheet" href="modalStyle.css" type="text/css"/>
 	<title>PML IDE</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://danml.com/js/download.js"></script>
@@ -67,10 +68,57 @@
 		function download_file() {
 			download(editor.getValue(), 'file.pml', 'text/plain');
 		}
+
+		function login() {
+			var email = document.getElementById("mail").value;
+			var password = document.getElementById("password").value;
+			$.post(
+				"login.php",
+				{email: email, password: password},
+				function(response) {
+					var str0 = "Success!"; // This doesn't have a NULL-terminator.
+					var str1 = response.substring(0, response.length - 1); // The response has a NULL-terminator.
+					// The NULL-terminator affects the comparison.
+					if (str0 == str1) {
+						// Login succeeded.
+						var cookie0 = "username=";
+						var cookie1 = cookie0 + email + ";path=/;";
+						document.cookie = cookie1;
+						document.location.href = "index.html";
+					} else {
+						// Login did not succeed.
+						alert("Login unsuccessful.");
+					}
+				});
+		}
+
+		function register() {
+			var emailAddress = document.getElementById("mail").value;
+			var password = document.getElementById("password").value;
+			$.post(
+				"register.php",
+				{email: emailAddress, password: password},
+				function(response) {
+					alert(response);
+					if (response.substring(0, 5) == "A new") {
+						switchDialogContents("login");
+						//document.location.href = "login.html";
+					}
+				});
+		}
+
+		function switchDialogContents(type) {
+			if (type == "register") {
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Register</h1><label for='mail'>Email:</label></br><input type='email' id='mail'></br><label for='password'>Password:</label></br><input type='password' id='password'></br><button type='submit' onclick='register()'>Register</button>";
+			} else if (type == "login") {
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Log In</h1><label for='mail'>Email:</label></br><input type='email' id='mail'></br><label for='password'>Password:</label></br><input type='password' id='password'></br><button type='submit' onclick='login()'>Log In</button>";
+
+			}
+		}
 	</script>
 
 	<div id="navigation">
-	<a class="alignright" href="login.html" id="login_button">Log in</a>
+	<a class="alignright" id="login_button" href="#openModal">Log In</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="error_annot(editor)">Check PML</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
@@ -79,6 +127,19 @@
 	<input class="alignleft" type="file" id="fileInput" multiple/>
 	</div>
 	<div style="clear: both;"></div>
+
+	<div id="openModal" class="modalDialog">
+	<div id="dialogContents">
+		<a href="#close" title="Close" class="close">X</a>
+		<h1>Log in</h1>
+		<label for="mail">Email:</label></br>
+		<input type="email" id="mail"></br>
+		<label for="password">Password:</label></br>
+		<input type="password" id="password"></br>
+		<button type="submit" onclick="login()">Log in</button></br>
+		<a href="javascript: void(0)" onclick="switchDialogContents('register');">Don't have an account?</a>
+	</div>
+	</div>
 
 	<div id="editor">process Diabetes_assessment {
         action Assess_patient_symptoms {

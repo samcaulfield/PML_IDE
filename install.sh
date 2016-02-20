@@ -17,11 +17,9 @@ projectPath=/var/www/html/$projectName
 mkdir $projectPath
 # HTML.
 cp index.html $projectPath
-cp login.html $projectPath
-cp register.html $projectPath
 # CSS.
-cp login_style.css $projectPath
 cp StyleSheet.css $projectPath
+cp modalStyle.css $projectPath
 # PHP.
 cp check.php $projectPath
 cp login.php $projectPath
