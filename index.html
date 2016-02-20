@@ -182,13 +182,14 @@ document.getElementById("dialogContents").innerHTML = "<a href='#close' title='C
 
 	<div id="navigation">
 	<a class="alignright" id="login_button" href="#openModal">Log In</a>
+	<a class="alignleft" href="javascript: void(0)" id="button" onclick="error_annot(editor)">Check PML</a>	
 	<a class="alignleft" href="javascript: void(0)" onclick="upload()">Upload</a>
+	<a class="alignleft" href="javascript: void(0)" id="button" onclick="download_file()">Download</a>
 	<a class="alignleft" href="javascript: void(0)" onclick="retrieve()">Retrieve</a>
-	<a class="alignleft" href="javascript: void(0)" id="button" onclick="error_annot(editor)">Check PML</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="emac(editor)">Emacs</a>
-	<a class="alignleft" href="javascript: void(0)" id="button" onclick="download_file()">Download</a>
+
 	<input class="alignleft" type="file" id="fileInput" multiple/>
 	</div>
 	<div style="clear: both;"></div>
