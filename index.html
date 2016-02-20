@@ -144,10 +144,38 @@ document.getElementById("dialogContents").innerHTML = "<a href='#close' title='C
 					"uploadFile.php",
 					{email: username, fileName: fileName, fileContents: editor.getValue()},
 					function(response) {
-						alert(response);
 					});
-				alert(fileName);
 			} else {
+			}
+		}
+
+		function retrieveFile(fileName) {
+			$.post(
+				"retrieveFile.php",
+				{email: getCookie('username'), fileName: fileName},
+				function(response) {
+					editor.setValue(response);
+				}
+			);
+		}
+
+		function retrieve() {
+			if (isLoggedIn()) {
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><p>Select a file</p>";
+				/* Retrieve file list from server. */
+				$.post(
+					"retrieve.php",
+					{email: getCookie('username')},
+					function(response) {
+						var resultList = response.split(",");
+						for (var i = 0; i < resultList.length - 1; i++) {
+							document.getElementById("dialogContents").innerHTML = document.getElementById("dialogContents").innerHTML.concat('<button onclick="retrieveFile(\'' + resultList[i] + '\')">' + resultList[i] + "</button></br>");
+						}
+					}
+				);
+				document.getElementById("login_button").click();
+			} else {
+				document.getElementById("login_button").click();
 			}
 		}
 	</script>
@@ -155,6 +183,7 @@ document.getElementById("dialogContents").innerHTML = "<a href='#close' title='C
 	<div id="navigation">
 	<a class="alignright" id="login_button" href="#openModal">Log In</a>
 	<a class="alignleft" href="javascript: void(0)" onclick="upload()">Upload</a>
+	<a class="alignleft" href="javascript: void(0)" onclick="retrieve()">Retrieve</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="error_annot(editor)">Check PML</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
