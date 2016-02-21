@@ -1,0 +1,6 @@
+Please avoid merge commits. They clog up the commit log with unnecessary
+information. Guides for avoiding merge commits:
+
+http://www.hitthebits.com/2013/04/extra-git-merge-commits.html
+http://kernowsoul.com/blog/2012/06/20/4-ways-to-avoid-merge-commits-in-git/
+
