@@ -5,9 +5,15 @@ Contents:
 2. Setup
  
 Features:
-	- Key binding emulation for Vim and Emacs.
-	- File upload.
-	- Syntax checking using the pmlcheck tool.
+	- File upload
+	- Syntax analysis
+	- File save & retrieve
+	- Authentication
+	- Code editor
+	- Syntax highlighting
+	- Code completion (keywords and resources)
+	- Editor keybinding emulation
+	- Error highlighting
 
 Setup:
 These instructions are for installing this software on Ubuntu 14.04 64-bit.
