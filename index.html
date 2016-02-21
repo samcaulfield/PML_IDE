@@ -23,6 +23,11 @@
 			window.location.href = "index.html";
 		}
 
+		function handleFileChoose(evt) {
+			readFile(evt);
+			document.getElementById('close_button').click();
+		}
+
 		function readFile(evt) {
 			var files = evt.target.files;
 			if (files) {
@@ -57,7 +62,6 @@
 				document.getElementById("login_button").insertAdjacentHTML("beforebegin", '<a class="alignright href="index.html" onclick="logout()">Log out</a>');
 			} else {
 			}
-			document.getElementById('fileInput').addEventListener('change', readFile, false);
 		}
 	</script>
 </head>
@@ -123,7 +127,10 @@
 				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Log In</h1><label for='mail'>Email:</label></br><input type='email' id='mail'></br><label for='password'>Password:</label></br><input type='password' id='password'></br><button type='submit' onclick='login()'>Log In</button>";
 
 			} else if (type == "upload") {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Upload File</h1><label for='mail'>File Name:</label></br><input type='text' id='fileName'></br><button type='submit' onclick='uploadFile()'>Upload</button>";
+				document.getElementById("dialogContents").innerHTML = "<h1>Upload File</h1><label for='mail'>File Name:</label></br><input type='text' id='fileName'></br><button type='submit' onclick='uploadFile()'>Upload</button>";
+			} else if (type == "openFile") {
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Select a file</h1><input class='alignleft' type='file' id='fileInput'/></br>";
+				document.getElementById('fileInput').addEventListener('change', handleFileChoose, false);
 			}
 		}
 
@@ -163,7 +170,7 @@
 
 		function retrieve() {
 			if (isLoggedIn()) {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><p>Select a file</p>";
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Select a file</h1>";
 				/* Retrieve file list from server. */
 				$.post(
 					"retrieve.php",
@@ -180,17 +187,21 @@
 				document.getElementById("login_button").click();
 			}
 		}
+
+		function openFile() {
+			switchDialogContents("openFile");
+			document.getElementById("login_button").click();
+		}
 	</script>
 
 	<div id="navigation">
 	<a class="alignright" id="login_button" href="#openModal">Log In</a>
-	<a class="alignleft" href="javascript: void(0)" id="button" onclick="error_annot(editor)">Check PML</a>	
+	<a class="alignleft" href="javascript: void(0)" onclick="error_annot(editor)">Check PML</a>	
 	<a class="alignleft" href="javascript: void(0)" onclick="upload()">Upload</a>
-	<a class="alignleft" href="javascript: void(0)" id="button" onclick="download_file()">Download</a>
+	<a class="alignleft" href="javascript: void(0)" onclick="download_file()">Download</a>
 	<a class="alignleft" href="javascript: void(0)" onclick="retrieve()">Retrieve</a>
-	<a class="alignleft" href="javascript: void(0)" id+"button" onclick="editmenu(editor)">Edit Menu</a>
-
-	<input class="alignleft" type="file" id="fileInput" multiple/>
+	<a class="alignleft" href="javascript: void(0)" onclick="editmenu(editor)">Edit Menu</a>
+	<a class="alignleft" href="javascript: void(0)" onclick="openFile()">Open File</a>
 	</div>
 	<div style="clear: both;"></div>
 
