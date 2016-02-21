@@ -186,9 +186,7 @@ document.getElementById("dialogContents").innerHTML = "<a href='#close' title='C
 	<a class="alignleft" href="javascript: void(0)" onclick="upload()">Upload</a>
 	<a class="alignleft" href="javascript: void(0)" id="button" onclick="download_file()">Download</a>
 	<a class="alignleft" href="javascript: void(0)" onclick="retrieve()">Retrieve</a>
-	<a class="alignleft" href="javascript: void(0)" id="button" onclick="ace_edit(editor)">Ace</a>
-	<a class="alignleft" href="javascript: void(0)" id="button" onclick="vim(editor)">Vim</a>
-	<a class="alignleft" href="javascript: void(0)" id="button" onclick="emac(editor)">Emacs</a>
+	<a class="alignleft" href="javascript: void(0)" id+"button" onclick="editmenu(editor)">Edit Menu</a>
 
 	<input class="alignleft" type="file" id="fileInput" multiple/>
 	</div>
@@ -302,19 +300,10 @@ document.getElementById("dialogContents").innerHTML = "<a href='#close' title='C
 					editor.getSession().setAnnotations(arrayOfAnnos);				 							
                                 });
 		}
-		function ace_edit(editor)
-		{
-			editor.setKeyboardHandler();
-		}
 
-		function vim(editor)
+		function editmenu(editor)
 		{
-			editor.setKeyboardHandler("ace/keyboard/vim");
-		}
-		
-		function emac(editor)
-		{
-			editor.setKeyboardHandler("ace/keyboard/emacs");
+			editor.execCommand("showSettingsMenu");
 		}
 
 	</script>
