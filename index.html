@@ -123,7 +123,7 @@
 				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Log In</h1><label for='mail'>Email:</label></br><input type='email' id='mail'></br><label for='password'>Password:</label></br><input type='password' id='password'></br><button type='submit' onclick='login()'>Log In</button>";
 
 			} else if (type == "upload") {
-document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Upload File</h1><label for='mail'>File Name:</label></br><input type='text' id='fileName'></br><button type='submit' onclick='uploadFile()'>Upload</button>";
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Upload File</h1><label for='mail'>File Name:</label></br><input type='text' id='fileName'></br><button type='submit' onclick='uploadFile()'>Upload</button>";
 			}
 		}
 
@@ -145,6 +145,7 @@ document.getElementById("dialogContents").innerHTML = "<a href='#close' title='C
 					{email: username, fileName: fileName, fileContents: editor.getValue()},
 					function(response) {
 					});
+				document.getElementById('close_button').click();
 			} else {
 			}
 		}
@@ -157,11 +158,12 @@ document.getElementById("dialogContents").innerHTML = "<a href='#close' title='C
 					editor.setValue(response);
 				}
 			);
+			document.getElementById('close_button').click();
 		}
 
 		function retrieve() {
 			if (isLoggedIn()) {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><p>Select a file</p>";
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><p>Select a file</p>";
 				/* Retrieve file list from server. */
 				$.post(
 					"retrieve.php",
