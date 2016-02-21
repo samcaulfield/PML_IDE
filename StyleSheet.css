@@ -47,6 +47,7 @@ body
 	padding-right: 15px;
 	color: white;
 	text-decoration: none;
+	font-weight: bold;
 }
 .alignleft {
     float: left;
