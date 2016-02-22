@@ -127,9 +127,9 @@
 				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Log In</h1><label for='mail'>Email:</label></br><input type='email' id='mail'></br><label for='password'>Password:</label></br><input type='password' id='password'></br><button type='submit' onclick='login()'>Log In</button>";
 
 			} else if (type == "upload") {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' id='close_button' class='close'>X</a><h1>Upload File</h1><label for='mail'>File Name:</label></br><input type='text' id='fileName'></br><button type='submit' onclick='uploadFile()'>Upload</button>";
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' id='close_button' class='close'>X</a><h1>Upload file to server</h1><label for='mail'>File Name:</label></br><input type='text' id='fileName'></br><button type='submit' onclick='uploadFile()'>Upload</button>";
 			} else if (type == "openFile") {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Select a file</h1><input class='alignleft' type='file' id='fileInput'/></br>";
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Open file in editor</h1><input class='alignleft' type='file' id='fileInput'/></br>";
 				document.getElementById('fileInput').addEventListener('change', handleFileChoose, false);
 			}
 		}
@@ -170,7 +170,7 @@
 
 		function retrieve() {
 			if (isLoggedIn()) {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Select a file</h1>";
+				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Open file in editor</h1>";
 				/* Retrieve file list from server. */
 				$.post(
 					"retrieve.php",
@@ -179,6 +179,9 @@
 						var resultList = response.split(",");
 						for (var i = 0; i < resultList.length - 1; i++) {
 							document.getElementById("dialogContents").innerHTML = document.getElementById("dialogContents").innerHTML.concat('<button onclick="retrieveFile(\'' + resultList[i] + '\')">' + resultList[i] + "</button></br>");
+						}
+						if (resultList.length == 1) {
+							document.getElementById("dialogContents").innerHTML = document.getElementById("dialogContents").innerHTML.concat("<p>No files to open</p>");
 						}
 					}
 				);
