@@ -122,24 +122,49 @@
 
 		function switchDialogContents(type) {
 			if (type == "register") {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Register</h1><label for='mail'>Email:</label></br><input type='email' id='mail'></br><label for='password'>Password:</label></br><input type='password' id='password'></br><button type='submit' onclick='register()'>Register</button>";
+				document.getElementById("dialogContents").innerHTML = `
+				<a href="#close" title="Close" class="close">X</a>
+				<h1>Register</h1>
+				<label for="mail">Email:</label></br>
+				<input type="email" id="mail"></br>
+				<label for="password">Password:</label></br>
+				<input type="password" id="password"></br>
+				<button type="submit" onclick="register()">Register</button>
+			`;
 			} else if (type == "login") {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' class='close'>X</a><h1>Log In</h1><label for='mail'>Email:</label></br><input type='email' id='mail'></br><label for='password'>Password:</label></br><input type='password' id='password'></br><button type='submit' onclick='login()'>Log In</button>";
-
+				document.getElementById("dialogContents").innerHTML = `
+				<a href="#close" title="Close" class="close">X</a>
+				<h1>Log In</h1>
+				<label for="mail">Email:</label></br>
+				<input type="email" id="mail"></br>
+				<label for="password">Password:</label></br>
+				<input type="password" id="password"></br>
+				<button type="submit" onclick="login()">Log In</button></br>
+				<a href="javascript: void(0)" onclick="switchDialogContents('register')">Don&#39t have an account?</a>
+				`;
 			} else if (type == "upload") {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' title='Close' id='close_button' class='close'>X</a><h1>Upload file to server</h1><label for='mail'>File Name:</label></br><input type='text' id='fileName'></br><button type='submit' onclick='uploadFile()'>Upload</button>";
+				document.getElementById("dialogContents").innerHTML = `
+				<a href="#close" title="Close" id="close_button" class="close">X</a>
+				<h1>Upload file to server</h1>
+				<label for="mail">File Name:</label></br>
+				<input type="text" id="fileName"></br>
+				<button type="submit" onclick="uploadFile()">Upload</button>
+				`;
 			} else if (type == "openFile") {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Open file in editor</h1><input class='alignleft' type='file' id='fileInput'/></br>";
-				document.getElementById('fileInput').addEventListener('change', handleFileChoose, false);
+				document.getElementById("dialogContents").innerHTML = `
+				<a href="#close" id="close_button" title="Close" class="close">X</a>
+				<h1>Open file in editor</h1>
+				<input class="alignleft" type="file" id="fileInput"/></br>
+				`;
+				document.getElementById("fileInput").addEventListener("change", handleFileChoose, false);
 			}
 		}
 
 		function upload() {
 			if (isLoggedIn()) {
-				switchDialogContents("upload");
-				document.getElementById("login_button").click(); // Open the upload screen.
+				openDialog("upload");
 			} else {
-				document.getElementById("login_button").click();
+				openDialog("login");
 			}
 		}
 
@@ -170,7 +195,11 @@
 
 		function retrieve() {
 			if (isLoggedIn()) {
-				document.getElementById("dialogContents").innerHTML = "<a href='#close' id='close_button' title='Close' class='close'>X</a><h1>Open file in editor</h1>";
+				/* Build the dialog contents procedurally. */
+				document.getElementById("dialogContents").innerHTML = `
+				<a href='#close' id='close_button' title='Close' class='close'>X</a>
+				<h1>Open file in editor</h1>
+				`;
 				/* Retrieve file list from server. */
 				$.post(
 					"retrieve.php",
@@ -178,46 +207,43 @@
 					function(response) {
 						var resultList = response.split(",");
 						for (var i = 0; i < resultList.length - 1; i++) {
-							document.getElementById("dialogContents").innerHTML = document.getElementById("dialogContents").innerHTML.concat('<button onclick="retrieveFile(\'' + resultList[i] + '\')">' + resultList[i] + "</button></br>");
+							document.getElementById("dialogContents").innerHTML =
+								document.getElementById("dialogContents").innerHTML.concat(
+								'<button onclick="retrieveFile(\'' + resultList[i] + '\')">' + resultList[i] + "</button></br>");
 						}
 						if (resultList.length == 1) {
-							document.getElementById("dialogContents").innerHTML = document.getElementById("dialogContents").innerHTML.concat("<p>No files to open</p>");
+							document.getElementById("dialogContents").innerHTML =
+								document.getElementById("dialogContents").innerHTML.concat("<p>No files to open</p>");
 						}
 					}
 				);
-				document.getElementById("login_button").click();
+				openDialog("");
 			} else {
-				document.getElementById("login_button").click();
+				openDialog("");
 			}
 		}
 
-		function openFile() {
-			switchDialogContents("openFile");
-			document.getElementById("login_button").click();
+		function openDialog(type) {
+			if (type) {
+				switchDialogContents(type);
+			}
+			location.href = "#openModal";
 		}
 	</script>
 
 	<div id="navigation">
-	<a class="alignright" id="login_button" href="#openModal">Log In</a>
+	<a class="alignright" href="javascript: void(0)" id="login_button" onclick="openDialog('login')">Log In</a>
 	<a class="alignleft" href="javascript: void(0)" onclick="error_annot(editor)">Check PML</a>	
 	<a class="alignleft" href="javascript: void(0)" onclick="upload()">Upload</a>
 	<a class="alignleft" href="javascript: void(0)" onclick="download_file()">Download</a>
 	<a class="alignleft" href="javascript: void(0)" onclick="retrieve()">Retrieve</a>
 	<a class="alignleft" href="javascript: void(0)" onclick="editmenu(editor)">Edit Menu</a>
-	<a class="alignleft" href="javascript: void(0)" onclick="openFile()">Open File</a>
+	<a class="alignleft" href="javascript: void(0)" onclick="openDialog('openFile')">Open File</a>
 	</div>
 	<div style="clear: both;"></div>
 
 	<div id="openModal" class="modalDialog">
 	<div id="dialogContents">
-		<a href="#close" title="Close" class="close">X</a>
-		<h1>Log in</h1>
-		<label for="mail">Email:</label></br>
-		<input type="email" id="mail"></br>
-		<label for="password">Password:</label></br>
-		<input type="password" id="password"></br>
-		<button type="submit" onclick="login()">Log in</button></br>
-		<a href="javascript: void(0)" onclick="switchDialogContents('register');">Don't have an account?</a>
 	</div>
 	</div>
 
