@@ -10,12 +10,14 @@ projectName=$1
 projectPath=/var/www/html/$projectName
 
 if [ ! -f $projectPath/index.html ] ||
-	[ ! -f $projectPath/login.html ] ||
-	[ ! -f $projectPath/register.html ] ||
-	[ ! -f $projectPath/check.php ] ||
-	[ ! -f $projectPath/register.php ] ||
-	[ ! -f $projectPath/login_style.css ] ||
+	[ ! -f $projectPath/modalStyle.css ] ||
 	[ ! -f $projectPath/StyleSheet.css ] ||
+	[ ! -f $projectPath/check.php ] ||
+	[ ! -f $projectPath/login.php ] ||
+	[ ! -f $projectPath/register.php ] ||
+	[ ! -f $projectPath/retrieve.php ] ||
+	[ ! -f $projectPath/retrieveFile.php ] ||
+	[ ! -f $projectPath/uploadFile.php ] ||
 	[ ! -d $projectPath/thirdparty/ ]; then
 	echo "There is a problem with the installation. Run clean.sh and then try install.sh again.";
 	exit
