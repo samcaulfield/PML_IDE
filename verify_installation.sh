@@ -10,7 +10,8 @@ projectName=$1
 projectPath=/var/www/html/$projectName
 
 if [ ! -f $projectPath/index.html ] ||
-	[ ! -f $projectPath/modalStyle.css ] ||
+	[ ! -f $projectpath/menuStyle.css ] ||
+	[ ! -f $projectpath/modalstyle.css ] ||
 	[ ! -f $projectPath/StyleSheet.css ] ||
 	[ ! -f $projectPath/check.php ] ||
 	[ ! -f $projectPath/login.php ] ||

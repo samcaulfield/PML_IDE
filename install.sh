@@ -18,8 +18,9 @@ mkdir $projectPath
 # HTML.
 cp index.html $projectPath
 # CSS.
-cp StyleSheet.css $projectPath
+cp menuStyle.css $projectPath
 cp modalStyle.css $projectPath
+cp StyleSheet.css $projectPath
 # PHP.
 cp check.php $projectPath
 cp login.php $projectPath

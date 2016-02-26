@@ -5,6 +5,7 @@
 
 	<link rel="stylesheet" href="StyleSheet.css" type="text/css"/>
 	<link rel="stylesheet" href="modalStyle.css" type="text/css"/>
+	<link rel="stylesheet" href="menuStyle.css" type="text/css"/>
 	<title>PML IDE</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://danml.com/js/download.js"></script>
@@ -58,8 +59,8 @@
 		window.onload = function onload() {
 			var username = getCookie("username");
 			if (username) {
-				document.getElementById("login_button").innerHTML = "<a href='javascript: void(0)'>" + username + "</a>";
-				document.getElementById("login_button").insertAdjacentHTML("beforebegin", '<a class="alignright href="index.html" onclick="logout()">Log out</a>');
+				document.getElementById("loginButton").innerHTML =
+					'<a id="loginButton" href="javascript: void(0)" onclick="logout()">' + username + '</a>';
 			} else {
 			}
 		}
@@ -115,7 +116,6 @@
 					alert(response);
 					if (response.substring(0, 5) == "A new") {
 						switchDialogContents("login");
-						//document.location.href = "login.html";
 					}
 				});
 		}
@@ -231,20 +231,39 @@
 		}
 	</script>
 
-	<div id="navigation">
-	<a class="alignright" href="javascript: void(0)" id="login_button" onclick="openDialog('login')">Log In</a>
-	<a class="alignleft" href="javascript: void(0)" onclick="error_annot(editor)">Check PML</a>	
-	<a class="alignleft" href="javascript: void(0)" onclick="upload()">Upload</a>
-	<a class="alignleft" href="javascript: void(0)" onclick="download_file()">Download</a>
-	<a class="alignleft" href="javascript: void(0)" onclick="retrieve()">Retrieve</a>
-	<a class="alignleft" href="javascript: void(0)" onclick="editmenu(editor)">Edit Menu</a>
-	<a class="alignleft" href="javascript: void(0)" onclick="openDialog('openFile')">Open File</a>
+	<div class="alignleft" class="menu-wrap">
+		<nav class="menu">
+		<ul class="clearfix">
+			<li><a href="#">File <span class="arrow">&#9660;</span></a> 
+				<ul class="sub-menu">
+					<li><a href="javascript: void(0)" onclick="openDialog('openFile')">Open from disk</a></li>
+					<li><a href="javascript: void(0)" onclick="download_file()">Download to disk</a></li>
+					<li><a href="javascript: void(0)" onclick="retrieve()">Open from server</a></li>
+					<li><a href="javascript: void(0)" onclick="upload()">Save to server</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Edit</a>
+				<ul class="sub-menu">
+					<li><a href="javascript: void(0)" onclick="editmenu(editor)">Preferences</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Tools</a>
+				<ul class="sub-menu">
+					<li><a href="javascript: void(0)" onclick="error_annot(editor)">Check PML</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Account</a>
+				<ul class="sub-menu">
+					<li><a id="loginButton" href="javascript: void(0)" onclick="openDialog('login')">Log In</a></li>
+				</ul>
+			</li>
+		</ul>
+		</nav>
 	</div>
-	<div style="clear: both;"></div>
 
 	<div id="openModal" class="modalDialog">
-	<div id="dialogContents">
-	</div>
+		<div id="dialogContents">
+		</div>
 	</div>
 
 	<div id="editor">process Diabetes_assessment {
