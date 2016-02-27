@@ -9,226 +9,238 @@
 	<title>PML IDE</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://danml.com/js/download.js"></script>
-	<script type="text/javascript">
-		/* Taken from http://www.sitepoint.com/how-to-deal-with-cookies-in-javascript/ */
-		function getCookie(name) {
-			var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
-			var result = regexp.exec(document.cookie);
-			return (result === null) ? null : result[1];
-		}
 
-		function logout() {
-			// Clear the cookie by settings its expiry date to the past.
-			document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
-			// Reload the page.
-			window.location.href = "index.html";
-		}
+	<script>
+var editor;
 
-		function handleFileChoose(evt) {
-			readFile(evt);
-			document.getElementById('close_button').click();
-		}
+function updateLogInOut() {
+	var username = getCookie("username");
+	var logInOut = document.getElementById('logInOut');
+	if (username) {
+		/* There is a user logged in. */
+		logInOut.innerHTML = 'Logged In!';
+		logInOut.onclick = function() { logout() };
+	} else {
+		/* No user is logged in. */
+		logInOut.innerHTML = 'Log In';
+		logInOut.onclick = function() { openDialog('login'); };
+	}
+}
 
-		function readFile(evt) {
-			var files = evt.target.files;
-			if (files) {
-				var file = files[0]; // Only consider the first file.
-				var reader = new FileReader();
-				reader.onload = (
-					function (file) {
-						return function (e) {
-							editor.setValue(e.target.result);
-						};
-					}
-				)(file);
-				reader.readAsText(file);
-			} else {
-				alert('No file!');
-			}
-		}
-
-		function isLoggedIn() {
-			var username = getCookie("username");
-			if (username) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		window.onload = function onload() {
-			var username = getCookie("username");
-			if (username) {
-				document.getElementById("loginButton").innerHTML =
-					'<a id="loginButton" href="javascript: void(0)" onclick="logout()">' + username + '</a>';
-			} else {
-			}
-		}
+window.onload = updateLogInOut;
 	</script>
+
 </head>
 
 <body>
-
+	<script src="./thirdparty/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://ajaxorg.github.io/ace-builds/src/ext-language_tools.js"></script>
 	<script>
-		function check() {
-			$.post(
-				"check.php",
-				{value: editor.getSession().getValue()},
-				function(data, status) {
-					alert(data);
-				});
-		}
+/* Taken from http://www.sitepoint.com/how-to-deal-with-cookies-in-javascript/ */
+function getCookie(name) {
+	var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
+	var result = regexp.exec(document.cookie);
+	return (result === null) ? null : result[1];
+}
 
-		function download_file() {
-			download(editor.getValue(), 'file.pml', 'text/plain');
-		}
+function logout() {
+	// Clear the cookie by setting its expiry date to the past.
+	document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+	updateLogInOut();
+}
 
-		function login() {
-			var email = document.getElementById("mail").value;
-			var password = document.getElementById("password").value;
-			$.post(
-				"login.php",
-				{email: email, password: password},
-				function(response) {
-					var str0 = "Success!"; // This doesn't have a NULL-terminator.
-					var str1 = response.substring(0, response.length - 1); // The response has a NULL-terminator.
-					// The NULL-terminator affects the comparison.
-					if (str0 == str1) {
-						// Login succeeded.
-						var cookie0 = "username=";
-						var cookie1 = cookie0 + email + ";path=/;";
-						document.cookie = cookie1;
-						document.location.href = "index.html";
-					} else {
-						// Login did not succeed.
-						alert("Login unsuccessful.");
-					}
-				});
-		}
+function handleFileChoose(evt) {
+	readFile(evt);
+	document.getElementById('close_button').click();
+}
 
-		function register() {
-			var emailAddress = document.getElementById("mail").value;
-			var password = document.getElementById("password").value;
-			$.post(
-				"register.php",
-				{email: emailAddress, password: password},
-				function(response) {
-					alert(response);
-					if (response.substring(0, 5) == "A new") {
-						switchDialogContents("login");
-					}
-				});
-		}
-
-		function switchDialogContents(type) {
-			if (type == "register") {
-				document.getElementById("dialogContents").innerHTML = `
-				<a href="#close" title="Close" class="close">X</a>
-				<h1>Register</h1>
-				<label for="mail">Email:</label></br>
-				<input type="email" id="mail"></br>
-				<label for="password">Password:</label></br>
-				<input type="password" id="password"></br>
-				<button type="submit" onclick="register()">Register</button>
-			`;
-			} else if (type == "login") {
-				document.getElementById("dialogContents").innerHTML = `
-				<a href="#close" title="Close" class="close">X</a>
-				<h1>Log In</h1>
-				<label for="mail">Email:</label></br>
-				<input type="email" id="mail"></br>
-				<label for="password">Password:</label></br>
-				<input type="password" id="password"></br>
-				<button type="submit" onclick="login()">Log In</button></br>
-				<a href="javascript: void(0)" onclick="switchDialogContents('register')">Don&#39t have an account?</a>
-				`;
-			} else if (type == "upload") {
-				document.getElementById("dialogContents").innerHTML = `
-				<a href="#close" title="Close" id="close_button" class="close">X</a>
-				<h1>Upload file to server</h1>
-				<label for="mail">File Name:</label></br>
-				<input type="text" id="fileName"></br>
-				<button type="submit" onclick="uploadFile()">Upload</button>
-				`;
-			} else if (type == "openFile") {
-				document.getElementById("dialogContents").innerHTML = `
-				<a href="#close" id="close_button" title="Close" class="close">X</a>
-				<h1>Open file in editor</h1>
-				<input class="alignleft" type="file" id="fileInput"/></br>
-				`;
-				document.getElementById("fileInput").addEventListener("change", handleFileChoose, false);
+function readFile(evt) {
+	var files = evt.target.files;
+	if (files) {
+		var file = files[0]; // Only consider the first file.
+		var reader = new FileReader();
+		reader.onload = (
+			function (file) {
+				return function (e) {
+					editor.setValue(e.target.result);
+				};
 			}
-		}
+		)(file);
+		reader.readAsText(file);
+	} else {
+		alert('No file!');
+	}
+}
 
-		function upload() {
-			if (isLoggedIn()) {
-				openDialog("upload");
+function isLoggedIn() {
+	var username = getCookie("username");
+	if (username) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function check() {
+	$.post(
+		"check.php",
+		{value: editor.getSession().getValue()},
+		function(data, status) {
+			alert(data);
+		});
+}
+
+function download_file() {
+	download(editor.getValue(), 'file.pml', 'text/plain');
+}
+
+function login() {
+	var email = document.getElementById("mail").value;
+	var password = document.getElementById("password").value;
+	$.post(
+		"login.php",
+		{email: email, password: password},
+		function(response) {
+			var str0 = "Success!"; // This doesn't have a NULL-terminator.
+			var str1 = response.substring(0, response.length - 1); // The response has a NULL-terminator.
+			// The NULL-terminator affects the comparison.
+			if (str0 == str1) {
+				// Login succeeded.
+				var cookie0 = "username=";
+				var cookie1 = cookie0 + email + ";path=/;";
+				document.cookie = cookie1;
+				document.getElementById('closeDialog').click();
+				updateLogInOut();
 			} else {
-				openDialog("login");
+				// Login did not succeed.
+				alert("Login unsuccessful.");
 			}
-		}
+		});
+}
 
-		function uploadFile() {
-			if (isLoggedIn()) {
-				var username = getCookie('username');
-				var fileName = document.getElementById('fileName').value;
-				$.post(
-					"uploadFile.php",
-					{email: username, fileName: fileName, fileContents: editor.getValue()},
-					function(response) {
-					});
-				document.getElementById('close_button').click();
-			} else {
+function register() {
+	var emailAddress = document.getElementById("mail").value;
+	var password = document.getElementById("password").value;
+	$.post(
+		"register.php",
+		{email: emailAddress, password: password},
+		function(response) {
+			alert(response);
+			if (response.substring(0, 5) == "A new") {
+				switchDialogContents("login");
 			}
-		}
+		});
+}
 
-		function retrieveFile(fileName) {
-			$.post(
-				"retrieveFile.php",
-				{email: getCookie('username'), fileName: fileName},
-				function(response) {
-					editor.setValue(response);
+function switchDialogContents(type) {
+	if (type == "register") {
+		document.getElementById("dialogContents").innerHTML = `
+		<a href="#close" title="Close" class="close">X</a>
+		<h1>Register</h1>
+		<label for="mail">Email:</label></br>
+		<input type="email" id="mail"></br>
+		<label for="password">Password:</label></br>
+		<input type="password" id="password"></br>
+		<button type="submit" onclick="register()">Register</button>
+	`;
+	} else if (type == "login") {
+		document.getElementById("dialogContents").innerHTML = `
+		<a id="closeDialog" href="#close" title="Close" class="close">X</a>
+		<h1>Log In</h1>
+		<label for="mail">Email:</label></br>
+		<input type="email" id="mail"></br>
+		<label for="password">Password:</label></br>
+		<input type="password" id="password"></br>
+		<button type="submit" onclick="login()">Log In</button></br>
+		<a href="javascript: void(0)" onclick="switchDialogContents('register')">Don&#39t have an account?</a>
+		`;
+	} else if (type == "upload") {
+		document.getElementById("dialogContents").innerHTML = `
+		<a href="#close" title="Close" id="close_button" class="close">X</a>
+		<h1>Upload file to server</h1>
+		<label for="mail">File Name:</label></br>
+		<input type="text" id="fileName"></br>
+		<button type="submit" onclick="uploadFile()">Upload</button>
+		`;
+	} else if (type == "openFile") {
+		document.getElementById("dialogContents").innerHTML = `
+		<a href="#close" id="close_button" title="Close" class="close">X</a>
+		<h1>Open file in editor</h1>
+		<input class="alignleft" type="file" id="fileInput"/></br>
+		`;
+		document.getElementById("fileInput").addEventListener("change", handleFileChoose, false);
+	}
+}
+
+function upload() {
+	if (isLoggedIn()) {
+		openDialog("upload");
+	} else {
+		openDialog("login");
+	}
+}
+
+function uploadFile() {
+	if (isLoggedIn()) {
+		var username = getCookie('username');
+		var fileName = document.getElementById('fileName').value;
+		$.post(
+			"uploadFile.php",
+			{email: username, fileName: fileName, fileContents: editor.getValue()},
+			function(response) {
+			});
+		document.getElementById('close_button').click();
+	} else {
+	}
+}
+
+function retrieveFile(fileName) {
+	$.post(
+		"retrieveFile.php",
+		{email: getCookie('username'), fileName: fileName},
+		function(response) {
+			editor.setValue(response);
+		}
+	);
+	document.getElementById('close_button').click();
+}
+
+function retrieve() {
+	if (isLoggedIn()) {
+		/* Build the dialog contents procedurally. */
+		document.getElementById("dialogContents").innerHTML = `
+		<a href='#close' id='close_button' title='Close' class='close'>X</a>
+		<h1>Open file in editor</h1>
+		`;
+		/* Retrieve file list from server. */
+		$.post(
+			"retrieve.php",
+			{email: getCookie('username')},
+			function(response) {
+				var resultList = response.split(",");
+				for (var i = 0; i < resultList.length - 1; i++) {
+					document.getElementById("dialogContents").innerHTML =
+						document.getElementById("dialogContents").innerHTML.concat(
+						'<button onclick="retrieveFile(\'' + resultList[i] + '\')">' + resultList[i] + "</button></br>");
 				}
-			);
-			document.getElementById('close_button').click();
-		}
-
-		function retrieve() {
-			if (isLoggedIn()) {
-				/* Build the dialog contents procedurally. */
-				document.getElementById("dialogContents").innerHTML = `
-				<a href='#close' id='close_button' title='Close' class='close'>X</a>
-				<h1>Open file in editor</h1>
-				`;
-				/* Retrieve file list from server. */
-				$.post(
-					"retrieve.php",
-					{email: getCookie('username')},
-					function(response) {
-						var resultList = response.split(",");
-						for (var i = 0; i < resultList.length - 1; i++) {
-							document.getElementById("dialogContents").innerHTML =
-								document.getElementById("dialogContents").innerHTML.concat(
-								'<button onclick="retrieveFile(\'' + resultList[i] + '\')">' + resultList[i] + "</button></br>");
-						}
-						if (resultList.length == 1) {
-							document.getElementById("dialogContents").innerHTML =
-								document.getElementById("dialogContents").innerHTML.concat("<p>No files to open</p>");
-						}
-					}
-				);
-				openDialog("");
-			} else {
-				openDialog("");
+				if (resultList.length == 1) {
+					document.getElementById("dialogContents").innerHTML =
+						document.getElementById("dialogContents").innerHTML.concat("<p>No files to open</p>");
+				}
 			}
-		}
+		);
+		openDialog("");
+	} else {
+		openDialog("login");
+	}
+}
 
-		function openDialog(type) {
-			if (type) {
-				switchDialogContents(type);
-			}
-			location.href = "#openModal";
-		}
+function openDialog(type) {
+	if (type) {
+		switchDialogContents(type);
+	}
+	location.href = "#openModal";
+}
 	</script>
 
 	<div class="alignleft" class="menu-wrap">
@@ -254,7 +266,10 @@
 			</li>
 			<li><a href="#">Account</a>
 				<ul class="sub-menu">
-					<li><a id="loginButton" href="javascript: void(0)" onclick="openDialog('login')">Log In</a></li>
+					<!-- If the user is logged in, this button displays their username and acts as a logout button.
+					     If the user is not logged in, this button displays "Log In" and acts as a login button.
+					     When the page is loaded, the login status is checked and the button set accordingly. -->
+					<li><a id="logInOut" href="javascript: void(0)"></a></li>
 				</ul>
 			</li>
 		</ul>
@@ -268,10 +283,8 @@
 
 	<div id="editor"></div>
     
-	<script src="./thirdparty/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
-	<script src="http://ajaxorg.github.io/ace-builds/src/ext-language_tools.js"></script>
 	<script>
-    		var editor = ace.edit("editor");
+    		editor = ace.edit("editor");
 		editor.getSession().setUseWorker(false);
     		editor.setTheme("ace/theme/monokai");
     		editor.getSession().setMode("ace/mode/pml");
