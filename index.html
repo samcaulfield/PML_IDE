@@ -1,366 +1,166 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-
-	<link rel="stylesheet" href="StyleSheet.css" type="text/css"/>
-	<link rel="stylesheet" href="modalStyle.css" type="text/css"/>
-	<link rel="stylesheet" href="menuStyle.css" type="text/css"/>
-	<title>PML IDE</title>
+	<title>PML Studio</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-	<script src="http://danml.com/js/download.js"></script>
-
-	<script>
-var editor;
-
-function updateLogInOut() {
-	var username = getCookie("username");
-	var logInOut = document.getElementById('logInOut');
-	if (username) {
-		/* There is a user logged in. */
-		logInOut.innerHTML = 'Logged In!';
-		logInOut.onclick = function() { logout() };
-	} else {
-		/* No user is logged in. */
-		logInOut.innerHTML = 'Log In';
-		logInOut.onclick = function() { openDialog('login'); };
-	}
-}
-
-window.onload = updateLogInOut;
-	</script>
-
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/ace/1.2.3/min/ace.js"></script>
+	<script src="https://apis.google.com/js/platform.js" async defer></script>
+	<meta name="google-signin-client_id" content="361103637366-tld2frrgtujduqeba8ii9k6akgpg8nrp.apps.googleusercontent.com">
+	<style type="text/css" media="screen">
+		#textEditor {
+			position: relative;
+			width: 50%;
+			height:90vh;
+			border:1px solid grey;
+			float:left;
+		}
+		.navbar {
+		    margin-bottom: 0;
+		}
+		#graphicalEditor {
+			width: 50%;
+			height: 90vh;
+			border:1px solid grey;
+			float:left;
+		}
+	</style>
 </head>
 
 <body>
-	<script src="./thirdparty/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
-	<script src="http://ajaxorg.github.io/ace-builds/src/ext-language_tools.js"></script>
-	<script>
-/* Taken from http://www.sitepoint.com/how-to-deal-with-cookies-in-javascript/ */
-function getCookie(name) {
-	var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
-	var result = regexp.exec(document.cookie);
-	return (result === null) ? null : result[1];
-}
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+	<!-- Brand and toggle get grouped for better mobile display -->
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		<span class="sr-only">Toggle navigation</span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#">PML Studio</a>
+	</div>
 
-function logout() {
-	// Clear the cookie by setting its expiry date to the past.
-	document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
-	updateLogInOut();
-}
-
-function handleFileChoose(evt) {
-	readFile(evt);
-	document.getElementById('close_button').click();
-}
-
-function readFile(evt) {
-	var files = evt.target.files;
-	if (files) {
-		var file = files[0]; // Only consider the first file.
-		var reader = new FileReader();
-		reader.onload = (
-			function (file) {
-				return function (e) {
-					editor.setValue(e.target.result);
-				};
-			}
-		)(file);
-		reader.readAsText(file);
-	} else {
-		alert('No file!');
-	}
-}
-
-function isLoggedIn() {
-	var username = getCookie("username");
-	if (username) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function check() {
-	$.post(
-		"check.php",
-		{value: editor.getSession().getValue()},
-		function(data, status) {
-			alert(data);
-		});
-}
-
-function download_file() {
-	download(editor.getValue(), 'file.pml', 'text/plain');
-}
-
-function login() {
-	var email = document.getElementById("mail").value;
-	var password = document.getElementById("password").value;
-	$.post(
-		"login.php",
-		{email: email, password: password},
-		function(response) {
-			var str0 = "Success!"; // This doesn't have a NULL-terminator.
-			var str1 = response.substring(0, response.length - 1); // The response has a NULL-terminator.
-			// The NULL-terminator affects the comparison.
-			if (str0 == str1) {
-				// Login succeeded.
-				var cookie0 = "username=";
-				var cookie1 = cookie0 + email + ";path=/;";
-				document.cookie = cookie1;
-				document.getElementById('closeDialog').click();
-				updateLogInOut();
-			} else {
-				// Login did not succeed.
-				alert("Login unsuccessful.");
-			}
-		});
-}
-
-function register() {
-	var emailAddress = document.getElementById("mail").value;
-	var password = document.getElementById("password").value;
-	$.post(
-		"register.php",
-		{email: emailAddress, password: password},
-		function(response) {
-			alert(response);
-			if (response.substring(0, 5) == "A new") {
-				switchDialogContents("login");
-			}
-		});
-}
-
-function switchDialogContents(type) {
-	if (type == "register") {
-		document.getElementById("dialogContents").innerHTML = `
-		<a href="#close" title="Close" class="close">X</a>
-		<h1>Register</h1>
-		<label for="mail">Email:</label></br>
-		<input type="email" id="mail"></br>
-		<label for="password">Password:</label></br>
-		<input type="password" id="password"></br>
-		<button type="submit" onclick="register()">Register</button>
-	`;
-	} else if (type == "login") {
-		document.getElementById("dialogContents").innerHTML = `
-		<a id="closeDialog" href="#close" title="Close" class="close">X</a>
-		<h1>Log In</h1>
-		<label for="mail">Email:</label></br>
-		<input type="email" id="mail"></br>
-		<label for="password">Password:</label></br>
-		<input type="password" id="password"></br>
-		<button type="submit" onclick="login()">Log In</button></br>
-		<a href="javascript: void(0)" onclick="switchDialogContents('register')">Don&#39t have an account?</a>
-		`;
-	} else if (type == "upload") {
-		document.getElementById("dialogContents").innerHTML = `
-		<a href="#close" title="Close" id="close_button" class="close">X</a>
-		<h1>Upload file to server</h1>
-		<label for="mail">File Name:</label></br>
-		<input type="text" id="fileName"></br>
-		<button type="submit" onclick="uploadFile()">Upload</button>
-		`;
-	} else if (type == "openFile") {
-		document.getElementById("dialogContents").innerHTML = `
-		<a href="#close" id="close_button" title="Close" class="close">X</a>
-		<h1>Open file in editor</h1>
-		<input class="alignleft" type="file" id="fileInput"/></br>
-		`;
-		document.getElementById("fileInput").addEventListener("change", handleFileChoose, false);
-	}
-}
-
-function upload() {
-	if (isLoggedIn()) {
-		openDialog("upload");
-	} else {
-		openDialog("login");
-	}
-}
-
-function uploadFile() {
-	if (isLoggedIn()) {
-		var username = getCookie('username');
-		var fileName = document.getElementById('fileName').value;
-		$.post(
-			"uploadFile.php",
-			{email: username, fileName: fileName, fileContents: editor.getValue()},
-			function(response) {
-			});
-		document.getElementById('close_button').click();
-	} else {
-	}
-}
-
-function retrieveFile(fileName) {
-	$.post(
-		"retrieveFile.php",
-		{email: getCookie('username'), fileName: fileName},
-		function(response) {
-			editor.setValue(response);
-		}
-	);
-	document.getElementById('close_button').click();
-}
-
-function retrieve() {
-	if (isLoggedIn()) {
-		/* Build the dialog contents procedurally. */
-		document.getElementById("dialogContents").innerHTML = `
-		<a href='#close' id='close_button' title='Close' class='close'>X</a>
-		<h1>Open file in editor</h1>
-		`;
-		/* Retrieve file list from server. */
-		$.post(
-			"retrieve.php",
-			{email: getCookie('username')},
-			function(response) {
-				var resultList = response.split(",");
-				for (var i = 0; i < resultList.length - 1; i++) {
-					document.getElementById("dialogContents").innerHTML =
-						document.getElementById("dialogContents").innerHTML.concat(
-						'<button onclick="retrieveFile(\'' + resultList[i] + '\')">' + resultList[i] + "</button></br>");
-				}
-				if (resultList.length == 1) {
-					document.getElementById("dialogContents").innerHTML =
-						document.getElementById("dialogContents").innerHTML.concat("<p>No files to open</p>");
-				}
-			}
-		);
-		openDialog("");
-	} else {
-		openDialog("login");
-	}
-}
-
-function openDialog(type) {
-	if (type) {
-		switchDialogContents(type);
-	}
-	location.href = "#openModal";
-}
-	</script>
-
-	<div class="alignleft" class="menu-wrap">
-		<nav class="menu">
-		<ul class="clearfix">
-			<li><a href="#">File <span class="arrow">&#9660;</span></a> 
-				<ul class="sub-menu">
-					<li><a href="javascript: void(0)" onclick="openDialog('openFile')">Open from disk</a></li>
-					<li><a href="javascript: void(0)" onclick="download_file()">Download to disk</a></li>
-					<li><a href="javascript: void(0)" onclick="retrieve()">Open from server</a></li>
-					<li><a href="javascript: void(0)" onclick="upload()">Save to server</a></li>
-				</ul>
-			</li>
-			<li><a href="#">Edit</a>
-				<ul class="sub-menu">
-					<li><a href="javascript: void(0)" onclick="editmenu(editor)">Preferences</a></li>
-				</ul>
-			</li>
-			<li><a href="#">Tools</a>
-				<ul class="sub-menu">
-					<li><a href="javascript: void(0)" onclick="error_annot(editor)">Check PML</a></li>
-				</ul>
-			</li>
-			<li><a href="#">Account</a>
-				<ul class="sub-menu">
-					<!-- If the user is logged in, this button displays their username and acts as a logout button.
-					     If the user is not logged in, this button displays "Log In" and acts as a login button.
-					     When the page is loaded, the login status is checked and the button set accordingly. -->
-					<li><a id="logInOut" href="javascript: void(0)"></a></li>
-				</ul>
-			</li>
+	<!-- Collect the nav links, forms, and other content for toggling -->
+	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<ul class="nav navbar-nav">
+		<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+		<li><a href="#">Open from disk</a></li>
+		<li><a href="#">Save to disk</a></li>
+		<li role="separator" class="divider"></li>
+		<li><a href="#">Open from server</a></li>
+		<li><a href="#">Save to server</a></li>
 		</ul>
-		</nav>
-	</div>
+		</li>
+		</ul>
 
-	<div id="openModal" class="modalDialog">
-		<div id="dialogContents">
-		</div>
-	</div>
+		<ul class="nav navbar-nav">
+		<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Edit <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+		<li><a href="#">Preferences</a></li>
+		</ul>
+		</li>
+		</ul>
 
-	<div id="editor"></div>
-    
-	<script>
-    		editor = ace.edit("editor");
-		editor.getSession().setUseWorker(false);
-    		editor.setTheme("ace/theme/monokai");
-    		editor.getSession().setMode("ace/mode/pml");
-		AutoComplete(editor);
+		<ul class="nav navbar-nav">
+		<li class="dropdown">
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+		<li><a href="#">Check syntax</a></li>
+		</ul>
+		</li>
+		</ul>
 
-		function AutoComplete(editor)
-		{//For code completion
-		//Takes advantage of the open source library; ajaxorg.github.io
-			//Tell the editor to use it's autocompletion function
-			editor.setOptions({
-				enableBasicAutocompletion: true,
-				enableSnippets: true,
-				enableLiveAutocompletion: false
-			});
 
-			//PML keywords. Score (equal) given to likihood of being used.
-			editor.completers.push({
-			getCompletions: function (editor, session, pos, prefix, callback){
-				callback(null, [
-					{value: "process", score: 1000, meta: "keyword"},
-					{value: "action", score: 1000, meta: "keyword"},
-					{value: "branch", score: 1000, meta: "keyword"},
-					{value: "requires", score: 1000, meta: "keyword"},
-					{value: "provides", score: 1000, meta: "keyword"},
-					{value: "selection", score: 1000, meta: "keyword"},
-					{value: "agent", score: 1000, meta: "keyword"},
-					{value: "script", score: 1000, meta: "keyword"},
-					{value: "iteration", score: 1000, meta: "keyword"},
-					{value: "sequence", score: 1000, meta: "keyword"}
-				]);
-			}});
+		<ul class="nav navbar-nav navbar-right">
+		<li class="dropdown">
+		<a id="logInInfo" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account (Not signed in) <span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			<li id="signInButtonList"><a id="" data-toggle="modal" data-target="#signInModal" href="#">Sign in</a></li>
+			<li id="signOutButtonList" class="disabled"><a href="#">Sign out</a></li>
+		</ul>
+		</li>
+		</ul>
+	</div><!-- /.navbar-collapse -->
+	</div><!-- /.container-fluid -->
+</nav>
+<div>
+	<div id="textEditor"></div>
+	<div id="graphicalEditor"></div>
+</div>
 
-			//Make sure the Autocompletion is called when user is typing
-			editor.commands.on("afterExec", function(e){
-				if(e.command.name == "insertstring"&&/^[\w.]$/.test(e.args))
-				{
-					editor.execCommand("startAutocomplete");
-				}
-			});
-		}
+<!-- Sign In Modal -->
+<div id="signInModal" class="modal fade" role="dialog">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h4 class="modal-title">Sign In</h4>
+</div>
+<div class="modal-body">
+	<form class="form-signin">
+	<h2 class="form-signin-heading">Sign in with a PML Studio account:</h2>
+	<label for="inputEmail" class="sr-only">Email address</label>
+	<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+	<label for="inputPassword" class="sr-only">Password</label>
+	<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+	<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="attemptLogin(document.getElementById('inputEmail').value, document.getElementById('inputPassword').value)">Sign in</button>
+	</form>
+	<a onclick="$('#signInModal').modal('hide'); $('#registerModal').modal('show');">Don't have an account?</a>
+</div>
+<div class="modal-footer">
+	<h2>Or, sign in with a third-party service:</h2>
+	<div class="g-signin2" data-onsuccess="onSignIn"></div>
+</div>
+</div>
+</div>
+</div>
 
-		function error_annot(editor){
-			var arrayOfAnnos = [];
-                        $.post(
-                                "check.php",
-                                {value: editor.getSession().getValue()},
-                                function(data, status) {
-				var arrr = data.split("/tmp/");
-				for(var i=1; i< arrr.length; i++){
-					var start_pos = arrr[i].indexOf(':') + 1;
-					var end_pos = arrr[i].indexOf(':',start_pos);
-					var text_to_get = arrr[i].substring(start_pos,end_pos)
-					var error_text = arrr[i].split(":").pop().split(";").shift();
-					var arrStr = arrr[i].split(/[:]/);
-					var error_words_arr = error_text.split(" ");
-						var type = "warning";
-						if(error_words_arr[2] == "error"){ 
-                                                        type = "error";}
-						var gutterAnno = {
-						row: text_to_get-1,	
-						column: 10,
-						text: error_text,
-						type: type
-						}
-					arrayOfAnnos.push(gutterAnno);
-				}
-					editor.getSession().setAnnotations(arrayOfAnnos);				 							
-                                });
-		}
+<!-- Register Modal -->
+<div id="registerModal" class="modal fade" role="dialog">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h4 class="modal-title">Register</h4>
+</div>
+<div class="modal-body">
+	<form class="form-signin">
+	<h2 class="form-signin-heading">Create a Raid Raptors account:</h2>
+	<label for="inputEmail" class="sr-only">Email address</label>
+	<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+	<label for="inputPassword" class="sr-only">Password</label>
+	<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+	<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="$('#registerModal').modal('hide'); $('#informationModal').modal('show');">Register</button>
+	</form>
+</div>
+</div>
+</div>
+</div>
 
-		function editmenu(editor)
-		{
-			editor.execCommand("showSettingsMenu");
-		}
+<!-- Information Modal -->
+<div id="informationModal" class="modal fade" role="dialog">
+<div class="modal-dialog modal-sm">
+<div class="modal-content">
+<div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	<h4 class="modal-title">Registration successful!</h4>
+</div>
+</div>
+</div>
+</div>
 
-	</script>
+<script src="script.js"></script>
 
 </body>
+
 </html>
+
