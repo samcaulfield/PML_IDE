@@ -10,8 +10,6 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/ace/1.2.3/min/ace.js"></script>
-	<script src="https://apis.google.com/js/platform.js" async defer></script>
-	<meta name="google-signin-client_id" content="361103637366-tld2frrgtujduqeba8ii9k6akgpg8nrp.apps.googleusercontent.com">
 	<style type="text/css" media="screen">
 		#textEditor {
 			position: relative;
@@ -29,10 +27,17 @@
 			border:1px solid grey;
 			float:left;
 		}
+		#fileInput {
+			display: none
+		}
 	</style>
 </head>
 
 <body>
+<!--
+	This is the navigation bar that is displayed across the top of the web
+	page.
+-->
 <nav class="navbar navbar-default">
 	<div class="container-fluid">
 	<!-- Brand and toggle get grouped for better mobile display -->
@@ -49,34 +54,36 @@
 	<!-- Collect the nav links, forms, and other content for toggling -->
 	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		<ul class="nav navbar-nav">
-		<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
-		<ul class="dropdown-menu">
-		<li><a href="#">Open from disk</a></li>
-		<li><a href="#">Save to disk</a></li>
-		<li role="separator" class="divider"></li>
-		<li><a href="#">Open from server</a></li>
-		<li><a href="#">Save to server</a></li>
-		</ul>
-		</li>
-		</ul>
-
-		<ul class="nav navbar-nav">
-		<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Edit <span class="caret"></span></a>
-		<ul class="dropdown-menu">
-		<li><a href="#">Preferences</a></li>
-		</ul>
-		</li>
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a id="openFileInput">Open from disk</a><input type="file" id="fileInput"></li>
+					<li><a onclick="promptToSave()">Save to disk</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a onclick="attemptOpenFromServer()">Open from server</a></li>
+					<li><a>Save to server</a></li>
+				</ul>
+			</li>
 		</ul>
 
 		<ul class="nav navbar-nav">
-		<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
-		<ul class="dropdown-menu">
-		<li><a href="#">Check syntax</a></li>
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Edit <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a onclick="openAceMenu()">Preferences</a></li>
+				</ul>
+			</li>
 		</ul>
-		</li>
+
+		<ul class="nav navbar-nav">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li>
+						<a onclick="error_annot()">Check syntax</a>
+					</li>
+				</ul>
+			</li>
 		</ul>
 
 
@@ -116,10 +123,6 @@
 	</form>
 	<a onclick="$('#signInModal').modal('hide'); $('#registerModal').modal('show');">Don't have an account?</a>
 </div>
-<div class="modal-footer">
-	<h2>Or, sign in with a third-party service:</h2>
-	<div class="g-signin2" data-onsuccess="onSignIn"></div>
-</div>
 </div>
 </div>
 </div>
@@ -134,12 +137,12 @@
 </div>
 <div class="modal-body">
 	<form class="form-signin">
-	<h2 class="form-signin-heading">Create a Raid Raptors account:</h2>
+	<h2 class="form-signin-heading">Create a PML Studio account:</h2>
 	<label for="inputEmail" class="sr-only">Email address</label>
 	<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
 	<label for="inputPassword" class="sr-only">Password</label>
 	<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-	<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="$('#registerModal').modal('hide'); $('#informationModal').modal('show');">Register</button>
+	<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="register()">Register</button>
 	</form>
 </div>
 </div>
@@ -159,6 +162,7 @@
 </div>
 
 <script src="script.js"></script>
+<script src="http://danml.com/js/download.js"></script>
 
 </body>
 
