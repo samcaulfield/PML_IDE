@@ -4,7 +4,7 @@
 if [ ! -x pmlcheck ]; then
 	git clone https://github.com/jnoll/peos.git
 	# Install peos dependencies.
-	sudo apt-get install tcl tcl-dev check expect libxml2 bison flex
+	sudo apt-get install tcl tcl-dev check expect libxml2 bison flex libreadline6-dev libncurses-dev
 	if [ -d peos ]; then
 		cd peos/pml/ && make && cp check/pmlcheck ../../thirdparty/pmlcheck/pmlcheck
 	fi
