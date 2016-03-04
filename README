@@ -19,7 +19,7 @@ Setup:
 These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
 Ensure the required packages are installed:
-	sudo ./install_dependencies.sh
+	./install_dependencies.sh
 
 Choose a project name and deploy the IDE:
 	sudo ./install.sh projectName
