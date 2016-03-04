@@ -21,6 +21,8 @@ cp index.html $projectPath
 cp menuStyle.css $projectPath
 cp modalStyle.css $projectPath
 cp StyleSheet.css $projectPath
+# JS.
+cp script.js $projectPath
 # PHP.
 cp check.php $projectPath
 cp login.php $projectPath
