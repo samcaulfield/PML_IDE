@@ -5,7 +5,7 @@ editor.getSession().setUseSoftTabs(false);
 editor.setKeyboardHandler("ace/keyboard/vim");
 editor.setBehavioursEnabled(false);
 editor.focus();
-
+editor.setFontSize('12px');
 
 window.onload = function() {
 	// XXX
