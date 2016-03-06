@@ -11,7 +11,6 @@
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/ace/1.2.3/min/ace.js"></script>
 	<style type="text/css" media="screen">
-
 		#textEditor {
 			position: relative;
 			width: 50%;
@@ -62,7 +61,7 @@
 					<li><a onclick="promptToSave()">Save to disk</a></li>
 					<li role="separator" class="divider"></li>
 					<li><a onclick="attemptOpenFromServer()">Open from server</a></li>
-					<li><a>Save to server</a></li>
+					<li><a onclick="attemptSaveToServer()">Save to server</a></li>
 				</ul>
 			</li>
 		</ul>
@@ -151,7 +150,7 @@
 	</div>
 </div>
 
-<!-- File Choose Modal -->
+<!-- File choose modal -->
 <div id="fileChooseModal" class="modal fade" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -160,6 +159,41 @@
 				<h4 class="modal-title">Choose a file</h4>
 			</div>
 			<div class="modal-body">
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- File open from server modal -->
+<div id="fileOpenFromServerModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Open file from server</h4>
+			</div>
+			<div class="modal-body">
+				<form id="fileOpenForm">
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- File save to server modal -->
+<div id="fileSaveToServerModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Save file to server</h4>
+			</div>
+			<div class="modal-body">
+				<form id="fileSaveForm">
+					<label for="fileSaveNameInput">Save as</label></br>
+					<input type="text" id="fileSaveNameInput">
+					<button class="btn btn-default">Submit</button>
+				</form>
 			</div>
 		</div>
 	</div>

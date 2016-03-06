@@ -33,6 +33,22 @@ window.onload = function() {
 		attemptRegister(document.getElementById('registerInputEmail').value,
 			document.getElementById('registerInputPassword').value);
 	});
+
+	$('#fileSaveForm').on('submit', function(e) {
+		e.preventDefault(); // This prevents unnecessary page reload.
+		$.ajax({
+			type: 'POST',
+			url: 'uploadFile.php',
+			data: {email: getCookie('username'),
+				fileName: document.getElementById('fileSaveNameInput').value,
+				fileContents: editor.getValue()},
+			success: function(response) {
+			},
+			dataType: 'text',
+			async: false
+		});
+		$('#fileSaveToServerModal').modal('hide');
+	});
 }
 
 //
@@ -48,9 +64,45 @@ function attemptLogin(emailAddress, password) {
 	}
 }
 
+
+function retrieveFile(fileName) {
+	$.ajax({
+		type: 'POST',
+		url: 'retrieveFile.php',
+		data: {email: getCookie('username'), fileName: fileName},
+		success: function(response) {
+			editor.setValue(response);
+		},
+		dataType: 'text',
+		async: false
+	});
+	$('#fileOpenFromServerModal').modal('hide');
+}
+
 function attemptOpenFromServer() {
 	if (isLoggedIn()) {
-		$('#fileChooseModal').modal('show');
+		// Generate the inner HTML of the form.
+		$.ajax({
+			type: 'POST',
+			url: 'retrieve.php',
+			data: {email: getCookie('username')},
+			success: function(response) {
+				var resultList = response.split(',');
+				document.getElementById('fileOpenForm').innerHTML = '';
+				for (var i = 0; i < resultList.length - 1; i++) {
+					document.getElementById('fileOpenForm').innerHTML =
+						document.getElementById('fileOpenForm').
+							innerHTML.concat('<button class="btn btn-default" type="button" onclick="retrieveFile(\'' + resultList[i] + '\')">' + resultList[i] + "</button></br>");
+				}
+				if (resultList.length == 1) {
+					document.getElementById('fileOpenForm').innerHTML =
+						document.getElementById('fileOpenForm').innerHTML.concat("<p>No files to open</p>");
+				}
+			},
+			dataType: 'text',
+			async: false
+		});
+		$('#fileOpenFromServerModal').modal('show');
 	} else {
 		$('#signInModal').modal('show');
 	}
@@ -66,6 +118,17 @@ function attemptRegister(emailAddress, password) {
 		signInCommon();
 	} else {
 		alert('Registration failed!');
+	}
+}
+
+//
+//
+//
+function attemptSaveToServer() {
+	if (isLoggedIn()) {
+		$('#fileSaveToServerModal').modal('show');
+	} else {
+		$('#signInModal').modal('show');
 	}
 }
 
@@ -104,7 +167,7 @@ function error_annot() {
 }
 
 //
-/* Taken from http://www.sitepoint.com/how-to-deal-with-cookies-in-javascript/ */
+// Taken from http://www.sitepoint.com/how-to-deal-with-cookies-in-javascript/
 //
 function getCookie(name) {
 	var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
