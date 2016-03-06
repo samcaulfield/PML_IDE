@@ -64,21 +64,6 @@ function attemptLogin(emailAddress, password) {
 	}
 }
 
-
-function retrieveFile(fileName) {
-	$.ajax({
-		type: 'POST',
-		url: 'retrieveFile.php',
-		data: {email: getCookie('username'), fileName: fileName},
-		success: function(response) {
-			editor.setValue(response);
-		},
-		dataType: 'text',
-		async: false
-	});
-	$('#fileOpenFromServerModal').modal('hide');
-}
-
 function attemptOpenFromServer() {
 	if (isLoggedIn()) {
 		// Generate the inner HTML of the form.
@@ -201,12 +186,12 @@ function error_annot() {
 }
 
 //
-// Taken from http://www.sitepoint.com/how-to-deal-with-cookies-in-javascript/
+// http://stackoverflow.com/questions/10730362/get-cookie-by-name
 //
 function getCookie(name) {
-	var regexp = new RegExp("(?:^" + name + "|;\s*"+ name + ")=(.*?)(?:;|$)", "g");
-	var result = regexp.exec(document.cookie);
-	return (result === null) ? null : result[1];
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
 //
@@ -252,6 +237,18 @@ function login(emailAddress, password) {
 //
 function openAceMenu() {
 	editor.execCommand('showSettingsMenu');
+}
+
+function onSignIn(googleUser) {
+	var profile = googleUser.getBasicProfile();
+	var email = profile.getEmail();
+	register(email, Math.random().toString());
+	document.cookie = 'username=' + email + ';path=/;';
+	signInCommon();
+	// XXX Don't know why but this needs to go here..
+	document.getElementById('signInInfo').innerHTML =
+		'Account (' + email + ') <span class="caret"></span>';
+	$('#signInModal').modal('hide');
 }
 
 //
@@ -313,6 +310,23 @@ function register(emailAddress, password) {
 }
 
 //
+//
+//
+function retrieveFile(fileName) {
+	$.ajax({
+		type: 'POST',
+		url: 'retrieveFile.php',
+		data: {email: getCookie('username'), fileName: fileName},
+		success: function(response) {
+			editor.setValue(response);
+		},
+		dataType: 'text',
+		async: false
+	});
+	$('#fileOpenFromServerModal').modal('hide');
+}
+
+//
 // Performs UI updates for sign in.
 //
 function signInCommon() {
@@ -328,6 +342,10 @@ function signInCommon() {
 // Signs out the user by deleting the username cookie and resetting the UI.
 //
 function signOut() {
+	var auth2 = gapi.auth2.getAuthInstance();
+	auth2.signOut().then(function () {
+	});
+
 	document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
 	document.getElementById('signInInfo').innerHTML =
 		'Account (Not signed in) <span class="caret"></span>';
