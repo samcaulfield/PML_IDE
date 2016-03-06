@@ -6,14 +6,32 @@ editor.setKeyboardHandler("ace/keyboard/vim");
 editor.setBehavioursEnabled(false);
 editor.focus();
 
+
 window.onload = function() {
+	// XXX
 	document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+
 	document.getElementById("fileInput").addEventListener("change", readFile, false);
-	$(function() {
-		$("#openFileInput").on('click', function(e) {
-			e.preventDefault();
-			$("#fileInput:hidden").trigger('click');
-		});
+
+	// A link is used to trigger the file input because IMO the link style
+	// looks better than the file input button and I'd rather do this
+	// than figure out how to style the button exactly like the rest of the
+	// links.
+	$("#openFileInput").on('click', function(e) {
+		e.preventDefault();
+		$("#fileInput:hidden").trigger('click');
+	});
+
+	$('#signInForm').on('submit', function(e) {
+		e.preventDefault(); // This prevents unnecessary page reload.
+		attemptLogin(document.getElementById('signInInputEmail').value,
+			document.getElementById('signInInputPassword').value);
+	});
+
+	$('#registerForm').on('submit', function(e) {
+		e.preventDefault(); // This prevents unnecessary page reload.
+		attemptRegister(document.getElementById('registerInputEmail').value,
+			document.getElementById('registerInputPassword').value);
 	});
 }
 
@@ -21,23 +39,34 @@ window.onload = function() {
 //
 //
 function attemptLogin(emailAddress, password) {
-	alert('Attempting login');
 	var attempt = login(emailAddress, password);
 	if (attempt) {
 		$('#signInModal').modal('hide');
+		signInCommon();
 	} else {
+		alert('Sign in failed!');
 	}
 }
 
 function attemptOpenFromServer() {
 	if (isLoggedIn()) {
+		$('#fileChooseModal').modal('show');
 	} else {
 		$('#signInModal').modal('show');
 	}
 }
 
+//
+//
+//
 function attemptRegister(emailAddress, password) {
-
+	var registerAttempt = register(emailAddress, password);
+	if (registerAttempt) {
+		$('#registerModal').modal('hide');
+		signInCommon();
+	} else {
+		alert('Registration failed!');
+	}
 }
 
 //
@@ -98,25 +127,27 @@ function isLoggedIn() {
 //
 //
 function login(emailAddress, password) {
-	alert('Logging in');
-	$.post('login.php', {email: emailAddress, password: password},
-		function(response) {
+	var success = false;
+	$.ajax({
+		type: 'POST',
+		url: 'login.php',
+		data: {email: emailAddress, password: password},
+		success: function(response) {
 			// Remove the NULL-terminator.
 			var trimmedResponse =
 				response.substring(0, response.length - 1);
 			if (trimmedResponse == "success") {
-				alert('Login success!');
 				// Set the login cookie.
 				// XXX Append instead of replace.
 				document.cookie =
 					'username=' + emailAddress + ';path=/;';
-				return true;
-			} else {
-				alert('Login failed!');
-				return false;
+				success = true;
 			}
-		}
-	);
+		},
+		dataType: 'text',
+		async: false
+	});
+	return success;
 }
 
 //
@@ -150,7 +181,6 @@ function readFile(evt) {
 		)(file);
 		reader.readAsText(file);
 	} else {
-		alert('No file!');
 	}
 }
 
@@ -159,24 +189,54 @@ function readFile(evt) {
 // Register the email address without any form of verification.
 //
 function register(emailAddress, password) {
-	$.post('register.php', {email: emailAddress, password: password},
-		function(response) {
+	var success = false;
+	$.ajax({
+		type: 'POST',
+		url: 'register.php',
+		data: {email: emailAddress, password: password},
+		success: function(response) {
 			// Remove the NULL-terminator.
 			var trimmedResponse =
 				response.substring(0, response.length - 1);
 			if (trimmedResponse == "success") {
-				alert('register success!');
 				// Set the login cookie.
 				// XXX Append instead of replace.
 				document.cookie =
 					'username=' + emailAddress + ';path=/;';
-				return true;
+				success = true;
 			} else {
-				alert('register failed!');
-				return false;
+				success = false;
 			}
 
-		}
-	);
+		},
+		dataType: 'text',
+		async: false
+	});
+	return success;
+}
+
+//
+// Performs UI updates for sign in.
+//
+function signInCommon() {
+	document.getElementById('signInInfo').innerHTML =
+		'Account (' + getCookie('username') + ') <span class="caret"></span>';
+	document.getElementById('signInButtonList').className = 'disabled';
+	$('#signInLink').prop('disabled', true);
+	document.getElementById('signOutButtonList').className = '';
+	$('#signOutLink').prop('disabled', false);
+}
+
+//
+// Signs out the user by deleting the username cookie and resetting the UI.
+//
+function signOut() {
+	document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+	document.getElementById('signInInfo').innerHTML =
+		'Account (Not signed in) <span class="caret"></span>';
+	document.getElementById('signInButtonList').className = '';
+	$('#signInLink').prop('disabled', false);
+	document.getElementById('signOutButtonList').className = 'disabled';
+	$('#signOutLink').prop('disabled', true);
 }
 

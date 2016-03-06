@@ -11,12 +11,12 @@ $queryResult = $db->querySingle("select password from user where email='$email';
 if ($queryResult) {
 	$loginResult = password_verify($password, $queryResult);
 	if ($loginResult) {
-		printf("Success!");
+		printf("success");
 	} else {
-		printf("Nope.");
+		printf("failure");
 	}
 } else {
-	printf("No account with those details exists.\n");
+	printf("failure");
 }
 $db->close();
 ?>

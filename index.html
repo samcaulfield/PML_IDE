@@ -89,16 +89,17 @@
 
 		<ul class="nav navbar-nav navbar-right">
 		<li class="dropdown">
-		<a id="logInInfo" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account (Not signed in) <span class="caret"></span></a>
+		<a id="signInInfo" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account (Not signed in) <span class="caret"></span></a>
 		<ul class="dropdown-menu">
-			<li id="signInButtonList"><a id="" data-toggle="modal" data-target="#signInModal" href="#">Sign in</a></li>
-			<li id="signOutButtonList" class="disabled"><a href="#">Sign out</a></li>
+			<li id="signInButtonList"><a id="signInLink" data-toggle="modal" data-target="#signInModal" href="#">Sign in</a></li>
+			<li id="signOutButtonList" class="disabled"><a d="signOutLink" onclick="signOut()">Sign out</a></li>
 		</ul>
 		</li>
 		</ul>
 	</div><!-- /.navbar-collapse -->
 	</div><!-- /.container-fluid -->
 </nav>
+
 <div>
 	<div id="textEditor"></div>
 	<div id="graphicalEditor"></div>
@@ -106,59 +107,61 @@
 
 <!-- Sign In Modal -->
 <div id="signInModal" class="modal fade" role="dialog">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal">&times;</button>
-	<h4 class="modal-title">Sign In</h4>
-</div>
-<div class="modal-body">
-	<form class="form-signin">
-	<h2 class="form-signin-heading">Sign in with a PML Studio account:</h2>
-	<label for="inputEmail" class="sr-only">Email address</label>
-	<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-	<label for="inputPassword" class="sr-only">Password</label>
-	<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-	<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="attemptLogin(document.getElementById('inputEmail').value, document.getElementById('inputPassword').value)">Sign in</button>
-	</form>
-	<a onclick="$('#signInModal').modal('hide'); $('#registerModal').modal('show');">Don't have an account?</a>
-</div>
-</div>
-</div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Sign In</h4>
+			</div>
+			<div class="modal-body">
+				<form id="signInForm" class="form-signin">
+					<h2 class="form-signin-heading">Sign in with a PML Studio account:</h2>
+					<label for="signInInputEmail" class="sr-only">Email address</label>
+					<input type="email" id="signInInputEmail" class="form-control" placeholder="Email address" required autofocus>
+					<label for="signInInputPassword" class="sr-only">Password</label>
+					<input type="password" id="signInInputPassword" class="form-control" placeholder="Password" required>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+				</form>
+				<a onclick="$('#signInModal').modal('hide'); $('#registerModal').modal('show');">Don't have an account?</a>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Register Modal -->
 <div id="registerModal" class="modal fade" role="dialog">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal">&times;</button>
-	<h4 class="modal-title">Register</h4>
-</div>
-<div class="modal-body">
-	<form class="form-signin">
-	<h2 class="form-signin-heading">Create a PML Studio account:</h2>
-	<label for="inputEmail" class="sr-only">Email address</label>
-	<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-	<label for="inputPassword" class="sr-only">Password</label>
-	<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-	<button class="btn btn-lg btn-primary btn-block" type="submit" onclick="register()">Register</button>
-	</form>
-</div>
-</div>
-</div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Register</h4>
+			</div>
+			<div class="modal-body">
+				<form id="registerForm" class="form-signin">
+					<h2 class="form-signin-heading">Create a PML Studio account:</h2>
+					<label for="registerInputEmail" class="sr-only">Email address</label>
+					<input type="email" id="registerInputEmail" class="form-control" placeholder="Email address" required autofocus>
+					<label for="registerInputPassword" class="sr-only">Password</label>
+					<input type="password" id="registerInputPassword" class="form-control" placeholder="Password" required>
+					<button class="btn btn-lg btn-primary btn-block" type="submit" id="registerSubmitButton">Register</button>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 
-<!-- Information Modal -->
-<div id="informationModal" class="modal fade" role="dialog">
-<div class="modal-dialog modal-sm">
-<div class="modal-content">
-<div class="modal-header">
-	<button type="button" class="close" data-dismiss="modal">&times;</button>
-	<h4 class="modal-title">Registration successful!</h4>
-</div>
-</div>
-</div>
+<!-- File Choose Modal -->
+<div id="fileChooseModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Choose a file</h4>
+			</div>
+			<div class="modal-body">
+			</div>
+		</div>
+	</div>
 </div>
 
 <script src="script.js"></script>
