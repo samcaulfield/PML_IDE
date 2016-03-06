@@ -9,6 +9,7 @@ Features:
 	- Syntax analysis
 	- File save & retrieve
 	- Authentication
+	- Third-party authentication
 	- Code editor
 	- Syntax highlighting
 	- Code completion (keywords and resources)
