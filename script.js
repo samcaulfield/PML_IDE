@@ -3,7 +3,6 @@ editor.getSession().setUseWorker(false);
 editor.getSession().setMode("ace/mode/pml");
 editor.getSession().setTabSize(8);
 editor.getSession().setUseSoftTabs(false);
-editor.setBehavioursEnabled(false);
 editor.focus();
 editor.setFontSize('12px');
 autoComplete(editor);
