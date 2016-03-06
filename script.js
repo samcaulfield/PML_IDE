@@ -97,7 +97,7 @@ function attemptOpenFromServer() {
 				}
 				if (resultList.length == 1) {
 					document.getElementById('fileOpenForm').innerHTML =
-						document.getElementById('fileOpenForm').innerHTML.concat("<p>No files to open</p>");
+						document.getElementById('fileOpenForm').innerHTML.concat("<p>There are no files saved on your account.</p>");
 				}
 			},
 			dataType: 'text',
