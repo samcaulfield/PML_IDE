@@ -1,11 +1,13 @@
 var editor = ace.edit("textEditor");
-editor.getSession().setMode("ace/mode/c_cpp");
+editor.getSession().setUseWorker(false);
+editor.getSession().setMode("ace/mode/pml");
 editor.getSession().setTabSize(8);
 editor.getSession().setUseSoftTabs(false);
 editor.setKeyboardHandler("ace/keyboard/vim");
 editor.setBehavioursEnabled(false);
 editor.focus();
 editor.setFontSize('12px');
+autoComplete(editor);
 
 window.onload = function() {
 	// XXX
@@ -130,6 +132,40 @@ function attemptSaveToServer() {
 	} else {
 		$('#signInModal').modal('show');
 	}
+}
+
+function autoComplete(editor)
+{
+	//For code completion
+	//Takes advantage of the open source library; ajaxorg.github.io
+	//Tell the editor to use it's autocompletion function
+	editor.setOptions({
+		enableBasicAutocompletion: true,
+		enableSnippets: true,
+		enableLiveAutocompletion: false
+	});
+	//PML keywords. Score (equal) given to likihood of being used.
+	editor.completers.push({
+	getCompletions: function (editor, session, pos, prefix, callback){
+		callback(null, [
+			{value: "process", score: 1000, meta: "keyword"},
+			{value: "action", score: 1000, meta: "keyword"},
+			{value: "branch", score: 1000, meta: "keyword"},
+			{value: "requires", score: 1000, meta: "keyword"},
+			{value: "provides", score: 1000, meta: "keyword"},
+			{value: "selection", score: 1000, meta: "keyword"},
+			{value: "agent", score: 1000, meta: "keyword"},
+			{value: "script", score: 1000, meta: "keyword"},
+			{value: "iteration", score: 1000, meta: "keyword"},
+			{value: "sequence", score: 1000, meta: "keyword"}
+		]);
+	}});
+	//Make sure the Autocompletion is called when user is typing
+	editor.commands.on("afterExec", function(e) {
+		if(e.command.name == "insertstring"&&/^[\w.]$/.test(e.args)) {
+			editor.execCommand("startAutocomplete");
+		}
+	});
 }
 
 //
