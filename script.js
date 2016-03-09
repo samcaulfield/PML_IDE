@@ -98,10 +98,12 @@ function attemptOpenFromServer() {
 //
 function attemptRegister(emailAddress, password) {
 	var registerAttempt = register(emailAddress, password);
-	if (registerAttempt) {
+	if (registerAttempt == "success") {
 		$('#registerModal').modal('hide');
 		signInCommon();
-	} else {
+	} else if (registerAttempt == "failure-registered") {
+		alert('That email is already registered!');
+	} else if (registerAttempt == "failure") {
 		alert('Registration failed!');
 	}
 }
@@ -283,7 +285,7 @@ function readFile(evt) {
 // Register the email address without any form of verification.
 //
 function register(emailAddress, password) {
-	var success = false;
+	var result;
 	$.ajax({
 		type: 'POST',
 		url: 'register.php',
@@ -297,16 +299,18 @@ function register(emailAddress, password) {
 				// XXX Append instead of replace.
 				document.cookie =
 					'username=' + emailAddress + ';path=/;';
-				success = true;
+				result = "success";
+			} else if (trimmedResponse == "failure-registered") {
+				result = "failure-registered";
 			} else {
-				success = false;
+				result = "failure";
 			}
 
 		},
 		dataType: 'text',
 		async: false
 	});
-	return success;
+	return result;
 }
 
 //
