@@ -1,10 +1,14 @@
 A web-based IDE for PML
 
+
 Contents:
+
 1. Features
-2. Setup
+2. Installation
+
  
 Features:
+
 	- File upload
 	- Syntax analysis
 	- File save & retrieve
@@ -15,20 +19,26 @@ Features:
 	- Editor keybinding emulation
 	- Error highlighting
 
-Setup:
+
+Installation:
+
 These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
-Ensure the required packages are installed:
+Ensure the required dependencies are installed:
+
 	./install_dependencies.sh
 
 Choose a project name and deploy the IDE:
-	sudo ./install.sh projectName
+
+	sudo ./install.sh <project name>
 
 Check that the installation went OK:
-	./verify_installation.sh projectName
 
-Access the IDE by visiting localhost/projectName
+	./verify_installation.sh <project name>
+
+Access the IDE by visiting localhost/<project name> in a web browser.
 
 Remove the IDE at any time by running:
-	sudo ./clean.sh projectName
+
+	sudo ./clean.sh <project name>
 
