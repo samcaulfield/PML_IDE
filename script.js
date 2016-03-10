@@ -340,6 +340,10 @@ function signInCommon() {
 	$('#signInLink').prop('disabled', true);
 	document.getElementById('signOutButtonList').className = '';
 	$('#signOutLink').prop('disabled', false);
+
+	// Clear the contents of the sign in and registration forms.
+	document.getElementById("signInForm").reset();
+	document.getElementById("registerForm").reset();
 }
 
 //
