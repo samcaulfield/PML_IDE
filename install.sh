@@ -14,6 +14,15 @@ fi
 projectName=$1
 projectPath=/var/www/html/$projectName
 
+if [ -d $projectPath ]; then
+	echo "Error. The project directory already exists at $projectPath"
+	echo ""
+	echo "\
+Are you reinstalling? If so, remove the current installation using clean.sh\
+then try again."
+	exit 1
+fi
+
 mkdir $projectPath
 # HTML.
 cp index.html $projectPath
