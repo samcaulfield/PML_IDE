@@ -11,9 +11,6 @@ projectPath=/var/www/html/$projectName
 
 if [ ! -f $projectPath/index.html ] ||
 	[ ! -f $projectPath/user.db ] ||
-	[ ! -f $projectPath/menuStyle.css ] ||
-	[ ! -f $projectPath/modalStyle.css ] ||
-	[ ! -f $projectPath/StyleSheet.css ] ||
 	[ ! -f $projectPath/check.php ] ||
 	[ ! -f $projectPath/login.php ] ||
 	[ ! -f $projectPath/register.php ] ||

@@ -26,10 +26,6 @@ fi
 mkdir $projectPath
 # HTML.
 cp index.html $projectPath
-# CSS.
-cp menuStyle.css $projectPath
-cp modalStyle.css $projectPath
-cp StyleSheet.css $projectPath
 # JS.
 cp script.js $projectPath
 # PHP.
