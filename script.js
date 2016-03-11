@@ -1,5 +1,6 @@
 var editor = ace.edit("textEditor");
 editor.getSession().setUseWorker(false);
+editor.setTheme("ace/theme/chrome");
 editor.getSession().setMode("ace/mode/pml");
 editor.getSession().setTabSize(8);
 editor.getSession().setUseSoftTabs(false);
