@@ -11,12 +11,12 @@ projectPath=/var/www/html/$projectName
 
 if [ ! -f $projectPath/index.html ] ||
 	[ ! -f $projectPath/user.db ] ||
-	[ ! -f $projectPath/check.php ] ||
-	[ ! -f $projectPath/login.php ] ||
-	[ ! -f $projectPath/register.php ] ||
-	[ ! -f $projectPath/retrieve.php ] ||
-	[ ! -f $projectPath/retrieveFile.php ] ||
-	[ ! -f $projectPath/uploadFile.php ] ||
+	[ ! -f $projectPath/php/check.php ] ||
+	[ ! -f $projectPath/php/login.php ] ||
+	[ ! -f $projectPath/php/register.php ] ||
+	[ ! -f $projectPath/php/retrieve.php ] ||
+	[ ! -f $projectPath/php/retrieveFile.php ] ||
+	[ ! -f $projectPath/php/uploadFile.php ] ||
 	[ ! -f $projectPath/script.js ] ||
 	[ ! -d $projectPath/userdata/ ] ||
 	[ ! -d $projectPath/thirdparty/ ]; then

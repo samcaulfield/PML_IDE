@@ -39,7 +39,7 @@ window.onload = function() {
 		e.preventDefault(); // This prevents unnecessary page reload.
 		$.ajax({
 			type: 'POST',
-			url: 'uploadFile.php',
+			url: 'php/uploadFile.php',
 			data: {email: getCookie('username'),
 				fileName: document.getElementById('fileSaveNameInput').value,
 				fileContents: editor.getValue()},
@@ -70,7 +70,7 @@ function attemptOpenFromServer() {
 		// Generate the inner HTML of the form.
 		$.ajax({
 			type: 'POST',
-			url: 'retrieve.php',
+			url: 'php/retrieve.php',
 			data: {email: getCookie('username')},
 			success: function(response) {
 				var resultList = response.split(',');
@@ -160,7 +160,7 @@ function autoComplete(editor)
 function error_annot() {
 	var arrayOfAnnos = [];
 	$.post(
-		"check.php",
+		"php/check.php",
 		{value: editor.getSession().getValue()},
 		function(data, status) {
 			var arrr = data.split("/tmp/");
@@ -215,7 +215,7 @@ function login(emailAddress, password) {
 	var success = false;
 	$.ajax({
 		type: 'POST',
-		url: 'login.php',
+		url: 'php/login.php',
 		data: {email: emailAddress, password: password},
 		success: function(response) {
 			// Remove the NULL-terminator.
@@ -289,7 +289,7 @@ function register(emailAddress, password) {
 	var result;
 	$.ajax({
 		type: 'POST',
-		url: 'register.php',
+		url: 'php/register.php',
 		data: {email: emailAddress, password: password},
 		success: function(response) {
 			// Remove the NULL-terminator.
@@ -320,7 +320,7 @@ function register(emailAddress, password) {
 function retrieveFile(fileName) {
 	$.ajax({
 		type: 'POST',
-		url: 'retrieveFile.php',
+		url: 'php/retrieveFile.php',
 		data: {email: getCookie('username'), fileName: fileName},
 		success: function(response) {
 			editor.setValue(response);

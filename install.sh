@@ -29,12 +29,7 @@ cp index.html $projectPath
 # JS.
 cp script.js $projectPath
 # PHP.
-cp check.php $projectPath
-cp login.php $projectPath
-cp register.php $projectPath
-cp uploadFile.php $projectPath
-cp retrieve.php $projectPath
-cp retrieveFile.php $projectPath
+cp -R php $projectPath
 # Other.
 cp -R thirdparty/ $projectPath
 
