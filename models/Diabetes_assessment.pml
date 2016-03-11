@@ -19,6 +19,3 @@ process Diabetes_assessment {
         }
 }
 
-
-
-
