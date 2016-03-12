@@ -6,11 +6,6 @@ if [ $# -eq 0 ]; then
 	exit 1
 fi
 
-if [[ $EUID -ne 0 ]]; then
-	echo "This script must be run as root."
-	exit 1
-fi
-
 projectName=$1
 projectPath=/var/www/html/$projectName
 
@@ -23,19 +18,19 @@ then try again."
 	exit 1
 fi
 
-mkdir $projectPath
+sudo mkdir $projectPath
 # HTML.
-cp index.html $projectPath
+sudo cp index.html $projectPath
 # JS.
-cp script.js $projectPath
+sudo cp -R js $projectPath
 # PHP.
-cp -R php $projectPath
+sudo cp -R php $projectPath
 # Other.
-cp -R thirdparty/ $projectPath
+sudo cp -R thirdparty $projectPath
 
 # Create the database.
-touch $projectPath/user.db
-mkdir $projectPath/userdata
+sudo touch $projectPath/user.db
+sudo mkdir $projectPath/userdata
 # Make it writeable to the server's PHP scripts.
 sudo chown -R www-data $projectPath
 

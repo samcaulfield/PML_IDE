@@ -17,7 +17,7 @@ if [ ! -f $projectPath/index.html ] ||
 	[ ! -f $projectPath/php/retrieve.php ] ||
 	[ ! -f $projectPath/php/retrieveFile.php ] ||
 	[ ! -f $projectPath/php/uploadFile.php ] ||
-	[ ! -f $projectPath/script.js ] ||
+	[ ! -f $projectPath/js/script.js ] ||
 	[ ! -d $projectPath/userdata/ ] ||
 	[ ! -d $projectPath/thirdparty/ ]; then
 

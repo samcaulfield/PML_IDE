@@ -83,7 +83,7 @@ Ensure the required dependencies are installed:
 
 Choose a project name and deploy the IDE:
 
-	sudo ./install.sh <project name>
+	./install.sh <project name>
 
 Check that the installation went OK:
 
