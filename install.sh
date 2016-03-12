@@ -36,8 +36,6 @@ cp -R thirdparty/ $projectPath
 # Create the database.
 touch $projectPath/user.db
 mkdir $projectPath/userdata
-# Make it writeable to the server's PHP scripts (all users).
-chmod a+w $projectPath/user.db
-chmod a+w $projectPath/userdata
-chmod +777 $projectPath
+# Make it writeable to the server's PHP scripts.
+sudo chown -R www-data $projectPath
 
