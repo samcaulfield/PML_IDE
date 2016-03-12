@@ -7,7 +7,7 @@ Contents:
 2. Installation
 
  
-Features:
+1.Features :
 
 	- File upload
 	Click "File > Open from disk". In the system-specific file explorer
@@ -39,6 +39,7 @@ Features:
 	sign out, click "Account (email address) > Sign out".
 
 	- File save & retrieve
+        This ensures entered/uploaded code is optionally saved for later retrieval.
 	Sign in and click "File > Save to server". Enter a file name (file
 	extension optional) and click "Save". The file is now saved on the
 	server and is private to your account. To retrieve a file, sign in and
@@ -57,6 +58,7 @@ Features:
 	order to improve readability.
 
 	- Code completion (keywords and resources)
+	This refers to PML specific code completion for PML keywords.
 	Whilst typing in the code editor you may be prompted with a list of
 	strings under the cursor. Use the up/down arrow keys to select an entry
 	in the list and tab to select the highlighted entry.
@@ -68,12 +70,13 @@ Features:
 	to close the preferences menu.
 
 	- Error highlighting
+	This ensures all the syntax errors are highlighted.
 	Enter some PML into the editor. Click "Tools > Check syntax" to receive
 	warnings and error messages if there is a problem with your model. These
 	messages are displayed to the left of the line numbers in the editor.
 
 
-Installation:
+2.Installation:
 
 These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
