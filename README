@@ -3,17 +3,18 @@ A web-based IDE for PML
 
 Contents:
 
-1. Features
-2. Installation
+1. Features And Execution.
+2. Installation.
 
  
-1.Features :
+1.Features And Execution :
 
 	- File upload
 	Click "File > Open from disk". In the system-specific file explorer
 	choose the file you wish to open in the editor. The file will be copied
 	into PML Studio and can be edited. This does not modify the file on your
-	system.
+	system.This functionality enables the user to upload a file containing PML 
+        code which displays in the editor. 
 
 	- Syntax analysis
 	Enter some PML into the editor. Click "Tools > Check syntax" to receive
@@ -65,7 +66,7 @@ Contents:
 
 	- Editor keybinding emulation
 	Click "Edit > Preferences" to open the editor's settings menu. The
-	"Keyboard Handler" dropdown list contains entries for several popular
+	"Keyboard Handler" drop down list contains entries for several popular
 	keyboard entry modes. Select one and hit Esc or click on the editor area
 	to close the preferences menu.
 
