@@ -83,19 +83,19 @@ These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
 Ensure the required dependencies are installed:
 
-	./install_dependencies.sh
+	make install-deps
 
 Choose a project name and deploy the IDE:
 
-	./install.sh <project name>
+	make install ProjectName=<project name>
 
 Check that the installation went OK:
 
-	./verify_installation.sh <project name>
+	make smoke-test ProjectName=<project name>
 
 Access the IDE by visiting localhost/<project name> in a web browser.
 
 Remove the IDE at any time by running:
 
-	sudo ./clean.sh <project name>
+	make clean ProjectName=<project name>
 
