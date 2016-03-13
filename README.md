@@ -16,7 +16,7 @@ These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
 * Choose a project name and deploy the IDE:
 
-	`make install ProjectName=project name`
+	`make install ProjectName=<project name>`
 
 * Check that the installation went OK:
 
