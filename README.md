@@ -1,4 +1,4 @@
-A web-based IDE for PML
+## A web-based IDE for PML
 
 
 Contents:
@@ -6,44 +6,45 @@ Contents:
 1. Installation.
 2. Features And Execution.
 
-1.Installation:
+### 1.Installation:
 
 These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
 * Ensure the required dependencies are installed:
 
-	make install-deps
+	*make install-deps*
 
 * Choose a project name and deploy the IDE:
 
-	make install ProjectName=<project name>
+	*make install ProjectName=<project name>*
 
 * Check that the installation went OK:
 
-	make smoke-test ProjectName=<project name>
+	*make smoke-test ProjectName=<project name>*
 
-* Access the IDE by visiting localhost/<project name> in a web browser.
+* Access the IDE by visiting *localhost/<project name>* in a web browser.
 
 * Remove the IDE at any time by running:
 
-	make clean ProjectName=<project name>
+	*make clean ProjectName=<project name>*
 
 
-2.Features And Execution :
+### 2.Features And Execution :
 
-	- File upload
-	Click "File > Open from disk". In the system-specific file explorer
+	**File upload**
+	- Click "File > Open from disk". 
+	- In the system-specific file explorer
 	choose the file you wish to open in the editor. The file will be copied
 	into PML Studio and can be edited. This does not modify the file on your
 	system.This functionality enables the user to upload a file containing PML 
         code which displays in the editor. 
 
-	- Syntax analysis
+	__Syntax analysis__
 	Enter some PML into the editor. Click "Tools > Check syntax" to receive
 	warning and error messages if there is a problem with your model. These
 	messages are displayed to the left of the line numbers in the editor.
 
-	- Authentication
+	**Authentication**
 	Register an account to make use of features such as file save &
 	retrieve. To do this, click "Account (Not signed in) > Sign in". Click
 	"Don't have an account?". Enter an email address and password and click
@@ -54,7 +55,7 @@ These instructions are for installing this software on Ubuntu 14.04 64-bit.
 	in on attempting to use any account-specific features. To sign out,
 	click "Account (email address) > Sign out".
 
-	- Third-party authentication
+	**Third-party authentication**
 	PML Studio supports sign in using a Google account. Click
 	"Account (Not signed in) > Sign in". Click the button with the Google
 	logo that says "Sign in". Choose a Google account to sign in with. You
