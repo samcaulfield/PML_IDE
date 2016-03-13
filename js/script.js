@@ -9,9 +9,6 @@ editor.setFontSize('14px');
 autoComplete(editor);
 
 window.onload = function() {
-	// XXX
-	document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
-
 	document.getElementById("fileInput").addEventListener("change", readFile, false);
 
 	// A link is used to trigger the file input because IMO the link style
