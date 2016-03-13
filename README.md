@@ -41,7 +41,8 @@ PML code which displays in the editor.
 **Syntax analysis**
 * Enter some PML into the editor. 
 * Click `Tools > Check syntax` to receive warning and error messages if there is a 
-problem with your model. These messages are displayed to the left of the line numbers in the editor.
+problem with your model. 
+These messages are displayed to the left of the line numbers in the editor.
 
 **Authentication**
 * Click `Account (Not signed in) > Sign in` 
@@ -82,7 +83,8 @@ default when PML Studio is loaded.
 
 **Syntax highlighting**
 
-Enter PML into the editor and keywords and brackets will be coloured in order to improve readability.
+Enter PML into the editor and keywords and brackets will be coloured 
+in order to improve readability.
 
 **Code completion (keywords and resources)**
 
@@ -101,7 +103,8 @@ drop down list contains entries for several popular keyboard entry modes.
 This ensures all the syntax errors are highlighted.
 * Enter some PML into the editor. 
 * Click `Tools > Check syntax` to receive warnings and error messages if there is a 
-problem with your model. These messages are displayed to the left of the line numbers in the editor.
+problem with your model. 
+These messages are displayed to the left of the line numbers in the editor.
 
 
 
