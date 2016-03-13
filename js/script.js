@@ -5,7 +5,7 @@ editor.getSession().setMode("ace/mode/pml");
 editor.getSession().setTabSize(8);
 editor.getSession().setUseSoftTabs(false);
 editor.focus();
-editor.setFontSize('12px');
+editor.setFontSize('14px');
 autoComplete(editor);
 
 window.onload = function() {
