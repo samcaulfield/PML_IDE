@@ -29,24 +29,33 @@ These instructions are for installing this software on Ubuntu 14.04 64-bit.
 	`make clean ProjectName=<project name>`
 
 
-### 2. Features And Execution :
+### 2. Features And Execution:
 
-**File upload**
+**File upload & download**
+
+Open a file from your system in the editor.
 * Click `File > Open from disk`
 * In the system-specific file explorer choose the file you wish to open in the editor.
 The file will be copied into PML Studio and can be edited. This does not modify the 
-file on your system. This functionality enables the user to upload a file containing 
-PML code which displays in the editor. 
+file on your system.
+* To download a file, Click `File > Save to disk`. If your browser prompts you with a choice
+to open or save the file, select "save". The default file name is "file.pml". The
+browser will save the file in the directory normally used for downloads.
+
 
 **Syntax analysis**
+
+Highlight errors in PML code.
 * Enter some PML into the editor. 
 * Click `Tools > Check syntax` to receive warning and error messages if there is a 
 problem with your model. 
 These messages are displayed to the left of the line numbers in the editor.
 
 **Authentication**
+
+Sign in to use advanced features.
 * Click `Account (Not signed in) > Sign in` 
-* Click `Don't have an account?`. 
+* Click `Don't have an account?`
 * Enter an email address and password and click `Register`. If registration was 
 successful you will be automatically signed in. 
 * To just sign in, click `Account (Not signed in) > Sign in`
@@ -66,19 +75,14 @@ to PML Studio with this account.
 
 **File save & retrieve**
 
-This ensures entered/uploaded code is optionally saved for later retrieval.
+Save the editor contents online for later retrieval.
 * Sign in and click `File > Save to server`
 * Enter a file name (file extension optional) and click `Save` The file is now 
-saved on the server and is private to your account. 
+saved on the server under your username. 
 * To retrieve a file, sign in and click `File > Open from server`. The files saved to
-your account will be listed. Click on the name of the file to open it in the editor. 
-If there are no files saved to your account, the message
-`There are no files saved on your account` will be displayed.
-There is also an option to save existing file to disk.
-* After Sign in, click `File > Save to disk`. A dialog would appear giving the the option to open
-file.pml. This is a standard feature in firefox. 
-* You will be viewed with options to open or save file. The contents of your pml file will automatically download and be saved onto the desktop. 
-*To open the file saved to disk, the file upload function can be executed. 
+your account will be listed.
+* Click on the name of the file to open it in the editor.  If there are no files
+saved to your account, the message `There are no files saved on your account` will be displayed.
 
 **Code editor**
 
@@ -93,15 +97,15 @@ in order to improve readability.
 
 **Code completion (keywords and resources)**
 
-This refers to PML specific code completion for PML keywords. Whilst typing in the code
-editor you may be prompted with a list of
+This refers to PML specific code completion for PML keywords and resources.
+Whilst typing in the code editor you may be prompted with a list of
 strings under the cursor. Use the up/down arrow keys to select an entry
 in the list and tab to select the highlighted entry.
 
 **Editor keybinding emulation**
 * Click `Edit > Preferences` to open the editor's settings menu. The "Keyboard Handler"
 drop down list contains entries for several popular keyboard entry modes. 
-* Select one and hit Esc or click on the editor area to close the preferences menu.
+* Select one and hit Escape or click on the editor area to close the preferences menu.
 
 **Error highlighting**
 
