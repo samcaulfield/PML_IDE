@@ -6,7 +6,7 @@ Contents:
 1. Installation.
 2. Features And Execution.
 
-### 1.Installation:
+### 1. Installation:
 
 These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
@@ -29,7 +29,7 @@ These instructions are for installing this software on Ubuntu 14.04 64-bit.
 	`make clean ProjectName=<project name>`
 
 
-### 2.Features And Execution :
+### 2. Features And Execution :
 
 **File upload**
 * Click `File > Open from disk`
