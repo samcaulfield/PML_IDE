@@ -74,6 +74,11 @@ saved on the server and is private to your account.
 your account will be listed. Click on the name of the file to open it in the editor. 
 If there are no files saved to your account, the message
 `There are no files saved on your account` will be displayed.
+There is also an option to save existing file to disk.
+* After Sign in, click `File > Save to disk`. A dialog would appear giving the the option to open
+file.pml. This is a standard feature in firefox. 
+* You will be viewed with options to open or save file. The contents of your pml file will automatically download and be saved onto the desktop. 
+*To open the file saved to disk, the file upload function can be executed. 
 
 **Code editor**
 
