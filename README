@@ -3,11 +3,33 @@ A web-based IDE for PML
 
 Contents:
 
-1. Features And Execution.
-2. Installation.
+1. Installation.
+2. Features And Execution.
 
- 
-1.Features And Execution :
+1.Installation:
+
+These instructions are for installing this software on Ubuntu 14.04 64-bit.
+
+* Ensure the required dependencies are installed:
+
+	make install-deps
+
+* Choose a project name and deploy the IDE:
+
+	make install ProjectName=<project name>
+
+* Check that the installation went OK:
+
+	make smoke-test ProjectName=<project name>
+
+* Access the IDE by visiting localhost/<project name> in a web browser.
+
+* Remove the IDE at any time by running:
+
+	make clean ProjectName=<project name>
+
+
+2.Features And Execution :
 
 	- File upload
 	Click "File > Open from disk". In the system-specific file explorer
@@ -77,25 +99,4 @@ Contents:
 	messages are displayed to the left of the line numbers in the editor.
 
 
-2.Installation:
-
-These instructions are for installing this software on Ubuntu 14.04 64-bit.
-
-Ensure the required dependencies are installed:
-
-	make install-deps
-
-Choose a project name and deploy the IDE:
-
-	make install ProjectName=<project name>
-
-Check that the installation went OK:
-
-	make smoke-test ProjectName=<project name>
-
-Access the IDE by visiting localhost/<project name> in a web browser.
-
-Remove the IDE at any time by running:
-
-	make clean ProjectName=<project name>
 
