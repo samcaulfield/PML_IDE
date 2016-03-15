@@ -7,6 +7,8 @@ file_put_contents($pmlTempFile, $_POST["value"]);
 $graphvizTempFile = tempnam("/tmp", "pml-studio");
 file_put_contents($graphvizTempFile, shell_exec("../thirdparty/traverse/traverse $pmlTempFile"));
 
+// The second line in the file causes the filename to be displayed in the image,
+// looks messy when the filename is a tempfile generated here, remove the name.
 $tempFile = tempnam(".", "pml-studio");
 shell_exec("sed '2d' $graphvizTempFile > $tempFile && mv $tempFile $graphvizTempFile");
 
