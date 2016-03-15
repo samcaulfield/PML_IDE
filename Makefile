@@ -23,6 +23,7 @@ endif
 	sudo cp -R thirdparty $(ProjectPath)
 	sudo touch $(ProjectPath)/user.db
 	sudo mkdir $(ProjectPath)/userdata
+	sudo mkdir $(ProjectPath)/images
 	sudo chown -R www-data $(ProjectPath)
 
 install-deps:
@@ -32,8 +33,9 @@ install-deps:
 		flex libreadline6-dev libncurses-dev; \
 		if [ -d peos ]; then \
 			cd peos/pml/ && make && cp check/pmlcheck \
-			../../thirdparty/pmlcheck/pmlcheck; \
-		fi \
+			../../thirdparty/pmlcheck/pmlcheck && cd ../..; \
+		fi; \
+		cp peos/pml/graph/traverse thirdparty/traverse; \
 	fi; \
 	sudo apt-get install apache2 php5 php5-sqlite
 

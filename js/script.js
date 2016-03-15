@@ -361,3 +361,36 @@ function signOut() {
 	$('#signOutLink').prop('disabled', true);
 }
 
+//
+// Display a visualisation of the PML in the graphical window.
+//
+function visualise() {
+	//
+	// 0: Ensure the syntax is correct.
+	//
+	// TODO
+
+	//
+	// 1: Generate a PNG image of the PML.
+	//
+	var imageName;
+	$.ajax({
+		type: 'POST',
+		url: 'php/generatePNG.php',
+		data: {
+			value: editor.getValue()
+		},
+		success: function(response) {
+			imageName = response;
+		},
+		dataType: 'text',
+		async: false
+	});
+
+
+	//
+	// 2: Display it in the div.
+	//
+	document.getElementById('graphicalEditor').innerHTML = '<img src="' + imageName + '">';
+}
+
