@@ -7,6 +7,9 @@ file_put_contents($pmlTempFile, $_POST["value"]);
 $graphvizTempFile = tempnam("/tmp", "pml-studio");
 file_put_contents($graphvizTempFile, shell_exec("../thirdparty/traverse/traverse $pmlTempFile"));
 
+$tempFile = tempnam(".", "pml-studio");
+shell_exec("sed '2d' $graphvizTempFile > $tempFile && mv $tempFile $graphvizTempFile");
+
 // Generate the image.
 $pngTempFile = tempnam("../images", "pml-studio");
 file_put_contents($pngTempFile, shell_exec("dot -Tpng $graphvizTempFile"));
