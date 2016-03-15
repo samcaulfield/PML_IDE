@@ -10,7 +10,7 @@ ifndef ProjectName
 endif
 	sudo rm -rf $(ProjectPath)
 
-install:
+install: install-deps
 ifndef ProjectName
 	$(error ProjectName is not set)
 endif
