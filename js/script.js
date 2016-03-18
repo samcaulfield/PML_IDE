@@ -7,6 +7,10 @@ editor.getSession().setUseSoftTabs(false);
 editor.focus();
 editor.setFontSize('14px');
 autoComplete(editor);
+var arrayOfAnnos = [];
+var currentWarningShowing = 0;
+var allWarningRows = [];
+var errorNotification = false;
 
 window.onload = function() {
 	document.getElementById("fileInput").addEventListener("change", readFile, false);
@@ -155,7 +159,9 @@ function autoComplete(editor)
 // Populate the editor's gutter with warnings and errors returned by pmlcheck.
 //
 function error_annot() {
-	var arrayOfAnnos = [];
+	arrayOfAnnos = [];
+	allWarningRows = [];
+	errorNotification = false;
 	$.post(
 		"php/check.php",
 		{value: editor.getSession().getValue()},
@@ -171,6 +177,7 @@ function error_annot() {
 				var type = "warning";
 				if(error_words_arr[2] == "error") {
 					type = "error";
+					errorNotification = true;
 				}
 				var gutterAnno = {
 					row: text_to_get-1,	
@@ -178,11 +185,98 @@ function error_annot() {
 					text: error_text,
 					type: type
 				}
+				allWarningRows.push(parseInt(text_to_get));
 				arrayOfAnnos.push(gutterAnno);
 			}
 			editor.getSession().setAnnotations(arrayOfAnnos);
+			allWarningRows.sort(sortNumber);
+			moveToFirstWarning();	//?
 		}
 	);
+	moveToFirstWarning();
+}
+
+        function generate(type, text) {
+
+            var n = noty({
+                text        : text,
+                type        : type,
+                dismissQueue: true,
+                layout      : 'topCenter',
+                closeWith   : ['button'],
+                theme       : 'relax',
+                maxVisible  : 200,
+		killer	    : true,
+                animation   : {
+                    open  : {height: 'toggle'},//'animated bounceInLeft',
+                    close : {height: 'toggle'},//'animated bounceOutLeft',
+                    easing: 'swing',
+                    speed : 500
+                }
+            });
+            console.log('html: ' + n.options.id);
+        }
+
+
+function generateAll() {
+	    if(!errorNotification){
+            generate('warning', 'Total warnings: ' + arrayOfAnnos.length + '.   Showing warning #'+ (currentWarningShowing + 1) + " of " + arrayOfAnnos.length +"      "+ '<a href="#" onclick="moveToPrevious();return false;">previous</a> '+  '<a href="#" onclick="moveToNext();return false;">next</a> ');
+	}
+	else{
+	    generate('error', 'ERROR ' + '.   Showing error #'+ (currentWarningShowing + 1) + " : Syntax error at line:  " + (arrayOfAnnos[0].row+1));
+        }
+}
+
+
+
+function sortNumber(a,b) {
+    return a - b;
+}
+
+
+function moveToNext(){
+	if(currentWarningShowing < arrayOfAnnos.length-1){
+	var nextWarn = currentWarningShowing+1;}
+	else{
+	var nextWarn = currentWarningShowing;		
+	}
+	var nextRow = allWarningRows[nextWarn];
+	editor.resize(true);
+
+	editor.scrollToLine(nextRow, true, true, function () {});
+
+	editor.gotoLine(nextRow,10, true);
+	currentWarningShowing = nextWarn;
+	generateAll();
+}
+
+function moveToPrevious(){
+	if(currentWarningShowing>0){
+	var prevWarn = currentWarningShowing-1;
+}
+	else{
+	var prevWarn = currentWarningShowing;}
+	var prevRow = allWarningRows[prevWarn];
+	
+	editor.resize(true);
+
+	editor.scrollToLine(prevRow, true, true, function () {});
+
+	editor.gotoLine(prevRow,10, true);
+	currentWarningShowing = prevWarn;
+	generateAll();
+}
+
+function moveToFirstWarning(){
+
+	var firstWarningRowNumber = allWarningRows[0];
+	editor.resize(true);
+
+	editor.scrollToLine(firstWarningRowNumber, true, true, function () {});
+
+	editor.gotoLine(firstWarningRowNumber,10, true);
+	currentWarningShowing = 0;
+	generateAll();
 }
 
 //
