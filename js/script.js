@@ -488,3 +488,87 @@ function visualise() {
 	document.getElementById('graphicalEditor').innerHTML = '<img src="' + imageName + '">';
 }
 
+//List of Keyboard Shortcuts
+//=========================
+
+//Save to disk
+editor.commands.addCommand({
+name: "SaveToDisk",
+bindKey: {win: "Ctrl-s", mac:"Command-s"},
+exec: function(editor)
+{
+	if(editor.getKeyboardHandler() != "ace/keyboard/emac")
+	promptToSave();	
+}
+});
+
+//Save To Disk Emac
+editor.commands.addCommand({
+name: "SaveToDiskEmacs",
+bindKey: {win: "Ctrl-s-x", mac:"Command-s-x"},
+exec: function(editor)
+{
+	if(editor.getKeyboardHandler() == "ace/keyboard/emac")
+	{
+        	promptToSave();
+	}
+}
+});
+
+/*Open From Disk
+editor.commands.addCommand({
+name: "OpenFromDisk",
+bindKey: {win: "Ctrl-o", mac:"Command-o"},
+exec: function(editor)
+{
+	if(editor.getKeyboardHandler() != "ace/keyboard/emac")
+	{
+		$("#openFileInput")
+        	e.preventDefault();
+	}
+}
+});*/
+
+//Open From Disk Emac
+/*editor.commands.addCommand({
+name: "OpenFromDiskEmacs",
+bindKey: {win: "Ctrl-f-x", mac:"Command-f-x"},
+exec: function(editor)
+{
+	if(editor.getKeyboardHandler() == "ace/keyboard/emac")
+	{
+        	$("#openFileInput")
+        	e.preventDefault();
+	}
+}
+});*/
+
+//Save To Server
+editor.commands.addCommand({
+name: "SaveToServer",
+bindKey: {win:"Ctrl-Shift-s", mac:"Command-Shift-s"},
+exec: function(editor)
+{
+	attemptSaveToServer();
+}
+});
+
+//Open From Server
+editor.commands.addCommand({
+name: "OpenFromServer",
+bindKey: {win:"Ctrl-Shift-o", mac:"Command-Shift-o"},
+exec:function(editor)
+{
+	attemptOpenFromServer();
+}
+});
+
+//Check PML Syntax
+editor.commands.addCommand({
+name: "CheckSyntax",
+bindKey:{win:"Ctrl-r", mac: "Command-r"},
+exec: function(editor)
+{
+	error_annot();
+}
+});
