@@ -13,6 +13,10 @@ var allWarningRows = [];
 var errorNotification = false;
 
 window.onload = function() {
+	if (isLoggedIn()) {
+		signInCommon();
+	}
+
 	document.getElementById("fileInput").addEventListener("change", readFile, false);
 
 	// A link is used to trigger the file input because IMO the link style
