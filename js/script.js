@@ -51,6 +51,11 @@ window.onload = function() {
 		});
 		$('#fileSaveToServerModal').modal('hide');
 	});
+
+	$('#fileSaveToDiskForm').on('submit', function(e) {
+		e.preventDefault();
+		saveFile(document.getElementById('fileSaveToDiskNameInput').value);
+	});
 }
 
 //
@@ -349,7 +354,14 @@ function onSignIn(googleUser) {
 //
 //
 function promptToSave() {
-	download(editor.getValue(), 'file.pml', 'text/plain');
+	$('#fileSaveToDiskModal').modal('show');
+}
+
+//
+//
+//
+function saveFile(name) {
+	download(editor.getValue(), name, 'text/plain');
 }
 
 //
