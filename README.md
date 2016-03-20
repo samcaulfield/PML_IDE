@@ -38,9 +38,12 @@ Open a file from your system in the editor.
 * In the system-specific file explorer choose the file you wish to open in the editor.
 The file will be copied into PML Studio and can be edited. This does not modify the 
 file on your system.
-* To download a file, Click `File > Save to disk`. If your browser prompts you with a choice
-to open or save the file, select "save". The default file name is "file.pml". The
-browser will save the file in the directory normally used for downloads.
+* To download a file, Click `File > Save to disk`. You will be prompted with a
+dialog for entering the file name. Upon submitting the file name your browser
+may present you with more dialogs, follow them as is the case for your browser.
+If your browser prompts you with a choice to open or save the file, select
+"save". The browser will save the file in the directory normally used for
+downloads. Alternatively, press Ctrl-S in Ace mode or C-x C-s in Emacs mode.
 
 
 **Syntax analysis**
@@ -50,6 +53,10 @@ Highlight errors in PML code.
 * Click `Tools > Check syntax` to receive warning and error messages if there is a 
 problem with your model. 
 These messages are displayed to the left of the line numbers in the editor.
+The editor view will be taken to the first incidence of an error.
+* A popup will appear showing the total number of errors as well as the
+currently highlighted error. The popup has buttons for viewing the next and
+previous error.
 
 **Authentication**
 
