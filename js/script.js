@@ -59,6 +59,7 @@ window.onload = function() {
 	$('#fileSaveToDiskForm').on('submit', function(e) {
 		e.preventDefault();
 		saveFile(document.getElementById('fileSaveToDiskNameInput').value);
+		$("#fileSaveToDiskModal").modal("hide");
 	});
 }
 
