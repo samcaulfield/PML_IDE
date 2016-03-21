@@ -37,6 +37,10 @@ var listHead = null;
 
 var canvas = document.getElementById("canvas");
 var c = canvas.getContext("2d");
+canvas.style.width='100%';
+canvas.style.height='100%';
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Mouse information
@@ -82,7 +86,7 @@ var selectionColourB = "#BB55EE";
 var selectionBorderColour = "#000000";
 
 var nodeWidth = 50;
-var gapBetweenNodes = 15;
+var gapBetweenNodes = 20;
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Input control, event handlers etc.
