@@ -164,6 +164,59 @@ function autoComplete(editor)
 		}
 	});
 }
+// vis.js 
+// Takes DOT output from traverse and imports it to visjs Network graph and displays it in the 'graphicalEditor'
+//
+function DOT_to_visjs() {
+	$.post(
+		"php/getDOT.php",
+		{value: editor.getSession().getValue()},
+		function(data, filename) {
+			var stringOfDOT = data
+			//editor.getSession().setValue(stringOfDOT, 10)  //useful for debugging - prints the DOT code to the editor for viewing
+
+			var parsedData = vis.network.convertDot(stringOfDOT);
+
+			var data = {
+  				nodes: parsedData.nodes,
+  				edges: parsedData.edges
+					}
+
+			var options = parsedData.options;
+// docs here:
+//http://visjs.org/docs/network/#options
+//
+options = {
+  
+  //configure: {...},    // defined in the configure module.
+  //edges: {...},        // defined in the edges module.
+  nodes : {color: {
+		background: '#ff0000'
+		}
+	},
+  //groups: {...},       // defined in the groups module.
+  layout : {hierarchical: {
+		sortMethod: "directed"
+			}
+		},
+  interaction : {navigationButtons: true, hover: true
+		},
+  //manipulation: {...}, // defined in the manipulation module.
+  physics :  {
+	enabled : false  // default here is true but makes every node/edge bounce when moved with physics and is a bit weird
+	},   
+}
+
+
+var container = document.getElementById('graphicalEditor');
+
+// create a network
+var network = new vis.Network(container, data, options);
+
+		}
+	);
+}
+
 
 //
 // Populate the editor's gutter with warnings and errors returned by pmlcheck.
