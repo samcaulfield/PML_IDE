@@ -217,6 +217,114 @@ var network = new vis.Network(container, data, options);
 	);
 }
 
+//Functions to translate the PML code into the DOT language.
+//This focuses on the provides and requires needed by actions.
+function DOT_to_RF() 
+{//This method uses the dot string to make a graph, supported by vis.js
+	$.post(
+		"php/echo.php",
+		{value: editor.getSession().getValue()},
+		function(data, filename) {
+			var stringOfDOT =  data
+			stringOfDOT = PML_To_List(stringOfDOT)
+			editor.getSession().setValue(stringOfDOT, 10)  //useful for debugging - prints the DOT code to the editor for viewing
+
+			var parsedData = vis.network.convertDot(stringOfDOT);
+
+			var data = {
+  				nodes: parsedData.nodes,
+  				edges: parsedData.edges
+					}
+
+			var options = parsedData.options;
+			options = 
+			{
+  			nodes : {color: {background: '#fff000'}},
+  			layout : {hierarchical: {sortMethod: "directed"}},
+ 			interaction : {navigationButtons: true, hover: true},
+  			physics :  {
+			enabled : false  // default here is true but makes every node/edge bounce when moved with physics and is a bit weird
+			},   
+			}
+
+
+			var container = document.getElementById('graphicalEditor');
+
+			// create a network
+			var network = new vis.Network(container, data, options);
+
+			}
+		);
+}
+
+//The rest of these methods support the above metod by translating the given PML into DOT
+function CreateNode()
+{//Create nodes
+	return {name: null,	//Name of action
+		requires: new Array(0),//Requires of action
+		provides: new Array(0),//Provides of action
+		next: null};
+}
+
+//Translate the generated linked list into DOT
+function ListToDOT(a)
+{
+	var start = a;
+	var b = a;
+	var DOT = "PML{"
+	var i = 0, j = 0;
+
+	while(a.next != null)
+	{
+		for(i = 0; i < a.provides.length;i++)
+		{
+			for(j = 0; j < b.requires.length;j++)
+			{
+				if(a.provides == b.requires)
+				{
+					DOT += a.name;
+					DOT += " -> ";
+					DOT += b.name;
+					DOT += ';';
+				}
+			}
+		}
+	}
+
+	DOT += "}";
+
+	return DOT;
+}
+
+function PML_To_List(input)
+{
+
+	/*var action = "ACTION";
+	var provides = "PROVIDES";
+	var requires = "REQUIRES";
+	var start = CreateNode();
+	var list = start;
+	var i = 0;
+	var current = input.substring(i, i+provides.length);
+
+	//while(i < input.length)
+	//{
+
+		//If you find action string
+
+		//Else if you find Requires String
+
+		//Else if you find Provides string
+
+		i++;
+		current = input.substring(i, i.provides.length);
+	//}
+
+	//var output = ListToDOT(start);
+	*/
+	return input;
+}
+
 
 //
 // Populate the editor's gutter with warnings and errors returned by pmlcheck.
