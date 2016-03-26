@@ -260,7 +260,7 @@ function DOT_to_RF()
 //The rest of these methods support the above metod by translating the given PML into DOT
 function CreateNode()
 {//Create nodes
-	return {name: null,	//Name of action
+	return {name: "",	//Name of action
 		requires: new Array(0),//Requires of action
 		provides: new Array(0),//Provides of action
 		next: null};
@@ -271,24 +271,32 @@ function ListToDOT(a)
 {
 	var start = a;
 	var b = a;
-	var DOT = "PML{"
-	var i = 0, j = 0;
+	var DOT = "PML{";
+	var i = 0;
+	var j = 0;
 
 	while(a.next != null)
 	{
-		for(i = 0; i < a.provides.length;i++)
+		b = a;
+		while(b.next != null)
 		{
-			for(j = 0; j < b.requires.length;j++)
+			for(i = 0; i < a.provides.length; i++)
 			{
-				if(a.provides == b.requires)
+				for(j = 0; j < b.requires.length; j++)
 				{
-					DOT += a.name;
-					DOT += " -> ";
-					DOT += b.name;
-					DOT += ';';
+					if(a.provides[i] == b.requires[j])
+					{
+						DOT += a.name;
+						DOT += " -> ";
+						DOT += b.name;
+						DOT += ";\n";
+					}
 				}
 			}
+			b = b.next;
 		}
+		i++;
+		a = a.next;
 	}
 
 	DOT += "}";
@@ -299,30 +307,110 @@ function ListToDOT(a)
 function PML_To_List(input)
 {
 
-	/*var action = "ACTION";
-	var provides = "PROVIDES";
-	var requires = "REQUIRES";
+	//What the code is searching for
+	var action = "action";
+	var provides = "provides";
+	var requires = "requires";
+	//Nodes
 	var start = CreateNode();
 	var list = start;
+	//Iterator
 	var i = 0;
+	//Current substring we are testing
 	var current = input.substring(i, i+provides.length);
+	var temp = "";//Temporary storage
 
-	//while(i < input.length)
-	//{
+	while(i < input.length)
+	{
+		if(current.substring(0, action.length) == action)
+		{//If you find an sction
+			//Create a new node
+			list.next = CreateNode();
+			list = list.next;
+			
+			//Move over to get to name
+			i+=action.length;
+			
+			//Read in action name
+			current = input.substring(i, i+1);
+			while(current != '{')
+			{
+				list.name += current;
+				i++;
+				current = input.substring(i, i+1);
+			}
+				
+		}else if(current == provides)
+		{//If found provides
+			
+			temp = "";
+			//Move over {
+			i+= provides.length;
+			current = input.substring(i, i+1);
+			while(current != '{')
+			{
+				i++;
+				current = input.substring(i, i+1);
+			}
+			i++;
 
-		//If you find action string
+			//Read in provides
+			current = input.substring(i, i+1);
+			while(current != '}')
+			{
+				if(current == '&')
+				{//If multiple requirements
+					list.provides.push(temp);
+					i++;
+					temp = "";
+				}else
+				{
+					temp += current;
+				}
+				i++;
+				current = input.substring(i, i+1);
+			}
+			
+		}else if(current == requires)
+		{//If found requires
+			
+			temp = "";
+			//Move over {
+			i+= requires.length;
+			current = input.substring(i, i+1);
+			while(current != '{')
+			{
+				i++;
+				current = input.substring(i, i+1);
+			}
+			i++;
 
-		//Else if you find Requires String
-
-		//Else if you find Provides string
+			//Read in requires
+			current = input.substring(i, i+1);
+			while(current != '}')
+			{
+				if(current == '&')
+				{//If multiple requirements
+					list.requires.push(temp);
+					i++;
+					temp = "";
+				}else
+				{
+					temp += current;
+				}
+				i++;
+				current = input.substring(i, i+1);
+			}
+			list.requires.push(temp);
+		}
 
 		i++;
-		current = input.substring(i, i.provides.length);
-	//}
+		current = input.substring(i, i+provides.length);
+	}
 
-	//var output = ListToDOT(start);
-	*/
-	return input;
+	//Get the DOT string
+	var output = ListToDOT(start);
+	return output;
 }
 
 
