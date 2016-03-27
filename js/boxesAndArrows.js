@@ -318,7 +318,7 @@ function getLargestHeight(listHeadNode) {
 }
 
 function iterationInsert(iteration, newNodeType) {
-
+	nope();
 }
 
 function selectionInsert(selection, newNodeType) {
@@ -706,9 +706,16 @@ function onMouseDown(e) {
 					draw();
 					break;
 				case "iteration":
+					iterationInsert(menuClickedNode,
+						"action");
+					menuOpen = false;
+					draw();
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "action");
+					selectionInsert(menuClickedNode,
+						"action");
+					menuOpen = false;
+					draw();
 					break;
 				}
 				break;
@@ -720,9 +727,14 @@ function onMouseDown(e) {
 					draw();
 					break;
 				case "iteration":
+					iterationInsert(menuClickedNode,
+						"branch");
+					menuOpen = false;
+					draw();
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "branch");
+					selectionInsert(menuClickedNode,
+						"branch");
 					menuOpen = false;
 					draw();
 					break;
@@ -731,14 +743,20 @@ function onMouseDown(e) {
 			case 11: // Insert iteration
 				switch (menuClickedNode.type) {
 				case "branch":
-					branchInsert(menuClickedNode, "iteration");
+					branchInsert(menuClickedNode,
+						"iteration");
 					menuOpen = false;
 					draw();
 					break;
 				case "iteration":
+					iterationInsert(menuClickedNode,
+						"iteration");
+					menuOpen = false;
+					draw();
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "iteration");
+					selectionInsert(menuClickedNode,
+						"iteration");
 					menuOpen = false;
 					draw();
 					break;
@@ -747,14 +765,20 @@ function onMouseDown(e) {
 			case 12: // Insert selection
 				switch (menuClickedNode.type) {
 				case "branch":
-					branchInsert(menuClickedNode, "selection");
+					branchInsert(menuClickedNode,
+						"selection");
 					menuOpen = false;
 					draw();
 					break;
 				case "iteration":
+					iterationInsert(menuClickedNode,
+						"selection");
+					menuOpen = false;
+					draw();
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "selection");
+					selectionInsert(menuClickedNode,
+						"selection");
 					menuOpen = false;
 					draw();
 					break;
