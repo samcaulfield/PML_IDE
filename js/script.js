@@ -230,7 +230,7 @@ function DOT_to_RF()
 		function(data, filename) {
 			var stringOfDOT =  data
 			stringOfDOT = PML_To_List(stringOfDOT)
-			editor.getSession().setValue(stringOfDOT, 10)  //useful for debugging - prints the DOT code to the editor for viewing
+			//editor.getSession().setValue(stringOfDOT, 10)  //useful for debugging - prints the DOT code to the editor for viewing
 
 			var parsedData = vis.network.convertDot(stringOfDOT);
 
@@ -366,13 +366,15 @@ function PML_To_List(input)
 					list.provides.push(temp);
 					i++;
 					temp = "";
-				}else
+				}else if(current == ' ')
 				{
+				}else{
 					temp += current;
 				}
 				i++;
 				current = input.substring(i, i+1);
 			}
+			list.provides.push(temp);
 			
 		}else if(current == requires)
 		{//If found requires
@@ -397,6 +399,8 @@ function PML_To_List(input)
 					list.requires.push(temp);
 					i++;
 					temp = "";
+				}else if(current == ' ')
+				{
 				}else
 				{
 					temp += current;
