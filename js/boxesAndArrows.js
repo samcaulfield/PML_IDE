@@ -167,24 +167,51 @@ function growResult(height, maxParent) {
 	this.maxParent = maxParent;
 }
 
+function Bounds(x, y) {
+	this.x = x;
+	this.y = y ;
+}
+
+//
+//
+//
+function getListBounds(listHeadNode) {
+	var maxX, mayY;
+
+	if (listHeadNode) {
+		maxX = listHeadNode.x + listHeadNode.width;
+		maxY = listHeadNode.y + listHeadNode.height;
+	} else {
+		return null;
+	}
+
+	while (listHeadNode) {
+		if (listHeadNode.x + listHeadNode.width > maxX) {
+			maxX = listHeadNode.x + listHeadNode.width;
+		}
+		if (listHeadNode.y + listHeadNode.height > maxY) {
+			maxY = listHeadNode.y + listHeadNode.height;
+		}
+		listHeadNode = listHeadNode.next;
+	}
+
+	return new Bounds(maxX, maxY);
+}
+
 function growParents(newNode) {
 	// Adjust parent size to fit.
 	var parentNode = newNode.parentNode;
-	var lastNode = getLastListElement(newNode);
+	var bounds = getListBounds(newNode);
 	var result = new growResult(0, null);
 	while (parentNode) {
-		if (parentNode.x + parentNode.width <
-			lastNode.x + lastNode.width) {
+		if (parentNode.x + parentNode.width < bounds.x) {
 			var oldWidth = parentNode.width;
-			parentNode.width = lastNode.x - parentNode.x +
-				lastNode.width + gapBetweenNodes;
+			parentNode.width = bounds.x - parentNode.x + gapBetweenNodes;
 			pushX(parentNode.next, parentNode.width - oldWidth);
 		}
-		if (parentNode.y + parentNode.height <
-			lastNode.y + lastNode.height) {
+		if (parentNode.y + parentNode.height < bounds.y) {
 			var oldHeight = parentNode.height;
-			parentNode.height = lastNode.y - parentNode.y +
-				lastNode.height + gapBetweenNodes;
+			parentNode.height = bounds.y - parentNode.y + gapBetweenNodes;
 
 			result.height = parentNode.height - oldHeight;
 			result.maxParent = parentNode;
@@ -192,7 +219,7 @@ function growParents(newNode) {
 
 		newNode = parentNode;
 		parentNode = parentNode.parentNode;
-		lastNode = getLastListElement(newNode);
+		bounds = getListBounds(newNode);
 	}
 	return result;
 }
@@ -290,6 +317,11 @@ function getLargestHeight(listHeadNode) {
 	return largest;
 }
 
+function selectionInsert(selection, newNodeType) {
+	// same logic
+	return branchInsert(selection, newNodeType);
+}
+
 //
 //
 //
@@ -370,6 +402,7 @@ function branchInsert(branch, newNodeType) {
 		var x = lastOuter.sibling;
 		while (x) {
 			pushY(x.head, result.height);
+			growParents(x.head);
 			x = x.sibling;
 		}
 		lastOuter = lastOuter.parentNode;
@@ -672,6 +705,7 @@ function onMouseDown(e) {
 				case "iteration":
 					break;
 				case "selection":
+					selectionInsert(menuClickedNode, "action");
 					break;
 				}
 				break;
@@ -685,12 +719,29 @@ function onMouseDown(e) {
 				case "iteration":
 					break;
 				case "selection":
+					selectionInsert(menuClickedNode, "branch");
+					menuOpen = false;
+					draw();
 					break;
 				}
 				break;
 			case 11: // Insert iteration
 				break;
 			case 12: // Insert selection
+				switch (menuClickedNode.type) {
+				case "branch":
+					branchInsert(menuClickedNode, "selection");
+					menuOpen = false;
+					draw();
+					break;
+				case "iteration":
+					break;
+				case "selection":
+					selectionInsert(menuClickedNode, "selection");
+					menuOpen = false;
+					draw();
+					break;
+				}
 				break;
 			}
 		}
