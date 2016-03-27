@@ -99,6 +99,7 @@ canvas.addEventListener("mousemove", onMouseMove, false);
 canvas.addEventListener("mousedown", onMouseDown, false);
 canvas.addEventListener("mouseup", onMouseUp, false);
 canvas.addEventListener("mousewheel", onMouseWheel, false);
+canvas.addEventListener("mouseout", onMouseOut, false);
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Text information, size and colour
@@ -176,7 +177,7 @@ function Bounds(x, y) {
 //
 //
 function getListBounds(listHeadNode) {
-	var maxX, mayY;
+	var maxX, maxY;
 
 	if (listHeadNode) {
 		maxX = listHeadNode.x + listHeadNode.width;
@@ -282,7 +283,6 @@ function pushX(node, amount) {
 //
 //
 function pushY(node, amount) {
-	console.log("pushY(" + node.ID + ", " + amount + ")");
 	while (node) {
 		node.y += amount;
 
@@ -315,6 +315,10 @@ function getLargestHeight(listHeadNode) {
 		listHeadNode = listHeadNode.next;
 	}
 	return largest;
+}
+
+function iterationInsert(iteration, newNodeType) {
+
 }
 
 function selectionInsert(selection, newNodeType) {
@@ -381,7 +385,6 @@ function branchInsert(branch, newNodeType) {
 	// Traverse the parents and tell them to expand to fit the new node
 //	growParents(newNode);
 	var result = growParents(newNode);
-	console.log(result.height);
 
 	// We added a new node, but the structure needs to expand to accomodate
 	// it without overlap
@@ -726,6 +729,20 @@ function onMouseDown(e) {
 				}
 				break;
 			case 11: // Insert iteration
+				switch (menuClickedNode.type) {
+				case "branch":
+					branchInsert(menuClickedNode, "iteration");
+					menuOpen = false;
+					draw();
+					break;
+				case "iteration":
+					break;
+				case "selection":
+					selectionInsert(menuClickedNode, "iteration");
+					menuOpen = false;
+					draw();
+					break;
+				}
 				break;
 			case 12: // Insert selection
 				switch (menuClickedNode.type) {
@@ -787,6 +804,16 @@ function onMouseWheel(e) {
 }
 
 //
+// Called when the mouse leaves the canvas area.
+//
+function onMouseOut(e) {
+	// Reset mouse interaction so annoying things don't happen.
+	lmbPressed = false;
+	dragPrevX = -1;
+	dragPrevY = -1;
+}
+
+//
 // Handles mouse movement.
 //
 function onMouseMove(e) {
@@ -795,6 +822,10 @@ function onMouseMove(e) {
 	var offsetY = canvasOffset.top;
 	var mx = parseInt(e.clientX - offsetX);
 	var my = parseInt(e.clientY - offsetY);
+
+	if (mx < 0 || mx >= canvas.width || my < 0 || my >= canvas.height) {
+		return;
+	}
 
 	// If mouse is moving and LMB is pressed, then the user is dragging.
 	if (lmbPressed) {
