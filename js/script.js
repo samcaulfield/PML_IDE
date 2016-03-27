@@ -11,6 +11,7 @@ var arrayOfAnnos = [];
 var currentWarningShowing = 0;
 var allWarningRows = [];
 var errorNotification = false;
+var notyInstance;
 
 window.onload = function() {
 	if (isLoggedIn()) {
@@ -77,6 +78,8 @@ function attemptLogin(emailAddress, password) {
 }
 
 function attemptOpenFromServer() {
+	closeNotyInstance();
+	//if(notyInstance){notyInstance.close();}
 	if (isLoggedIn()) {
 		// Generate the inner HTML of the form.
 		$.ajax({
@@ -457,7 +460,7 @@ function error_annot() {
 
         function generate(type, text) {
 
-            var n = noty({
+                notyInstance = noty({
                 text        : text,
                 type        : type,
                 dismissQueue: true,
@@ -473,7 +476,7 @@ function error_annot() {
                     speed : 500
                 }
             });
-            console.log('html: ' + n.options.id);
+            console.log('html: ' + notyInstance.options.id);
         }
 
 
@@ -493,11 +496,19 @@ function sortNumber(a,b) {
 }
 
 
+function closeNotyInstance(){
+	if(notyInstance){notyInstance.close();}
+	else{return;}
+}
+
+
 function moveToNext(){
 	if(currentWarningShowing < arrayOfAnnos.length-1){
 	var nextWarn = currentWarningShowing+1;}
 	else{
-	var nextWarn = currentWarningShowing;		
+	var nextWarn = currentWarningShowing;
+	notyInstance.close();
+	return;		
 	}
 	var nextRow = allWarningRows[nextWarn];
 	editor.resize(true);
@@ -514,7 +525,9 @@ function moveToPrevious(){
 	var prevWarn = currentWarningShowing-1;
 }
 	else{
-	var prevWarn = currentWarningShowing;}
+	var prevWarn = currentWarningShowing;
+	return;	
+	}
 	var prevRow = allWarningRows[prevWarn];
 	
 	editor.resize(true);
