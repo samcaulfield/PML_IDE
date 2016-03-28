@@ -8,6 +8,7 @@
 // 	- Ability to insert actions, branches, iterations, selections.
 // 	- Ability to nest the above arbitrarily.
 // 	- Support for camera dragging and zooming.
+// 	- Boxes visually connected with arrows.
 //
 // Details:
 // 	- The program is entirely event driven. Nothing changes without direct
@@ -25,7 +26,6 @@
 // TODO: Release 1
 // 	- Implement node deletion
 // 	- Implement insertion before current node
-// 	- Connect boxes visually with arrows
 //
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
@@ -75,27 +75,27 @@ var maxZoom = 10.0;
 //
 
 // Actions
-var actionColourA = "#555555";
-var actionColourB = "#999999";
+var actionColourA = "#CCCC00";
+var actionColourB = "#FFFF00";
 var actionBorderColour = "#000000";
 
 // Branches
-var branchColourA = "#3333CC";
-var branchColourB = "#5555EE";
+var branchColourA = "#0055CC";
+var branchColourB = "#0099FF";
 var branchBorderColour = "#000000";
 
 // Iterations
-var iterationColourA = "#222222";
-var iterationColourB = "#444444";
+var iterationColourA = "#CC2200";
+var iterationColourB = "#FF3300";
 var iterationBorderColour = "#000000";
 
 // Selections
-var selectionColourA = "#9933CC";
-var selectionColourB = "#BB55EE";
+var selectionColourA = "#00CC22";
+var selectionColourB = "#00FF33";
 var selectionBorderColour = "#000000";
 
 var nodeWidth = 50;
-var gapBetweenNodes = 20;
+var gapBetweenNodes = 30;
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Input control, event handlers etc.
@@ -118,14 +118,31 @@ var textFont = "monospace";
 var textSize = 20;
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+// Legend information
+//	
+var drawLegend = true;
+var legendWidth = 300;
+var legendHeight = 200;
+var legendBackgroundColour = "#FFFFFF";
+var legendBoxSize = 20;
+
+//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+// Arrows
+//
+var drawArrows = true;
+var arrowColour = "#000000";
+var arrowHeadSize = gapBetweenNodes / 5.0;
+
+//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // The colour to clear the canvas contents to.
 //
-var clearColour = "#FFFFFF";
+var clearColour = "#BBBBBB";
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Menu information.
 //
 var menuOpen = false;
+var menuColour = "#FFFFFF";
 // How many px outside menu cursor can be before menu closes automatically.
 var menuOpenTolerance = 30;
 var menuX, menuY;
@@ -170,6 +187,14 @@ var menuType = emptyOptions;
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
+// Call setup functions
+//
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+draw();
+
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//
 // Camera functions
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -186,6 +211,19 @@ function screenToWorldX(x) {
 //
 function screenToWorldY(y) {
 	return (y / zoom) + cy;
+}
+
+//
+// Transforms x from world space into screen space
+//
+function worldToScreenX(x) {
+	return (x - cx) * zoom;
+}
+
+//
+// Transforms y from world space into screen space
+function worldToScreenY(y) {
+	return (y - cy) * zoom;
 }
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -715,8 +753,58 @@ function draw() {
 	// Draw the PML model
 	drawModel();
 
+	// Draw the menu
 	if (menuOpen) {
 		drawMenu();
+	}
+
+	// Draw the legend
+	if (drawLegend) {
+		var xOffset = 50;
+		var legendY = canvas.height - legendHeight;
+
+		// clear the rect
+		c.fillStyle = legendBackgroundColour;
+		c.beginPath();
+		c.fillRect(0, canvas.height - legendHeight, legendWidth,
+			legendHeight);
+
+		// draw the text
+		c.font = textSize + "px monospace";
+		c.fillStyle = textColour;
+		c.fillText("Legend", xOffset,
+			canvas.height - legendHeight + legendBoxSize);
+
+		// Need to draw four entries
+		var a = legendHeight / 5.0;
+
+		c.fillStyle = actionColourA;
+		c.beginPath();
+		c.fillRect(xOffset, legendY + a, legendBoxSize, legendBoxSize);
+		c.fillStyle = textColour;
+		c.fillText("action",
+			xOffset + legendBoxSize * 2, legendY + a + textSize);
+
+		c.fillStyle = branchColourA;
+		c.beginPath();
+		c.fillRect(xOffset, legendY + a * 2, legendBoxSize, legendBoxSize);
+		c.fillStyle = textColour;
+		c.fillText("branch",
+			xOffset + legendBoxSize * 2, legendY + a * 2 + textSize);
+
+		c.fillStyle = iterationColourA;
+		c.beginPath();
+		c.fillRect(xOffset, legendY + a * 3, legendBoxSize, legendBoxSize);
+		c.fillStyle = textColour;
+		c.fillText("iteration",
+			xOffset + legendBoxSize * 2, legendY + a * 3 + textSize);
+
+		c.fillStyle = selectionColourA;
+		c.beginPath();
+		c.fillRect(xOffset, legendY + a * 4, legendBoxSize, legendBoxSize);
+		c.fillStyle = textColour;
+		c.fillText("selection",
+			xOffset + legendBoxSize * 2, legendY + a * 4 + textSize);
 	}
 
 	// draw grid
@@ -739,6 +827,27 @@ function draw() {
 }
 
 //
+// Draws an arrow from (x0, y0) to (x1, y1). Coordinates in screen space.
+//
+function drawArrow(x0, y0, x1, y1) {
+	// Draw the arrow shaft
+	c.beginPath();
+	c.moveTo(x0, y0);
+	c.lineTo(x1, y1);
+	c.strokeStyle = arrowColour;
+	c.stroke();
+	// Draw the arrow head
+	c.beginPath();
+	c.moveTo(x1, y1);
+	c.lineTo(x1 - arrowHeadSize * zoom, y1 - arrowHeadSize * zoom);
+	c.stroke();
+	c.beginPath();
+	c.moveTo(x1, y1);
+	c.lineTo(x1 - arrowHeadSize * zoom, y1 + arrowHeadSize * zoom);
+	c.stroke();
+}
+
+//
 // Draws the menu.
 //
 function drawMenu() {
@@ -746,7 +855,7 @@ function drawMenu() {
 	menuHeight = menuType.length * (textSize + entryGap);
 	menuWidth = 300; // TODO compute this from largest entry size
 
-	c.fillStyle = clearColour;
+	c.fillStyle = menuColour;
 	c.beginPath();
 	c.fillRect(menuX, menuY, menuWidth, menuHeight);
 
@@ -819,6 +928,19 @@ function drawNode(node) {
 		c.strokeStyle = selectionBorderColour;
 		c.strokeRect(x, y, node.width * zoom, node.height * zoom);
 		break;
+	}
+
+	// Draw an arrow to the next node if required
+	if (drawArrows && node.next) {
+		// get the X positions
+		var leftX = node.x + node.width;
+		var rightX = node.next.x;
+		// get the Y positions
+		var minHeight = Math.min(node.height, node.next.height);
+		var arrowY = minHeight / 2.0 + node.y;
+
+		drawArrow(worldToScreenX(leftX), worldToScreenY(arrowY),
+			worldToScreenX(rightX), worldToScreenY(arrowY));
 	}
 
 	var child = node.contents;
