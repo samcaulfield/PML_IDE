@@ -123,7 +123,7 @@ var numEntries, entryGap;
 var menuHighlightColour = "#AAAAAA";
 var menuHighlightedEntry = -1; // -1 for this value means not set.
 var menuClickedNode; // The node the menu was opened for.
-var nonEmptyOptionsAction = [
+var nonEmptyOptionsAI = [ // Nonempty options - action/iteraton
 	"Insert action after",
 	"Insert branch after",
 	"Insert iteration after",
@@ -134,21 +134,22 @@ var nonEmptyOptionsAction = [
 	"Insert iteration before",
 	"Insert selection before"
 ];
-var nonEmptyOptions = [
+var nonEmptyOptionsBS = [ // Nonempty options - branch/selection
 	"Insert action after",
 	"Insert branch after",
 	"Insert iteration after",
 	"Insert selection after",
 	"Delete",
 	"Insert action before",
-	"Insert branch before", "Insert iteration before",
+	"Insert branch before",
+	"Insert iteration before",
 	"Insert selection before",
 	"Insert action",
 	"Insert branch",
 	"Insert iteration",
 	"Insert selection"
 ];
-var emptyOptions = [
+var emptyOptions = [ // Options if the model is empty.
 	"Insert action",
 	"Insert branch",
 	"Insert iteration",
@@ -171,6 +172,20 @@ function growResult(height, maxParent) {
 function Bounds(x, y) {
 	this.x = x;
 	this.y = y ;
+}
+
+//
+//
+//
+function insertAfter(node, nodeAfterType) {
+	var newNode = new Node(nodeAfterType,
+		menuClickedNode.x + menuClickedNode.width + gapBetweenNodes,
+		menuClickedNode.y, nodeWidth, nodeWidth, menuClickedNode.next,
+		null, menuClickedNode.parentNode, menuClickedNode);
+	menuClickedNode.next = newNode;
+	// Push nodes after it over.
+	pushX(newNode.next, nodeWidth + gapBetweenNodes);
+	growParents(newNode);
 }
 
 //
@@ -207,12 +222,14 @@ function growParents(newNode) {
 	while (parentNode) {
 		if (parentNode.x + parentNode.width < bounds.x) {
 			var oldWidth = parentNode.width;
-			parentNode.width = bounds.x - parentNode.x + gapBetweenNodes;
+			parentNode.width = bounds.x - parentNode.x +
+				gapBetweenNodes;
 			pushX(parentNode.next, parentNode.width - oldWidth);
 		}
 		if (parentNode.y + parentNode.height < bounds.y) {
 			var oldHeight = parentNode.height;
-			parentNode.height = bounds.y - parentNode.y + gapBetweenNodes;
+			parentNode.height = bounds.y - parentNode.y +
+				gapBetweenNodes;
 
 			result.height = parentNode.height - oldHeight;
 			result.maxParent = parentNode;
@@ -318,7 +335,7 @@ function getLargestHeight(listHeadNode) {
 }
 
 function iterationInsert(iteration, newNodeType) {
-	nope();
+	return branchInsert(iteration, newNodeType);
 }
 
 function selectionInsert(selection, newNodeType) {
@@ -482,66 +499,31 @@ function draw() {
 // Draws the menu.
 //
 function drawMenu() {
-	if (menuType == emptyOptions) {
-		// Options are to insert a first element.
+	entryGap = 5;
+	menuHeight = menuType.length * (textSize + entryGap);
+	menuWidth = 400;
 
-		entryGap = 5;
-		menuHeight = emptyOptions.length * (textSize + entryGap);
-		menuWidth = 150; // Should fit longest string.
+	c.fillStyle = clearColour;
+	c.beginPath();
+	c.fillRect(menuX, menuY, menuWidth, menuHeight);
 
-		c.fillStyle = clearColour;
-		c.beginPath();
-		c.fillRect(menuX, menuY, menuWidth, menuHeight);
+	if (menuHighlightedEntry != -1) {
+		c.fillStyle = menuHighlightColour;
+		c.fillRect(menuX, menuY + menuHighlightedEntry *
+			(textSize + entryGap), menuWidth,
+			textSize + entryGap);
+	} 
 
-		if (menuHighlightedEntry != -1) {
-			c.fillStyle = menuHighlightColour;
-			c.fillRect(menuX, menuY + menuHighlightedEntry *
-				(textSize + entryGap), menuWidth,
-				textSize + entryGap);
-		} 
-		c.fillStyle = textColour;
-		c.rect(menuX, menuY, menuWidth, menuHeight);
-		c.stroke();
+	c.fillStyle = textColour;
+	c.rect(menuX, menuY, menuWidth, menuHeight);
+	c.stroke();
 
-		c.font = textSize + "px " + textFont;
-		var i;
-		for (i = 0; i < emptyOptions.length; i++) {
-			c.fillText(emptyOptions[i], menuX,
-				menuY + (i + 1) * textSize + i * entryGap);
-		}
-	} else if (menuType === nonEmptyOptions) {
-		c.fillStyle = clearColour;
-		c.beginPath();
-		c.fillRect(menuX, menuY, menuWidth, menuHeight);
 
-		entryGap = 5;
-
-		var menuChoices;
-		if (menuClickedNode.type == "action") {
-			menuChoices = nonEmptyOptionsAction;
-		} else {
-			menuChoices = nonEmptyOptions;
-		}
-		menuHeight = menuChoices.length * (textSize + entryGap);
-		menuWidth = 350; // TODO Should fit longest string.
-
-		if (menuHighlightedEntry != -1) {
-			c.fillStyle = menuHighlightColour;
-			c.fillRect(menuX, menuY + menuHighlightedEntry *
-				(textSize + entryGap), menuWidth,
-				textSize + entryGap);
-		}
-
-		c.fillStyle = textColour;
-		c.rect(menuX, menuY, menuWidth, menuHeight);
-		c.stroke();
-
-		c.font = textSize + "px " + textFont;
-		var i;
-		for (i = 0; i < menuChoices.length; i++) {
-			c.fillText(menuChoices[i], menuX,
-				menuY + (i + 1) * textSize + i * entryGap);
-		}
+	c.font = textSize + "px " + textFont;
+	var i;
+	for (i = 0; i < menuType.length; i++) {
+		c.fillText(menuType[i], menuX,
+			menuY + (i + 1) * textSize + i * entryGap);
 	}
 }
 
@@ -590,13 +572,13 @@ function onMouseDown(e) {
 		var clickedEntryIndex = Math.floor((my - menuY) /
 			(textSize + entryGap));
 
-		if (menuType === emptyOptions) {
+		switch (menuType) {
+		case emptyOptions:
 			switch (clickedEntryIndex) {
 			case 0: // Insert action
 				listHead = new Node("action", mx + cx, my + cy,
 					nodeWidth, nodeWidth, null, null, null,
 					null);
-				menuType = nonEmptyOptions;
 				menuOpen = false;
 				draw();
 				break;
@@ -604,7 +586,6 @@ function onMouseDown(e) {
 				listHead = new Node("branch", mx + cx, my + cy,
 					nodeWidth, nodeWidth, null, null, null,
 					null);
-				menuType = nonEmptyOptions;
 				menuOpen = false;
 				draw();
 				break;
@@ -612,7 +593,6 @@ function onMouseDown(e) {
 				listHead = new Node("iteration", mx + cx,
 					my + cy, nodeWidth, nodeWidth, null,
 					null, null, null);
-				menuType = nonEmptyOptions;
 				menuOpen = false;
 				draw();
 				break;
@@ -620,175 +600,144 @@ function onMouseDown(e) {
 				listHead = new Node("selection", mx + cx,
 					my + cy, nodeWidth, nodeWidth, null,
 					null, null, null);
-				menuType = nonEmptyOptions;
 				menuOpen = false;
 				draw();
 				break;
 			}
-		} else if (menuType === nonEmptyOptions) {
+			break;
+		case nonEmptyOptionsAI:
 			switch (clickedEntryIndex) {
 			case 0: // Insert action after
-				var newNode = new Node("action",
-					menuClickedNode.x +
-					menuClickedNode.width + gapBetweenNodes,
-					menuClickedNode.y, nodeWidth, nodeWidth,
-					menuClickedNode.next, null,
-					menuClickedNode.parentNode,
-					menuClickedNode);
-				menuClickedNode.next = newNode;
-				// Push nodes after it over.
-				var i = newNode.next;
-				pushX(i, nodeWidth + gapBetweenNodes);
-				growParents(newNode);
+				insertAfter(menuClickedNode, "action");
 				menuOpen = false;
 				draw();
 				break;
 			case 1: // Insert branch after
-				var newNode = new Node("branch",
-					menuClickedNode.x +
-					menuClickedNode.width + gapBetweenNodes,
-					menuClickedNode.y, nodeWidth, nodeWidth,
-					menuClickedNode.next, null,
-					menuClickedNode.parentNode,
-					menuClickedNode);
-				menuClickedNode.next = newNode;
-				var i = newNode.next;
-				pushX(i, nodeWidth + gapBetweenNodes);
-				growParents(newNode);
+				newNodeType = "branch";
+				insertAfter(menuClickedNode, "branch");
 				menuOpen = false;
 				draw();
 				break;
 			case 2: // Insert iteration after
-				var newNode = new Node("iteration",
-					menuClickedNode.x +
-					menuClickedNode.width + gapBetweenNodes,
-					menuClickedNode.y, nodeWidth, nodeWidth,
-					menuClickedNode.next, null,
-					menuClickedNode.parentNode,
-					menuClickedNode);
-				menuClickedNode.next = newNode;
-				var i = newNode.next;
-				pushX(i, nodeWidth + gapBetweenNodes);
-				growParents(newNode);
+				newNodeType = "iteration";
+				insertAfter(menuClickedNode, "iteration");
 				menuOpen = false;
 				draw();
 				break;
 			case 3: // Insert selection after
-				var newNode = new Node("selection",
-					menuClickedNode.x +
-					menuClickedNode.width + gapBetweenNodes,
-					menuClickedNode.y, nodeWidth, nodeWidth,
-					menuClickedNode.next, null,
-					menuClickedNode.parentNode,
-					menuClickedNode);
-				menuClickedNode.next = newNode;
-				var i = newNode.next;
-				pushX(i, nodeWidth + gapBetweenNodes);
-				growParents(newNode);
+				newNodeType = "selection";
+				insertAfter(menuClickedNode, "selection");
 				menuOpen = false;
 				draw();
 				break;
 			case 4: // Delete
-				break;
 			case 5: // Insert action before
-				break;
 			case 6: // Insert branch before
-				break;
 			case 7: // Insert iteration before
-				break;
 			case 8: // Insert selection before
+				menuOpen = false;
+				draw();
+				nope();
+				break;
+			}
+			break;
+		case nonEmptyOptionsBS:
+			switch (clickedEntryIndex) {
+			case 0: // Insert action after
+				insertAfter(menuClickedNode, "action");
+				menuOpen = false;
+				draw();
+				break;
+			case 1: // Insert branch after
+				newNodeType = "branch";
+				insertAfter(menuClickedNode, "branch");
+				menuOpen = false;
+				draw();
+				break;
+			case 2: // Insert iteration after
+				newNodeType = "iteration";
+				insertAfter(menuClickedNode, "iteration");
+				menuOpen = false;
+				draw();
+				break;
+			case 3: // Insert selection after
+				newNodeType = "selection";
+				insertAfter(menuClickedNode, "selection");
+				menuOpen = false;
+				draw();
+				break;
+			case 4: // Delete
+			case 5: // Insert action before
+			case 6: // Insert branch before
+			case 7: // Insert iteration before
+			case 8: // Insert selection before
+				menuOpen = false;
+				draw();
+				nope();
 				break;
 			case 9: // Insert action
 				switch (menuClickedNode.type) {
 				case "branch":
 					branchInsert(menuClickedNode, "action");
-					menuOpen = false;
-					draw();
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode,
-						"action");
-					menuOpen = false;
-					draw();
+					iterationInsert(menuClickedNode, "action");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode,
-						"action");
-					menuOpen = false;
-					draw();
+					selectionInsert(menuClickedNode, "action");
 					break;
 				}
+				menuOpen = false;
+				draw();
 				break;
 			case 10: // Insert branch
 				switch (menuClickedNode.type) {
 				case "branch":
 					branchInsert(menuClickedNode, "branch");
-					menuOpen = false;
-					draw();
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode,
-						"branch");
-					menuOpen = false;
-					draw();
+					iterationInsert(menuClickedNode, "branch");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode,
-						"branch");
-					menuOpen = false;
-					draw();
+					selectionInsert(menuClickedNode, "branch");
 					break;
 				}
+				menuOpen = false;
+				draw();
 				break;
 			case 11: // Insert iteration
 				switch (menuClickedNode.type) {
 				case "branch":
-					branchInsert(menuClickedNode,
-						"iteration");
-					menuOpen = false;
-					draw();
+					branchInsert(menuClickedNode, "iteration");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode,
-						"iteration");
-					menuOpen = false;
-					draw();
+					iterationInsert(menuClickedNode, "iteration");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode,
-						"iteration");
-					menuOpen = false;
-					draw();
+					selectionInsert(menuClickedNode, "iteration");
 					break;
 				}
+				menuOpen = false;
+				draw();
 				break;
 			case 12: // Insert selection
 				switch (menuClickedNode.type) {
 				case "branch":
-					branchInsert(menuClickedNode,
-						"selection");
-					menuOpen = false;
-					draw();
+					branchInsert(menuClickedNode, "selection");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode,
-						"selection");
-					menuOpen = false;
-					draw();
+					iterationInsert(menuClickedNode, "selection");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode,
-						"selection");
-					menuOpen = false;
-					draw();
+					selectionInsert(menuClickedNode, "selection");
 					break;
 				}
+				menuOpen = false;
+				draw();
 				break;
 			}
+			break;
 		}
-	} else if (menuOpen) {
-		menuOpen = false;
-		draw();
 	}
 }
 
@@ -920,6 +869,24 @@ function handleContextMenu(e) {
 				menuX = mx + 1;
 				menuY = my + 1;
 				menuClickedNode = findNodeAt(mx, my, node);
+				switch (menuClickedNode.type) {
+				case "action":
+					menuType = nonEmptyOptionsAI
+					break;
+				case "branch":
+					menuType = nonEmptyOptionsBS;
+					break;
+				case "iteration":
+					if (menuClickedNode.contents) {
+						menuType = nonEmptyOptionsAI;
+					} else {
+						menuType = nonEmptyOptionsBS;
+					}
+					break;
+				case "selection":
+					menuType = nonEmptyOptionsBS;
+					break;
+				}
 				menuOpen = true;
 				draw();
 				finished = true;
