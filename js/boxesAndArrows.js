@@ -738,6 +738,9 @@ function onMouseDown(e) {
 			}
 			break;
 		}
+	} else if (menuOpen) {
+		menuOpen = false;
+		draw();
 	}
 }
 
