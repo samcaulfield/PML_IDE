@@ -489,6 +489,7 @@ function handleContextMenu(e) {
 	if (listHead == null) {
 		menuX = mx + 1;
 		menuY = my + 1;
+		menuType = emptyOptions;
 		menuOpen = true;
 		draw();
 	}
