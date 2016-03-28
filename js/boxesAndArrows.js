@@ -115,7 +115,7 @@ canvas.addEventListener("mouseout", onMouseOut, false);
 //
 var textColour = "#000000";
 var textFont = "monospace";
-var textSize = 15;
+var textSize = 20;
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // The colour to clear the canvas contents to.
@@ -744,7 +744,7 @@ function draw() {
 function drawMenu() {
 	entryGap = 5;
 	menuHeight = menuType.length * (textSize + entryGap);
-	menuWidth = 400;
+	menuWidth = 300; // TODO compute this from largest entry size
 
 	c.fillStyle = clearColour;
 	c.beginPath();
