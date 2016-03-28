@@ -126,6 +126,8 @@ var clearColour = "#FFFFFF";
 // Menu information.
 //
 var menuOpen = false;
+// How many px outside menu cursor can be before menu closes automatically.
+var menuOpenTolerance = 30;
 var menuX, menuY;
 var menuWidth, menuHeight;
 var numEntries, entryGap;
@@ -452,8 +454,11 @@ function onMouseMove(e) {
 			draw();
 		}
 
-	} else if (menuOpen) {
+	} else if (menuOpen && !inBounds(mx, my, menuX - menuOpenTolerance,
+		menuY - menuOpenTolerance, menuWidth + 2 * menuOpenTolerance,
+		menuHeight + 2 * menuOpenTolerance)) {
 		menuHighlightedEntry = -1;
+		menuOpen = false;
 		draw();
 	}
 }
