@@ -170,6 +170,26 @@ var menuType = emptyOptions;
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
+// Camera functions
+//
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+//
+// Transforms x from screen coordinates into world coordinates
+//
+function screenToWorldX(x) {
+	return (x / zoom) + cx;
+}
+
+//
+// Transforms y from screen coordinates into world coordinates
+//
+function screenToWorldY(y) {
+	return (y / zoom) + cy;
+}
+
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//
 // Event handlers
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -499,12 +519,13 @@ function handleContextMenu(e) {
 		var node = listHead;
 		var finished = false;
 		while (!finished && node) {
-			if (inBounds(mx, my, (node.x - cx) * zoom,
-				(node.y - cy) * zoom, node.width * zoom,
-				node.height * zoom)) {
+			var x = screenToWorldX(mx);
+			var y = screenToWorldY(my);
+			if (inBounds(x, y, node.x, node.y, node.width,
+				node.height)) {
 				menuX = mx + 1;
 				menuY = my + 1;
-				menuClickedNode = findNodeAt(mx, my, node);
+				menuClickedNode = findNodeAt(x, y, node);
 				switch (menuClickedNode.type) {
 				case "action":
 					menuType = nonEmptyOptionsAI
@@ -764,47 +785,39 @@ function drawModel() {
 //
 //
 function drawNode(node) {
-	var x = node.x - cx, y = node.y - cy;
-	var gradient = c.createLinearGradient(x * zoom, y * zoom,
-		x * zoom + node.width * zoom, y * zoom + node.height * zoom);
+	var x = (node.x - cx) * zoom, y = (node.y - cy) * zoom;
+	var gradient = c.createLinearGradient(x, y, x + node.width * zoom,
+		y + node.height * zoom);
 	c.fillStyle = gradient;
 
 	switch (node.type) {
 	case "action":
 		gradient.addColorStop(0, actionColourA);
 		gradient.addColorStop(1, actionColourB);
-		c.fillRect(x * zoom, y * zoom, node.width * zoom,
-			node.height * zoom);
+		c.fillRect(x, y, node.width * zoom, node.height * zoom);
 		c.strokeStyle = actionBorderColour;
-		c.strokeRect(x * zoom, y * zoom, node.width * zoom,
-			node.height * zoom);
+		c.strokeRect(x, y, node.width * zoom, node.height * zoom);
 		break;
 	case "branch":
 		gradient.addColorStop(0, branchColourA);
 		gradient.addColorStop(1, branchColourB);
-		c.fillRect(x * zoom, y * zoom, node.width * zoom,
-			node.height * zoom);
+		c.fillRect(x, y, node.width * zoom, node.height * zoom);
 		c.strokeStyle = branchBorderColour;
-		c.strokeRect(x * zoom, y * zoom, node.width * zoom,
-			node.height * zoom);
+		c.strokeRect(x, y, node.width * zoom, node.height * zoom);
 		break;
 	case "iteration":
 		gradient.addColorStop(0, iterationColourA);
 		gradient.addColorStop(1, iterationColourB);
-		c.fillRect(x * zoom, y * zoom, node.width * zoom,
-			node.height * zoom);
+		c.fillRect(x, y, node.width * zoom, node.height * zoom);
 		c.strokeStyle = iterationBorderColour;
-		c.strokeRect(x * zoom, y * zoom, node.width * zoom,
-			node.height * zoom);
+		c.strokeRect(x, y, node.width * zoom, node.height * zoom);
 		break;
 	case "selection":
 		gradient.addColorStop(0, selectionColourA);
 		gradient.addColorStop(1, selectionColourB);
-		c.fillRect(x * zoom, y * zoom, node.width * zoom,
-			node.height * zoom);
+		c.fillRect(x, y, node.width * zoom, node.height * zoom);
 		c.strokeStyle = selectionBorderColour;
-		c.strokeRect(x * zoom, y * zoom, node.width * zoom,
-			node.height * zoom);
+		c.strokeRect(x, y, node.width * zoom, node.height * zoom);
 		break;
 	}
 
