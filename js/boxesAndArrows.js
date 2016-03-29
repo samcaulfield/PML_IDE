@@ -100,7 +100,6 @@ var gapBetweenNodes = 30;
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Input control, event handlers etc.
 //
-
 const LeftMouseButton = 0;
 const RightMouseButton = 3;
 canvas.addEventListener("contextmenu", handleContextMenu, false);
@@ -318,13 +317,29 @@ function onMouseDown(e) {
 				draw();
 				break;
 			case 4: // Delete
-			case 5: // Insert action before
-			case 6: // Insert branch before
-			case 7: // Insert iteration before
-			case 8: // Insert selection before
 				menuOpen = false;
 				draw();
 				nope();
+				break;
+			case 5: // Insert action before
+				insertBefore(menuClickedNode, "action");
+				menuOpen = false;
+				draw();
+				break;
+			case 6: // Insert branch before
+				insertBefore(menuClickedNode, "branch");
+				menuOpen = false;
+				draw();
+				break;
+			case 7: // Insert iteration before
+				insertBefore(menuClickedNode, "iteration");
+				menuOpen = false;
+				draw();
+				break;
+			case 8: // Insert selection before
+				insertBefore(menuClickedNode, "selection");
+				menuOpen = false;
+				draw();
 				break;
 			}
 			break;
@@ -354,13 +369,29 @@ function onMouseDown(e) {
 				draw();
 				break;
 			case 4: // Delete
-			case 5: // Insert action before
-			case 6: // Insert branch before
-			case 7: // Insert iteration before
-			case 8: // Insert selection before
+				nope();
 				menuOpen = false;
 				draw();
-				nope();
+				break;
+			case 5: // Insert action before
+				insertBefore(menuClickedNode, "action");
+				menuOpen = false;
+				draw();
+				break;
+			case 6: // Insert branch before
+				insertBefore(menuClickedNode, "branch");
+				menuOpen = false;
+				draw();
+				break;
+			case 7: // Insert iteration before
+				insertBefore(menuClickedNode, "iteration");
+				menuOpen = false;
+				draw();
+				break;
+			case 8: // Insert selection before
+				insertBefore(menuClickedNode, "selection");
+				menuOpen = false;
+				draw();
 				break;
 			case 9: // Insert action
 				switch (menuClickedNode.type) {
@@ -511,7 +542,6 @@ function onMouseMove(e) {
 			menuHighlightedEntry = checkMenuHighlightedEntry;
 			draw();
 		}
-
 	} else if (menuOpen && !inBounds(mx, my, menuX - menuOpenTolerance,
 		menuY - menuOpenTolerance, menuWidth + 2 * menuOpenTolerance,
 		menuHeight + 2 * menuOpenTolerance)) {
@@ -782,29 +812,29 @@ function draw() {
 		c.beginPath();
 		c.fillRect(xOffset, legendY + a, legendBoxSize, legendBoxSize);
 		c.fillStyle = textColour;
-		c.fillText("action",
-			xOffset + legendBoxSize * 2, legendY + a + textSize);
+		c.fillText("action", xOffset + legendBoxSize * 2,
+			legendY + a + textSize);
 
 		c.fillStyle = branchColourA;
 		c.beginPath();
 		c.fillRect(xOffset, legendY + a * 2, legendBoxSize, legendBoxSize);
 		c.fillStyle = textColour;
-		c.fillText("branch",
-			xOffset + legendBoxSize * 2, legendY + a * 2 + textSize);
+		c.fillText("branch", xOffset + legendBoxSize * 2,
+			legendY + a * 2 + textSize);
 
 		c.fillStyle = iterationColourA;
 		c.beginPath();
 		c.fillRect(xOffset, legendY + a * 3, legendBoxSize, legendBoxSize);
 		c.fillStyle = textColour;
-		c.fillText("iteration",
-			xOffset + legendBoxSize * 2, legendY + a * 3 + textSize);
+		c.fillText("iteration", xOffset + legendBoxSize * 2,
+			legendY + a * 3 + textSize);
 
 		c.fillStyle = selectionColourA;
 		c.beginPath();
 		c.fillRect(xOffset, legendY + a * 4, legendBoxSize, legendBoxSize);
 		c.fillStyle = textColour;
-		c.fillText("selection",
-			xOffset + legendBoxSize * 2, legendY + a * 4 + textSize);
+		c.fillText("selection", xOffset + legendBoxSize * 2,
+			legendY + a * 4 + textSize);
 	}
 
 	// draw grid
@@ -1120,13 +1150,39 @@ function inBounds(ax, ay, bx, by, width, height) {
 //
 function insertAfter(node, nodeAfterType) {
 	var newNode = new Node(nodeAfterType,
-		menuClickedNode.x + menuClickedNode.width + gapBetweenNodes,
-		menuClickedNode.y, nodeWidth, nodeWidth, menuClickedNode.next,
-		null, menuClickedNode.parentNode, menuClickedNode);
-	menuClickedNode.next = newNode;
+		node.x + node.width + gapBetweenNodes,
+		node.y, nodeWidth, nodeWidth, node.next,
+		null, node.parentNode, node);
+	node.next = newNode;
 	// Push nodes after it over.
 	pushX(newNode.next, nodeWidth + gapBetweenNodes);
 	growParents(newNode);
+}
+
+//
+//
+//
+function insertBefore(node, nodeBeforeType) {
+	var newNode = new Node(nodeBeforeType, node.x, node.y, nodeWidth,
+		nodeWidth, node, null, node.parentNode, node.prev);
+	node.prev = newNode;
+	if (newNode.prev) {
+		newNode.prev.next = newNode;
+	}
+
+	var x = node.parentNode.contents;
+	while (x) {
+		if (x.head === node) {
+			x.head = newNode;
+		}
+		x = x.sibling;
+	}
+
+	pushX(node, nodeWidth + gapBetweenNodes);
+	growParents(newNode);
+	if (listHead === node) {
+		listHead = newNode;
+	}
 }
 
 //
