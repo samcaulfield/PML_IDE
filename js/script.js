@@ -242,7 +242,7 @@ function DOT_to_RF()
 			var options = parsedData.options;
 			options = 
 			{
-  			nodes : {color: {background: '#fff000'}},
+  			//nodes : {color: {background: '#fff000'}},
   			layout : {hierarchical: {sortMethod: "directed"}},
  			interaction : {navigationButtons: true, hover: true},
   			physics :  {
@@ -277,6 +277,64 @@ function ListToDOT(a)
 	var DOT = "PML{";
 	var i = 0;
 	var j = 0;
+
+
+	while(a.next !=null){
+		
+		/*for(i = 0; i < a.provides.length; i++)	//default case where an action requires and provides the same thing
+			{
+				for(j = 0; j < b.requires.length; j++)
+				{
+					if((a.provides[i] == b.requires[j]) && (a.provides.length > 0 && a.requires.length > 0))
+					{
+						DOT += a.name;
+						DOT+= "[color = ";
+						DOT += '"';
+						DOT += "purple";
+						DOT += '"';
+						DOT += "]";
+						DOT += ";\n";
+					}
+				}
+			}*/
+		if(a.requires.length > 0 && a.provides.length > 0)//transformer
+			{
+				DOT+= a.name;
+				DOT+= "[color = ";
+				DOT += '"';
+				DOT += "green";
+				DOT += '"';
+				DOT += "]";
+				DOT += ";\n";
+		
+		
+		
+		}else if(a.requires.length > 0 && a.provides.length == 0)//blackhole
+		{
+			DOT+= a.name;
+			DOT+= "[color = ";
+			DOT += '"';
+			DOT += "yellow";
+			DOT += '"';
+			DOT += "]";
+			DOT += ";\n";
+			
+
+		}
+	
+		else if (a.requires.length == 0 && a.provides.length > 0)//miracle
+		{
+			DOT+= a.name;
+			DOT+= "[color = ";
+			DOT += '"';
+			DOT += "pink";
+			DOT += '"';
+			DOT += "]";
+			DOT += ";\n";
+		}
+		a = a.next;
+	}
+		a = start;
 
 	while(a.next != null)
 	{
