@@ -1170,12 +1170,14 @@ function insertBefore(node, nodeBeforeType) {
 		newNode.prev.next = newNode;
 	}
 
-	var x = node.parentNode.contents;
-	while (x) {
-		if (x.head === node) {
-			x.head = newNode;
+	if (node.parentNode) {
+		var x = node.parentNode.contents;
+		while (x) {
+			if (x.head === node) {
+				x.head = newNode;
+			}
+			x = x.sibling;
 		}
-		x = x.sibling;
 	}
 
 	pushX(node, nodeWidth + gapBetweenNodes);
