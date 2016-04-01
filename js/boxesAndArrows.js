@@ -194,6 +194,7 @@ function initBoxesAndArrows() {
 	savedCanvasWidth = canvas.offsetWidth;
 	savedCanvasHeight = canvas.offsetHeight;
 
+	canvas.addEventListener("click", onClick, false);
 	canvas.addEventListener("contextmenu", handleContextMenu, false);
 	canvas.addEventListener("mousemove", onMouseMove, false);
 	canvas.addEventListener("mousedown", onMouseDown, false);
@@ -245,23 +246,10 @@ function worldToScreenY(y) {
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-//
-// Handles mouse presses EXCEPT right click.
-//
-function onMouseDown(e) {
-	switch (e.button) {
-	case LeftMouseButton:
-		lmbPressed = true;
-		break
-	case RightMouseButton:
-		// Throw away RMB clicks here, they are used to open the menu.
-		return;
-	}
-
+function onClick(e) {
 	var canvasOffset = $("#canvas").offset();
 	var offsetX = canvasOffset.left;
 	var offsetY = canvasOffset.top;
-	// The cursor coordinates on the canvas.
 	var mx = parseInt(e.clientX - offsetX);
 	var my = parseInt(e.clientY - offsetY);
 
@@ -473,6 +461,69 @@ function onMouseDown(e) {
 	} else if (menuOpen) {
 		menuOpen = false;
 		draw();
+	} else {
+		var node = listHead;
+		var finished = false;
+		var clickedAction = null;
+		while (!finished && node) {
+			var x = screenToWorldX(mx);
+			var y = screenToWorldY(my);
+			if (inBounds(x, y, node.x, node.y, node.width, node.height)) {
+				if (node.type == "action") {
+					clickedAction = node;
+					finished = true;
+				} else {
+					var x = findNodeAt(x, y, node);
+					switch (x.type) {
+					case "action":
+						clickedAction = x;
+						finished = true;
+						break;
+					}
+				}
+			} else {
+				node = node.next;
+			}
+		}
+
+		if (clickedAction != null) {
+			document.getElementById("scriptEntryCurrent").innerHTML = "Current script: ";
+			if (clickedAction.script === "") {
+				document.getElementById("scriptEntryCurrent").innerHTML += "empty";
+			} else {
+				document.getElementById("scriptEntryCurrent").innerHTML += clickedAction.script;
+			}
+
+			$("#scriptEntryDialogForm").off("submit");
+
+			$("#scriptEntryDialogForm").on("submit", function(e) {
+				e.preventDefault();
+
+				console.log(clickedAction.x);
+
+				clickedAction.script = document.getElementById("scriptEntryText").value;
+				document.getElementById("scriptEntryText").value = "";
+
+				$("#scriptEntryDialog").modal("hide");
+			});
+
+			$("#scriptEntryDialog").modal("show");
+		} else {
+		}
+	}
+}
+
+//
+// Handles mouse presses EXCEPT right click.
+//
+function onMouseDown(e) {
+	switch (e.button) {
+	case LeftMouseButton:
+		lmbPressed = true;
+		break
+	case RightMouseButton:
+		// Throw away RMB clicks here, they are used to open the menu.
+		return;
 	}
 }
 
@@ -654,6 +705,7 @@ function Node(type, x, y, width, height, next, contents, parentNode, prev) {
 	this.contents = contents;
 	this.parentNode = parentNode;
 	this.prev = prev;
+	this.script = "";
 }
 
 //
