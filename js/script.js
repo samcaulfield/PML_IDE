@@ -557,6 +557,9 @@ function sortNumber(a,b) {
     return a - b;
 }
 
+function startGraphicalEditor() {
+	document.getElementById("graphicalEditor").innerHTML = "<canvas id='canvas'></canvas>"
+}
 
 function closeNotyInstance(){
 	if(notyInstance){notyInstance.close();}

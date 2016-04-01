@@ -1,11 +1,12 @@
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // Boxes & Arrows PML Builder
 // Author: Sam Caulfield <sam@samcaulfield.com>
-// Date: 28.03.2016
+// Date: 01.04.2016
 // Current Status: Not ready for release (Minimal functionality)
 //
 // Implemented features:
 // 	- Ability to insert actions, branches, iterations, selections.
+//	- Ability to do above before and after nodes.
 // 	- Ability to nest the above arbitrarily.
 // 	- Support for camera dragging and zooming.
 // 	- Boxes visually connected with arrows.
@@ -25,7 +26,6 @@
 //
 // TODO: Release 1
 // 	- Implement node deletion
-// 	- Implement insertion before current node
 //
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 
@@ -44,12 +44,10 @@ var listHead = null;
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-var canvas = document.getElementById("canvas");
-var c = canvas.getContext("2d");
-canvas.style.width='100%';
-canvas.style.height='100%';
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
+var canvas;
+var c;
+
+var savedCanvasWidth, savedCanvasHeight;
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Mouse information
@@ -102,19 +100,13 @@ var gapBetweenNodes = 30;
 //
 const LeftMouseButton = 0;
 const RightMouseButton = 3;
-canvas.addEventListener("contextmenu", handleContextMenu, false);
-canvas.addEventListener("mousemove", onMouseMove, false);
-canvas.addEventListener("mousedown", onMouseDown, false);
-canvas.addEventListener("mouseup", onMouseUp, false);
-canvas.addEventListener("mousewheel", onMouseWheel, false);
-canvas.addEventListener("mouseout", onMouseOut, false);
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Text information, size and colour
 //
 var textColour = "#000000";
 var textFont = "monospace";
-var textSize = 20;
+var textSize = 15;
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 // Legend information
@@ -190,7 +182,29 @@ var menuType = emptyOptions;
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-draw();
+function initBoxesAndArrows() {
+	canvas = document.getElementById("canvas");
+	c = canvas.getContext("2d");
+
+	canvas.style.width='100%';
+	canvas.style.height='100%';
+	canvas.width = canvas.offsetWidth;
+	canvas.height = canvas.offsetHeight;
+
+	savedCanvasWidth = canvas.offsetWidth;
+	savedCanvasHeight = canvas.offsetHeight;
+
+	canvas.addEventListener("contextmenu", handleContextMenu, false);
+	canvas.addEventListener("mousemove", onMouseMove, false);
+	canvas.addEventListener("mousedown", onMouseDown, false);
+	canvas.addEventListener("mouseup", onMouseUp, false);
+	canvas.addEventListener("mousewheel", onMouseWheel, false);
+	canvas.addEventListener("mouseout", onMouseOut, false);
+
+	draw();
+}
+
+initBoxesAndArrows();
 
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
@@ -760,6 +774,12 @@ function clearCanvas() {
 var debug = false;
 var frame = 0;
 function draw() {
+	// Check if canvas dimensions changed and refresh graphics if they did.
+	if (savedCanvasWidth != canvas.offsetWidth ||
+		savedCanvasHeight != canvas.offsetHeight) {
+		initBoxesAndArrows();
+	}
+
 	clearCanvas();
 
 	if (debug) {
