@@ -18,21 +18,21 @@ These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
 * Ensure the required dependencies are installed:
 
-	`make install-deps`
+`make install-deps`
 
 * Choose a project name and deploy the IDE:
 
-	`make install ProjectName=<project name>`
+`make install ProjectName=<project name>`
 
 * Check that the installation went OK:
 
-	`make smoke-test ProjectName=<project name>`
+`make smoke-test ProjectName=<project name>`
 
 * Access the IDE by visiting `localhost/<project name>` in a web browser.
 
 * Remove the IDE at any time by running:
 
-	`make clean ProjectName=<project name>`
+`make clean ProjectName=<project name>`
 
 
 ### 2. Features And Execution:
@@ -195,3 +195,36 @@ editor.
 "empty" if the action has no script.
 * Enter a new script in the text box for the action and click `Submit`.
 
+___
+
+**Diagrams**
+
+__
+
+**Resource Flow**
+This feature describes the process diagram annoted with resource names showing how resources flow through the
+process.
+* Open PML Studio.
+* If PML Studio is already open, but the Resource Flow is not displayed,
+click `Tools > Resource Flow`.
+* The portion of the screen to the right of the text editor contains the
+graphical editor. This area is coloured in white.
+* Right click anywhere in the white area to open the menu.
+* From the menu option, user can click file to load a PML file.
+* User can also manually edit and add pml code in the resource flow browser under tools.
+* To display the process diagram annoted with resource names showing how resources flow through the process, scroll to resource flow under menu bar once the edit of code is completed. 
+
+**Analysis Colored Actions**
+This feature describes how actions should get different colors if they are "miracles," "black holes," or
+"transformers.
+*Open PML studio
+* * If PML Studio is already open, but the Resource Flow is not displayed,
+click `Tools > Resource Flow`.
+* The portion of the screen to the right of the text editor contains the
+graphical editor. This area is coloured in white.
+* Right click anywhere in the white area to open the menu.
+* From the menu option, user can click file-> open from disk to load a pml file.
+* User can also manually edit pml code in the resource flow browser.
+* If "transformer" is detected, the name of the action would be highlighted in green.
+* If " blackhole" is detected, the name of the action would be highlighted in yellow.
+* If"miracle" is detected, the name of the action would be highlighted in pink. 
