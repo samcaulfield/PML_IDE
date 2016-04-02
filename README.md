@@ -1,5 +1,11 @@
 ## A web-based IDE for PML
 
+**Release 2 progress:**
+
+* Feature points implemented: 57/174
+* Feature points tested: 0/174
+* Total completed feature points for Release 2: 0/174 (0%)
+
 
 Contents:
 
@@ -30,6 +36,12 @@ These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
 
 ### 2. Features And Execution:
+
+---
+
+**Basic Interface**
+
+---
 
 **File upload & download**
 
@@ -122,5 +134,64 @@ This ensures all the syntax errors are highlighted.
 problem with your model. 
 These messages are displayed to the left of the line numbers in the editor.
 
+---
 
+**Enhancements to Basic Interface**
+
+---
+
+**Save to user-specified local file**
+
+This feature allows the user to specify the name of the file being saved to disk.
+* Click `File > Save to disk`.
+* In the dialog that opens, enter the desired file name in the `Save as` textbox.
+* Click `Save`.
+* The file will now be downloaded in the browser's download directory.
+
+**Jump to first error/warning**
+
+This feature scrolls the text editor to the first occurence of an error or warning.
+* Click `Tools > Check syntax`.
+* The text editor will jump to the first error or warning.
+
+**Jump to next/prev error/warning**
+
+This feature allows the user to cycle through the errors or warnings.
+* Click `Tools > Check syntax`.
+* In the dialog box that opens in the top centre of the screen, click
+previous/next to cycle the errors and jump to them.
+
+---
+
+**Graphical Designer**
+
+---
+
+**Boxes and Arrows**
+
+This feature allows the user to build a PML model graphically.
+* Open PML Studio.
+* If PML Studio is already open, but the graphical editor is not displayed,
+click `Tools > Graphical Editor`.
+* The portion of the screen to the right of the text editor contains the
+graphical editor. This area is coloured in grey.
+* Right click anywhere in the grey area to open the menu.
+* Click a menu option to insert the first node in the model.
+* From now on, right-click a node to show the list of possible options for the
+node.
+* Hold left click and drag the mouse to change the camera position in the model.
+* Scroll the scrool wheel to zoom the model in and out.
+* The legend at the bottom-left of the graphical editor shows what colours
+the various PML structures have.
+
+**Scripts**
+
+This feature allows the user to enter scripts into actions in the graphical
+editor.
+* Open the graphical editor as described in `Boxes and Arrows`.
+* Build a PML model containing actions.
+* Left-click on an action to open the script entry dialog.
+* The dialog will display the script of the action if it exists. It will display
+"empty" if the action has no script.
+* Enter a new script in the text box for the action and click `Submit`.
 
