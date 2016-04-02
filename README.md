@@ -195,36 +195,32 @@ editor.
 "empty" if the action has no script.
 * Enter a new script in the text box for the action and click `Submit`.
 
-___
+---
 
 **Diagrams**
 
-__
+---
 
 **Resource Flow**
-This feature describes the process diagram annoted with resource names showing how resources flow through the
-process.
+
+This feature allows the user to display a process diagram annotated with resource
+names showing how resources flow through the process.
 * Open PML Studio.
-* If PML Studio is already open, but the Resource Flow is not displayed,
-click `Tools > Resource Flow`.
-* The portion of the screen to the right of the text editor contains the
-graphical editor. This area is coloured in white.
-* Right click anywhere in the white area to open the menu.
-* From the menu option, user can click file to load a PML file.
-* User can also manually edit and add pml code in the resource flow browser under tools.
-* To display the process diagram annoted with resource names showing how resources flow through the process, scroll to resource flow under menu bar once the edit of code is completed. 
+* Enter PML code into the text editor either manually or by uploading a file.
+* Click `Tools > Resource Flow`.
+* The diagram will be displayed in the portion of the screen to the right of the
+text editor.
 
 **Analysis Colored Actions**
-This feature describes how actions should get different colors if they are "miracles," "black holes," or
-"transformers.
-*Open PML studio
-* * If PML Studio is already open, but the Resource Flow is not displayed,
-click `Tools > Resource Flow`.
-* The portion of the screen to the right of the text editor contains the
-graphical editor. This area is coloured in white.
-* Right click anywhere in the white area to open the menu.
-* From the menu option, user can click file-> open from disk to load a pml file.
-* User can also manually edit pml code in the resource flow browser.
-* If "transformer" is detected, the name of the action would be highlighted in green.
-* If " blackhole" is detected, the name of the action would be highlighted in yellow.
-* If"miracle" is detected, the name of the action would be highlighted in pink. 
+
+This feature allows the user to display a process diagram where the actions
+are coloured differently if they are "miracles," "black holes," or "transformers".
+* Open PML studio
+* Enter PML code into the text editor either manually or by uploading a file.
+* Click `Tools > Resource Flow`.
+* The diagram will be displayed in the portion of the screen to the right of the
+text editor.
+* If the action is a transformer, the name of the action is highlighted in green.
+* If the action is a black hole, the name of the action is highlighted in yellow.
+* If the action is a miracle, the name of the action is highlighted in pink.
+
