@@ -199,8 +199,9 @@ function initBoxesAndArrows() {
 	canvas.addEventListener("mousemove", onMouseMove, false);
 	canvas.addEventListener("mousedown", onMouseDown, false);
 	canvas.addEventListener("mouseup", onMouseUp, false);
-	canvas.addEventListener("mousewheel", onMouseWheel, false);
 	canvas.addEventListener("mouseout", onMouseOut, false);
+
+	$("#canvas").on("mousewheel", onMouseWheel);
 
 	draw();
 }
@@ -546,15 +547,18 @@ function onMouseUp(e) {
 //
 function onMouseWheel(e) {
 	e.preventDefault();
+
+	var delta = e.deltaY;
+
 	menuOpen = false;
 	draw();
 
-	if (e.wheelDelta > 0) {
+	if (delta > 0) {
 		if (zoom < maxZoom) {
 			zoom += zoomDelta;
 			draw();
 		}
-	} else if (e.wheelDelta < 0) {
+	} else if (delta < 0) {
 		if (zoom > minZoom) {
 			zoom -= zoomDelta;
 			draw();
