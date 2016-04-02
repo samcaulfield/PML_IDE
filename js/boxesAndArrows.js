@@ -488,27 +488,52 @@ function onClick(e) {
 		}
 
 		if (clickedAction != null) {
-			document.getElementById("scriptEntryCurrent").innerHTML = "Current script: ";
-			if (clickedAction.script === "") {
-				document.getElementById("scriptEntryCurrent").innerHTML += "empty";
-			} else {
-				document.getElementById("scriptEntryCurrent").innerHTML += clickedAction.script;
-			}
+			// Update dialog internals to reflect action data.
+			// Update action name:
+			document.getElementById("nameEntry").value = clickedAction.name;
+			// Update script field:
+			document.getElementById("scriptEntry").value = clickedAction.script;
+			// Update required resources field
+			document.getElementById("requiresEntry").value = clickedAction.requires;
+			// Update provided resources field
+			document.getElementById("providesEntry").value = clickedAction.provides;
 
-			$("#scriptEntryDialogForm").off("submit");
+			// Unregister previous callbacks.
+			$("#nameEntryForm").off("submit");
+			$("#scriptEntryForm").off("submit");
+			$("#requiresEntryForm").off("submit");
+			$("#providesEntryForm").off("submit");
+			$("#actionEntryDone").off("click");
 
-			$("#scriptEntryDialogForm").on("submit", function(e) {
+			$("#nameEntryForm").on("submit", function(e) {
 				e.preventDefault();
-
-				console.log(clickedAction.x);
-
-				clickedAction.script = document.getElementById("scriptEntryText").value;
-				document.getElementById("scriptEntryText").value = "";
-
-				$("#scriptEntryDialog").modal("hide");
+				clickedAction.name = document.getElementById("nameEntry").value;
 			});
 
-			$("#scriptEntryDialog").modal("show");
+			$("#scriptEntryForm").on("submit", function(e) {
+				e.preventDefault();
+				clickedAction.script = document.getElementById("scriptEntry").value;
+			});
+
+			$("#requiresEntryForm").on("submit", function(e) {
+				e.preventDefault();
+				clickedAction.requires = document.getElementById("requiresEntry").value;
+			});
+
+			$("#providesEntryForm").on("submit", function(e) {
+				e.preventDefault();
+				clickedAction.provides = document.getElementById("providesEntry").value;
+			});
+
+			$("#actionEntryDone").on("click", function(e) {
+				$("#nameEntryForm").submit();
+				$("#scriptEntryForm").submit();
+				$("#requiresEntryForm").submit();
+				$("#providesEntryForm").submit();
+				$("#actionEntryDialog").modal("hide");
+			});
+
+			$("#actionEntryDialog").modal("show");
 		} else {
 		}
 	}
@@ -709,7 +734,10 @@ function Node(type, x, y, width, height, next, contents, parentNode, prev) {
 	this.contents = contents;
 	this.parentNode = parentNode;
 	this.prev = prev;
+	this.name="";
 	this.script = "";
+	this.requires = "";
+	this.provides = "";
 }
 
 //

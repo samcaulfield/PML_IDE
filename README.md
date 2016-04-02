@@ -2,7 +2,7 @@
 
 **Release 2 progress:**
 
-* Feature points implemented: 57/174
+* Feature points implemented: 67/174
 * Feature points tested: 0/174
 * Total completed feature points for Release 2: 0/174 (0%)
 
@@ -191,9 +191,25 @@ editor.
 * Open the graphical editor as described in `Boxes and Arrows`.
 * Build a PML model containing actions.
 * Left-click on an action to open the script entry dialog.
-* The dialog will display the script of the action if it exists. It will display
-"empty" if the action has no script.
-* Enter a new script in the text box for the action and click `Submit`.
+* The dialog will display the script of the action if it exists, in the
+"Action script" field.
+* Enter a new script in the text box for the action and click `Change script`.
+* Click `Done` when finished.
+
+**Resources**
+
+This feature allows the user to enter required and provided resources into
+actions in the graphical editor.
+* Open the graphical editor as described in `Boxes and Arrows`.
+* Build a PML model containing actions.
+* Left-click on an action to open the resources entry dialog.
+* The dialog will display the required and provided resources of the action if
+they exist, in the "Action required resources" and "Action provided resources"
+fields.
+* Enter new resources in each field. *There must be one resource per line.*
+* Click `Change required resources` or `Changed provided resources` 
+depending on which fields were changed.
+* Click `Done` when finished.
 
 ---
 

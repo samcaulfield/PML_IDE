@@ -247,19 +247,39 @@
 </div>
 
 <!-- Boxes & Arrows Script Entry Dialog -->
-<div id="scriptEntryDialog" class="modal fade" role="dialog">
+<div id="actionEntryDialog" class="modal fade" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Enter action script</h4>
+				<h4 class="modal-title">Enter action information</h4>
 			</div>
 			<div class="modal-body">
-				<form id="scriptEntryDialogForm">
-					<p id="scriptEntryCurrent"></p></br>
-					<textarea id="scriptEntryText" rows="10" cols="60">Enter a script</textarea>
-					<button class="btn btn-default">Submit</button>
+				<form id="nameEntryForm">
+					<p>Action name:</p>
+					<textarea id="nameEntry" rows="1" cols="60"></textarea>
+					<button class="btn btn-default">Change name</button>
 				</form>
+				</br>
+				<form id="scriptEntryForm">
+					<p>Action script:</p>
+					<textarea id="scriptEntry" rows="5" cols="60"></textarea>
+					<button class="btn btn-default">Change script</button>
+				</form>
+				</br>
+				<form id="requiresEntryForm">
+					<p>Action required resources (one per line):</p>
+					<textarea id="requiresEntry" rows="5" cols="60"></textarea>
+					<button class="btn btn-default">Change required resources</button>
+				</form>
+				</br>
+				<form id="providesEntryForm">
+					<p>Action provided resources (one per line):</p>
+					<textarea id="providesEntry" rows="5" cols="60"></textarea>
+					<button class="btn btn-default">Change provided resources</button>
+				</form>
+				</br>
+				<button id="actionEntryDone">Done</button>
 			</div>
 		</div>
 	</div>
