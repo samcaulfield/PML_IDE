@@ -497,12 +497,15 @@ function onClick(e) {
 			document.getElementById("requiresEntry").value = clickedAction.requires;
 			// Update provided resources field
 			document.getElementById("providesEntry").value = clickedAction.provides;
+			// Update agents field
+			document.getElementById("agentEntry").value = clickedAction.agents;
 
 			// Unregister previous callbacks.
 			$("#nameEntryForm").off("submit");
 			$("#scriptEntryForm").off("submit");
 			$("#requiresEntryForm").off("submit");
 			$("#providesEntryForm").off("submit");
+			$("#agentEntryForm").off("submit");
 			$("#actionEntryDone").off("click");
 
 			$("#nameEntryForm").on("submit", function(e) {
@@ -525,16 +528,21 @@ function onClick(e) {
 				clickedAction.provides = document.getElementById("providesEntry").value;
 			});
 
+			$("#agentEntryForm").on("submit", function(e) {
+				e.preventDefault();
+				clickedAction.agents = document.getElementById("agentEntry").value;
+			});
+
 			$("#actionEntryDone").on("click", function(e) {
 				$("#nameEntryForm").submit();
 				$("#scriptEntryForm").submit();
 				$("#requiresEntryForm").submit();
 				$("#providesEntryForm").submit();
+				$("#agentEntryForm").submit();
 				$("#actionEntryDialog").modal("hide");
 			});
 
 			$("#actionEntryDialog").modal("show");
-		} else {
 		}
 	}
 }
@@ -738,6 +746,7 @@ function Node(type, x, y, width, height, next, contents, parentNode, prev) {
 	this.script = "";
 	this.requires = "";
 	this.provides = "";
+	this.agents = "";
 }
 
 //

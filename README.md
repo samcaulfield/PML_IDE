@@ -2,7 +2,7 @@
 
 **Release 2 progress:**
 
-* Feature points implemented: 67/174
+* Feature points implemented: 77/174
 * Feature points tested: 0/174
 * Total completed feature points for Release 2: 0/174 (0%)
 
@@ -209,6 +209,20 @@ fields.
 * Enter new resources in each field. *There must be one resource per line.*
 * Click `Change required resources` or `Changed provided resources` 
 depending on which fields were changed.
+* Click `Done` when finished.
+
+**Agents**
+
+This feature allows the user to specify which agents perform actions in the
+graphical editor.
+* Open the graphical editor as described in `Boxes and Arrows`.
+* Build a PML model containing actions.
+* Left-click on an action to open the agent entry dialog.
+* The dialog will display the agents associated with the action if they exist,
+in the "Action agents" field.
+* Enter new agents into the "Action agents" field.
+*There must be one resource per line.*
+* Click `Change agents`.
 * Click `Done` when finished.
 
 ---
