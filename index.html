@@ -23,20 +23,22 @@
 		#textEditor {
 			position: relative;
 			width: 40%;
-			height:94vh;
-			border:1px solid grey;
-			float:left;
+			height: 92vh;
+			float: left;
+			border: 1px solid grey;
 		}
+
+		#graphicalEditor {
+			width: 60%;
+			height: 86vh;
+			float: left;
+			border: 1px solid grey;
+		}
+
 		.navbar {
 		    margin-bottom: 0;
 		}
-		#graphicalEditor {
-			width: 60%;
-			height: 94vh;
-			border:1px solid grey;
-			overflow-y: scroll;
-			float:left;
-		}
+
 		#fileInput {
 			display: none
 		}
@@ -51,6 +53,7 @@
 	This is the navigation bar that is displayed across the top of the web
 	page.
 -->
+
 <nav class="navbar navbar-default">
 	<div class="container-fluid">
 	<!-- Brand and toggle get grouped for better mobile display -->
@@ -125,9 +128,18 @@
 	</div><!-- /.container-fluid -->
 </nav>
 
-<div>
+<div id="main">
 	<div id="textEditor"></div>
-	<div id="graphicalEditor"><canvas id="canvas"></canvas></div>
+	<div id="graphicalEditor">
+		<nav class="navbar navbar-default">
+			<a class="navbar-brand" href="#">Graphical Editor</a>
+			<ul class="nav navbar-nav">
+				<li><a id="generatePML" href="#">Generate PML</a></li>
+				<li><a id="clearModel" href="#">Clear Model</a></li>
+			</ul>
+		</nav>
+		<canvas id="canvas"></canvas>
+	</div>
 </div>
 
 <!-- Sign In Modal -->
@@ -268,20 +280,20 @@
 				</form>
 				</br>
 				<form id="requiresEntryForm">
-					<p>Action required resources (one per line):</p>
-					<textarea id="requiresEntry" rows="5" cols="60"></textarea>
+					<p>Action required resources (seperate them with &amp;&amp;):</p>
+					<textarea id="requiresEntry" rows="3" cols="60"></textarea>
 					<button class="btn btn-default">Change required resources</button>
 				</form>
 				</br>
 				<form id="providesEntryForm">
-					<p>Action provided resources (one per line):</p>
-					<textarea id="providesEntry" rows="5" cols="60"></textarea>
+					<p>Action provided resources (seperate them with &amp;&amp;):</p>
+					<textarea id="providesEntry" rows="3" cols="60"></textarea>
 					<button class="btn btn-default">Change provided resources</button>
 				</form>
 				</br>
 				<form id="agentEntryForm">
-					<p>Action agents (one per line):</p>
-					<textarea id="agentEntry" rows="5" cols="60"></textarea>
+					<p>Action agents (seperate them with commas):</p>
+					<textarea id="agentEntry" rows="3" cols="60"></textarea>
 					<button class="btn btn-default">Change agents</button>
 				</form>
 				</br>

@@ -2,7 +2,7 @@
 
 **Release 2 progress:**
 
-* Feature points implemented: 77/174
+* Feature points implemented: 89/174
 * Feature points tested: 0/174
 * Total completed feature points for Release 2: 0/174 (0%)
 
@@ -189,7 +189,7 @@ the various PML structures have.
 This feature allows the user to enter scripts into actions in the graphical
 editor.
 * Open the graphical editor as described in `Boxes and Arrows`.
-* Build a PML model containing actions.
+* Build a PML model containing actions as described in `Boxes and Arrows`.
 * Left-click on an action to open the script entry dialog.
 * The dialog will display the script of the action if it exists, in the
 "Action script" field.
@@ -201,12 +201,13 @@ editor.
 This feature allows the user to enter required and provided resources into
 actions in the graphical editor.
 * Open the graphical editor as described in `Boxes and Arrows`.
-* Build a PML model containing actions.
+* Build a PML model containing actions as described in `Boxes and Arrows`.
 * Left-click on an action to open the resources entry dialog.
 * The dialog will display the required and provided resources of the action if
 they exist, in the "Action required resources" and "Action provided resources"
 fields.
-* Enter new resources in each field. *There must be one resource per line.*
+* Enter new resources in each field. *Multiple resources must be separated with
+'&&'.*
 * Click `Change required resources` or `Changed provided resources` 
 depending on which fields were changed.
 * Click `Done` when finished.
@@ -216,14 +217,22 @@ depending on which fields were changed.
 This feature allows the user to specify which agents perform actions in the
 graphical editor.
 * Open the graphical editor as described in `Boxes and Arrows`.
-* Build a PML model containing actions.
+* Build a PML model containing actions as described in `Boxes and Arrows`.
 * Left-click on an action to open the agent entry dialog.
 * The dialog will display the agents associated with the action if they exist,
 in the "Action agents" field.
 * Enter new agents into the "Action agents" field.
-*There must be one resource per line.*
+*Multiple agents must be separated with commas.*
 * Click `Change agents`.
 * Click `Done` when finished.
+
+**PML Generation**
+
+This feature allows the user to generate PML from the graphical model.
+* Open the graphical editor as described in `Boxes and Arrows`.
+* Build a PML model as described in `Boxes and Arrows`.
+* Click `Generate PML` on the graphical editor toolbar.
+* The text editor will now contain the generated PML.
 
 ---
 

@@ -558,7 +558,15 @@ function sortNumber(a,b) {
 }
 
 function startGraphicalEditor() {
-	document.getElementById("graphicalEditor").innerHTML = "<canvas id='canvas'></canvas>"
+	document.getElementById("graphicalEditor").innerHTML = `
+	<nav class="navbar navbar-default">
+		<a class="navbar-brand" href="#">Graphical Editor</a>
+		<ul class="nav navbar-nav">
+			<li><a id="generatePML" href="#">Generate PML</a></li>
+			<li><a id="clearModel" href="#">Clear Model</a></li>
+		</ul>
+	</nav>
+	<canvas id="canvas"></canvas>`;
 }
 
 function closeNotyInstance(){

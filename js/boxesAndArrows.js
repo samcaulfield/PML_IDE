@@ -1,7 +1,7 @@
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // Boxes & Arrows PML Builder
 // Author: Sam Caulfield <sam@samcaulfield.com>
-// Date: 01.04.2016
+// Date: 03.04.2016
 // Current Status: Not ready for release (Minimal functionality)
 //
 // Implemented features:
@@ -10,11 +10,13 @@
 // 	- Ability to nest the above arbitrarily.
 // 	- Support for camera dragging and zooming.
 // 	- Boxes visually connected with arrows.
+//	- Ability to generate PML from the graph.
 //
 // Details:
 // 	- The program is entirely event driven. Nothing changes without direct
 //	  user interaction such as mouse clicks.
 // 	- Whenever the UI needs to be updated, *everything* is redrawn.
+//	- Drawing is done using the painter's algorithm.
 // 	- The menu (right click) is the main point of entry for user input.
 // 	- Coordinate systems: Drawable objects have an (x, y) position. The
 // 	  camera has an offset (cx, cy) and zoom z. Objects are drawn at
@@ -176,6 +178,10 @@ var emptyOptions = [ // Options if the model is empty.
 ];
 var menuType = emptyOptions;
 
+//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+// PML Generation Options
+var indentString = "\t";
+
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 //
 // Call setup functions
@@ -202,6 +208,15 @@ function initBoxesAndArrows() {
 	canvas.addEventListener("mouseout", onMouseOut, false);
 
 	$("#canvas").on("mousewheel", onMouseWheel);
+
+	$("#generatePML").on("click", function(e) {
+		editor.setValue("process a {\n" + generatePML(listHead, 1) + "}");
+	});
+
+	$("#clearModel").on("click", function(e) {
+		listHead = null;
+		draw();
+	});
 
 	draw();
 }
@@ -490,15 +505,20 @@ function onClick(e) {
 		if (clickedAction != null) {
 			// Update dialog internals to reflect action data.
 			// Update action name:
-			document.getElementById("nameEntry").value = clickedAction.name;
+			document.getElementById("nameEntry").value =
+				clickedAction.name;
 			// Update script field:
-			document.getElementById("scriptEntry").value = clickedAction.script;
+			document.getElementById("scriptEntry").value =
+				clickedAction.script;
 			// Update required resources field
-			document.getElementById("requiresEntry").value = clickedAction.requires;
+			document.getElementById("requiresEntry").value =
+				clickedAction.requires;
 			// Update provided resources field
-			document.getElementById("providesEntry").value = clickedAction.provides;
+			document.getElementById("providesEntry").value =
+				clickedAction.provides;
 			// Update agents field
-			document.getElementById("agentEntry").value = clickedAction.agents;
+			document.getElementById("agentEntry").value =
+				clickedAction.agents;
 
 			// Unregister previous callbacks.
 			$("#nameEntryForm").off("submit");
@@ -510,27 +530,32 @@ function onClick(e) {
 
 			$("#nameEntryForm").on("submit", function(e) {
 				e.preventDefault();
-				clickedAction.name = document.getElementById("nameEntry").value;
+				clickedAction.name = document.
+					getElementById("nameEntry").value;
 			});
 
 			$("#scriptEntryForm").on("submit", function(e) {
 				e.preventDefault();
-				clickedAction.script = document.getElementById("scriptEntry").value;
+				clickedAction.script = document.
+					getElementById("scriptEntry").value;
 			});
 
 			$("#requiresEntryForm").on("submit", function(e) {
 				e.preventDefault();
-				clickedAction.requires = document.getElementById("requiresEntry").value;
+				clickedAction.requires = document.
+					getElementById("requiresEntry").value;
 			});
 
 			$("#providesEntryForm").on("submit", function(e) {
 				e.preventDefault();
-				clickedAction.provides = document.getElementById("providesEntry").value;
+				clickedAction.provides = document.
+					getElementById("providesEntry").value;
 			});
 
 			$("#agentEntryForm").on("submit", function(e) {
 				e.preventDefault();
-				clickedAction.agents = document.getElementById("agentEntry").value;
+				clickedAction.agents = document.
+					getElementById("agentEntry").value;
 			});
 
 			$("#actionEntryDone").on("click", function(e) {
@@ -1360,6 +1385,89 @@ function selectionInsert(selection, newNodeType) {
 // Miscellaneous functions
 //
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+//
+//
+//
+function leftPad(string, num, pre) {
+	for (var i = 0; i < num; i++) {
+		string = pre + string;
+	}
+	return string;
+}
+
+//
+// Generate PML from the graph
+//
+function generatePML(head, indent) {
+	var PML = "";
+	while (head) {
+		switch (head.type) {
+		case "action":
+			PML += leftPad("action " + head.name + " {\n", indent,
+				indentString);
+			PML += leftPad("requires { " + head.requires + " }\n",
+				indent + 1, indentString);
+			PML += leftPad("provides { " + head.provides + " }\n",
+				indent + 1, indentString);
+			PML += leftPad("agent { " + head.agents + " }\n",
+				indent + 1, indentString);
+			PML += leftPad("}\n", indent, indentString);
+			break;
+		case "branch":
+			PML += leftPad("branch {\n", indent, indentString);
+			var outerNode = head.contents;
+			while (outerNode) {
+				if (outerNode.head && outerNode.head.next) {
+					PML += leftPad("sequence {\n",
+						indent + 1, indentString);
+					PML += generatePML(outerNode.head,
+						indent + 2, indentString);
+					PML += leftPad("}\n", indent + 1,
+						indentString);
+				} else {
+					PML += generatePML(outerNode.head,
+						indent + 1, indentString);
+				}
+
+				outerNode = outerNode.sibling;
+			}
+			PML += leftPad("}\n", indent, indentString);
+			break;
+		case "iteration":
+			PML += leftPad("iteration {\n", indent, indentString);
+			if (head.contents) {
+				PML += generatePML(head.contents.head,
+					indent + 1, indentString);
+			}
+			PML += leftPad("}\n", indent, indentString);
+			break;
+		case "selection":
+			PML += leftPad("selection {\n", indent, indentString);
+			var outerNode = head.contents;
+			while (outerNode) {
+				if (outerNode.head && outerNode.head.next) {
+					PML += leftPad("sequence {\n",
+						indent + 1, indentString);
+					PML += generatePML(outerNode.head,
+						indent + 2, indentString);
+					PML += leftPad("}\n", indent + 1,
+						indentString);
+				} else {
+					PML += generatePML(outerNode.head,
+						indent + 1, indentString);
+				}
+
+				outerNode = outerNode.sibling;
+			}
+			PML += leftPad("}\n", indent, indentString);;
+			break;
+		}
+
+		head = head.next;
+	}
+	return PML;
+}
 
 //
 //
