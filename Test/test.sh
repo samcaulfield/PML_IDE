@@ -1,1 +1,1 @@
-python signInTest.py;
+python registerAccount.py;
