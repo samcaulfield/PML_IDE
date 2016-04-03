@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import unittest, time, re
 
-class RegisterSignInTest(unittest.TestCase):
+class SignInTest(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -15,28 +15,20 @@ class RegisterSignInTest(unittest.TestCase):
         self.verificationErrors = []
         self.accept_next_alert = True
     
-    def test_register_sign_in(self):
+    def test_sign_in(self):
         driver = self.driver
-        driver.get(self.base_url + "r9")
+        driver.get(self.base_url + "/seleniumTest/")
         driver.find_element_by_id("signInInfo").click()
-        driver.find_element_by_id("signInModal").click()
         driver.find_element_by_id("signInLink").click()
-        # Warning: verifyTextPresent may require manual changes
-        try: self.assertRegexpMatches(driver.find_element_by_css_selector("BODY").text, r"^[\s\S]*Sign in with a PML Studio account[\s\S]*$")
-        except AssertionError as e: self.verificationErrors.append(str(e))
         driver.find_element_by_link_text("Don't have an account?").click()
         driver.find_element_by_id("registerInputEmail").clear()
-        driver.find_element_by_id("registerInputEmail").send_keys("foo3@bar.com")
+        driver.find_element_by_id("registerInputEmail").send_keys("foo83@bar.com")
         driver.find_element_by_id("registerInputPassword").clear()
         driver.find_element_by_id("registerInputPassword").send_keys("123456")
         driver.find_element_by_id("registerSubmitButton").click()
-        driver.find_element_by_id("signInInfo").click()
-        driver.find_element_by_id("signInLink").click()
-        driver.find_element_by_id("signInInputEmail").clear()
-        driver.find_element_by_id("signInInputEmail").send_keys("foo3@bar.com")
-        driver.find_element_by_id("signInInputPassword").clear()
-        driver.find_element_by_id("signInInputPassword").send_keys("123456")
-        driver.find_element_by_xpath("//button[@type='submit']").click()
+        # Warning: verifyTextNotPresent may require manual changes
+        try: self.assertNotRegexpMatches(driver.find_element_by_css_selector("BODY").text, r"^[\s\S]*Account \(Not signed in\) [\s\S]*$")
+        except AssertionError as e: self.verificationErrors.append(str(e))
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
