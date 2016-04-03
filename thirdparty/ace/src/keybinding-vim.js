@@ -5531,7 +5531,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
     type: "boolean"
   }, false);
   Vim.defineEx('write', 'w', function() {
-    console.log(':write is not implemented')
+	promptToSave();
   });
   defaultKeymap.push(
     { keys: 'zc', type: 'action', action: 'fold', actionArgs: { open: false } },

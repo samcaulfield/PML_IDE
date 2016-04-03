@@ -2,7 +2,7 @@
 
 **Release 2 progress:**
 
-* Feature points implemented: 89/174
+* Feature points implemented: 94/174
 * Feature points tested: 0/174
 * Total completed feature points for Release 2: 0/174 (0%)
 
@@ -160,6 +160,14 @@ This feature allows the user to cycle through the errors or warnings.
 * Click `Tools > Check syntax`.
 * In the dialog box that opens in the top centre of the screen, click
 previous/next to cycle the errors and jump to them.
+
+**Keyboard shortcut to save file**
+
+This feature allows the user to save files using vim and emacs bindings.
+* Click `Edit > Preferences` and change the `Keyboard Handler` entry to switch
+the editor mode.
+* In the vim editor mode, enter the command `:w` to save the file.
+* In the emacs editor mode, enter the key combination `C-x C-s` to save the file.
 
 ---
 
