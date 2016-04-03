@@ -31,6 +31,7 @@ install-deps:
 		git clone https://github.com/jnoll/peos.git; \
 		sudo apt-get install tcl tcl-dev check expect libxml2 bison \
 		flex libreadline6-dev libncurses-dev; \
+		sudo pip install selenium; \
 		if [ -d peos ]; then \
 			cd peos/pml/ && make && cp check/pmlcheck \
 			../../thirdparty/pmlcheck/pmlcheck && cd ../..; \
