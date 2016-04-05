@@ -1,1 +1,1 @@
-python registerAccount.py;
+python registerSignInSignOut.py;
