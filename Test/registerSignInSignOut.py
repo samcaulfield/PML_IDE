@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from selenium import webdriver
+import sqlite3
 from random import randint
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -75,6 +76,10 @@ class RegisterSignInSignOut(unittest.TestCase):
         finally: self.accept_next_alert = True
     
     def tearDown(self):
+	#conn = sqlite3.connect("/home/gulnur/Desktop/pml-studio/user.db")
+	#cursor = conn.execute("select email from user")
+	#for i in cursor:
+	#	print i
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
 

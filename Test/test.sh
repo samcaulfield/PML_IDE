@@ -1,1 +1,4 @@
-python registerSignInSignOut.py;
+python registerSignInSignOut.py
+python syntaxAnalysisWarn0.py
+python syntaxAnalysisWarn3.py
+python syntaxAnalysisError.py
