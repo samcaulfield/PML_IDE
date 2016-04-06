@@ -3,3 +3,4 @@ python syntaxAnalysisWarn0.py
 python syntaxAnalysisWarn3.py
 python syntaxAnalysisError.py
 python editPreferencesTest.py
+python keywordAndResourceCompletion.py

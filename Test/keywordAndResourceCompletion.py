@@ -1,9 +1,3 @@
-"""This is a test to check if edit--> Preferences works;
-   ;inputs a pml code to the editor, goes to edit-->Preferences,
-   ;clears the font size, and changes it to 30px, checks if the font size has been changed to 30px
-   ;if not, raises an exception
-"""
-
 # -*- coding: utf-8 -*-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import unittest, time, re
 
-class Editpref(unittest.TestCase):
+class KeywordCompletion(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -21,33 +15,36 @@ class Editpref(unittest.TestCase):
         self.verificationErrors = []
         self.accept_next_alert = True
     
-    def test_editpref(self):
+    def test_keyword_completion(self):
         driver = self.driver
         driver.get(self.base_url + "/seleniumTest/")
-	driver.find_element_by_css_selector("div.ace_content").click()
-	driver.find_element_by_class_name("ace_text-input").send_keys("""
-process simple {    
-action x{    
-requires { foo }    
-provides { foo }    
-}    
-action y{        
-requires { foo }    
-provides { bar }     
-}
-}  
-""")
-        driver.find_element_by_link_text("Edit").click()
-        driver.find_element_by_link_text("Preferences").click()
-	driver.find_element_by_id("setFontSize").clear()
-	driver.find_element_by_id("setFontSize").send_keys("30px")
-	driver.find_element_by_id("setDragDelay").clear()
-	driver.find_element_by_id("setDragDelay").send_keys("1")
-	font = driver.find_element_by_id("textEditor").value_of_css_property("font-size")
-	print font
-	if font != "30px":
-		raise Exception ("Font size is not set") 
-        #driver.find_element_by_xpath("//div[10]").click()
+        driver.find_element_by_css_selector("div.ace_content").click()
+	print "Testing for keyword completion"	
+	dic = {"proc" : "process", "it" : "iteration", "ac":"action",
+		"br":"branch", "re":"requires","prov":"provides",
+		"sel":"selection","sc":"script","ag":"agent",
+		"seq":"sequence"}
+	for key in dic.keys():
+		driver.find_element_by_class_name("ace_text-input").clear()
+		driver.find_element_by_class_name("ace_text-input").send_keys(key,Keys.RETURN)
+		driver.find_element_by_link_text("File").click()
+		driver.find_element_by_link_text("File").click()
+		text = driver.find_element_by_id("textEditor").text
+		#ab = re.compile(".*process")
+		if text != "1\n%s" % dic[key]:
+			raise Exception ("Keyword test for %s failed!!!!!" % dic[key])
+		else:
+			print "The test has passed for %s keyword" %dic[key]	
+	
+	driver.find_element_by_class_name("ace_text-input").clear()
+	driver.find_element_by_class_name("ace_text-input").send_keys("""process whatever{action what""",Keys.RETURN)
+	driver.find_element_by_link_text("File").click()
+	driver.find_element_by_link_text("File").click()
+	text = driver.find_element_by_id("textEditor").text	
+	if text != "1\nprocess whatever{action whatever":
+		raise Exception ("Resourse completion not passed!")
+	else:
+		print "Resource completion test passed"
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
