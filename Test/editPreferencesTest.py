@@ -1,7 +1,7 @@
 """This is a test to check if edit--> Preferences works;
    ;inputs a pml code to the editor, goes to edit-->Preferences,
-   clears the font size, and changes it to 12px, the change can be seen on 
-   the code. 
+   ;clears the font size, and changes it to 30px, checks if the font size has been changed to 30px
+   ;if not, raises an exception
 """
 
 # -*- coding: utf-8 -*-
@@ -40,7 +40,10 @@ provides { bar }
         driver.find_element_by_link_text("Edit").click()
         driver.find_element_by_link_text("Preferences").click()
         driver.find_element_by_id("setFontSize").clear()
-        driver.find_element_by_id("setFontSize").send_keys("12px")
+        driver.find_element_by_id("setFontSize").send_keys("30px")
+	font = driver.find_element_by_id("textEditor").value_of_css_property("font-size")
+	if font != "30px":
+		raise Exception ("Font size is not set") 
         #driver.find_element_by_xpath("//div[10]").click()
     
     def is_element_present(self, how, what):
