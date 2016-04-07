@@ -11,6 +11,7 @@ Contents:
 
 1. Installation.
 2. Features And Execution.
+3. Tests.
 
 ### 1. Installation:
 
@@ -270,4 +271,7 @@ text editor.
 * If the action is a transformer, the name of the action is highlighted in green.
 * If the action is a black hole, the name of the action is highlighted in yellow.
 * If the action is a miracle, the name of the action is highlighted in pink.
+
+### 3. Tests. 
+  *  `make test ProjectName=<project name>`
 
