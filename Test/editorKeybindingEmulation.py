@@ -47,11 +47,11 @@ provides { bar }
 	driver.find_element_by_id("setFontSize").send_keys("30px")
 	driver.find_element_by_id("setDragDelay").clear()
 	driver.find_element_by_id("setDragDelay").send_keys("1")
+	driver.implicitly_wait(2)
 	font = driver.find_element_by_id("textEditor").value_of_css_property("font-size")
 	print font
 	if font != "30px":
 		raise Exception ("Font size is not set") 
-        #driver.find_element_by_xpath("//div[10]").click()
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)

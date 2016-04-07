@@ -27,7 +27,7 @@ class SynCh(unittest.TestCase):
 	driver.find_element_by_class_name("ace_text-input").send_keys("process a")
         driver.find_element_by_link_text("Tools").click()
         driver.find_element_by_link_text("Check syntax").click()
-	time.sleep(2)
+	driver.implicitly_wait(6)
         try: self.assertRegexpMatches(driver.find_element_by_css_selector("BODY").text, r"^[\s\S]*ERROR . Showing error #1[\s\S]*$")
         except AssertionError as e: self.verificationErrors.append(str(e))
     
