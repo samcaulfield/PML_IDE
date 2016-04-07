@@ -27,6 +27,7 @@ class Editpref(unittest.TestCase):
 	project_name = f.read()
 	f.close()
 	driver.get(self.base_url + "/" + project_name + "/")
+	print "\nNow testing for Editor Keybinding emulation"
 	driver.find_element_by_css_selector("div.ace_content").click()
 	driver.find_element_by_class_name("ace_text-input").send_keys("""
 process simple {    

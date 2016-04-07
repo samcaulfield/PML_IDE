@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
@@ -21,11 +22,12 @@ class SynCh(unittest.TestCase):
 	project_name = f.read()
 	f.close()
 	driver.get(self.base_url + "/" + project_name + "/")
+	print "\nNow testing for Syntax Analysis - Test 3"
         driver.find_element_by_css_selector("div.ace_content").click()
 	driver.find_element_by_class_name("ace_text-input").send_keys("process a")
         driver.find_element_by_link_text("Tools").click()
         driver.find_element_by_link_text("Check syntax").click()
-        # Warning: verifyTextPresent may require manual changes
+	time.sleep(2)
         try: self.assertRegexpMatches(driver.find_element_by_css_selector("BODY").text, r"^[\s\S]*ERROR . Showing error #1[\s\S]*$")
         except AssertionError as e: self.verificationErrors.append(str(e))
     

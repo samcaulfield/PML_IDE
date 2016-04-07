@@ -2,6 +2,8 @@
 from selenium import webdriver
 import sqlite3
 from random import randint
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -33,7 +35,7 @@ class RegisterSignInSignOut(unittest.TestCase):
 	project_name = f.read()
 	f.close()
 	driver.get(self.base_url + "/" + project_name + "/")
-	print "Now testing for registration with new email, signing out & signing back with that email "
+	print "\nNow testing for registration with new email, signing out & signing back with that email "
         driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
         driver.find_element_by_link_text("Don't have an account?").click()
@@ -42,11 +44,9 @@ class RegisterSignInSignOut(unittest.TestCase):
         driver.find_element_by_id("registerInputPassword").clear()
         driver.find_element_by_id("registerInputPassword").send_keys("123456")
         driver.find_element_by_id("registerSubmitButton").click()
-        # ERROR: Caught exception [Error: locator strategy either id or name must be specified explicitly.]
-	#driver.execute_script("signOut();")        
-	#driver.find_element_by_id("signInInfo").click()
-        #driver.find_element_by_id("signOutLink").click()
 	driver.execute_script("signOut();")
+	wait = WebDriverWait(driver,15)
+	element = wait.until(EC.element_to_be_clickable((By.ID,'signInInfo')))
         driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
         driver.find_element_by_id("signInInputEmail").clear()

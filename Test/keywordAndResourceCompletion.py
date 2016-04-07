@@ -22,7 +22,7 @@ class KeywordCompletion(unittest.TestCase):
 	f.close()
 	driver.get(self.base_url + "/" + project_name + "/")
         driver.find_element_by_css_selector("div.ace_content").click()
-	print "Testing for keyword completion"	
+	print "\nNow testing for keyword completion"	
 	dic = {"proc" : "process", "it" : "iteration", "ac":"action",
 		"br":"branch", "re":"requires","prov":"provides",
 		"sel":"selection","sc":"script","ag":"agent",
