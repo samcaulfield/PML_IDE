@@ -1,3 +1,4 @@
+
 Tests performed:
 
 **1. registerSignInSignOut.py:**
@@ -26,7 +27,7 @@ Tests performed:
   * If not, raises an exception
 
 **6. keywordAndResourceCompletion.py:**
-  * The keywords and the beginnnings of keywords(1st, 2nd, 3rd letters) are stored in a dictionaty
+  * The keywords and the beginnnings of keywords(1st, 2nd, 3rd letters) are stored in a dictionary
   * Inputs the beginnings of keywords 
   * Checks if the words have been completed when Enter is hit by getting the text from the editor
   * Inputs 'process resourceWord{action beginning of the resource word' 
