@@ -17,7 +17,10 @@ class KeywordCompletion(unittest.TestCase):
     
     def test_keyword_completion(self):
         driver = self.driver
-        driver.get(self.base_url + "/seleniumTest/")
+        f = open('property')
+	project_name = f.read()
+	f.close()
+	driver.get(self.base_url + "/" + project_name + "/")
         driver.find_element_by_css_selector("div.ace_content").click()
 	print "Testing for keyword completion"	
 	dic = {"proc" : "process", "it" : "iteration", "ac":"action",

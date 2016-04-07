@@ -2,5 +2,5 @@ python registerSignInSignOut.py
 python syntaxAnalysisWarn0.py
 python syntaxAnalysisWarn3.py
 python syntaxAnalysisError.py
-python editPreferencesTest.py
+python editorKeybindingEmulation.py
 python keywordAndResourceCompletion.py

@@ -1,3 +1,9 @@
+"""This is a test to check if edit--> Preferences works;
+   ;inputs a pml code to the editor, goes to edit-->Preferences,
+   ;clears the font size, and changes it to 30px, checks if the font size has been changed to 30px
+   ;if not, raises an exception
+"""
+
 # -*- coding: utf-8 -*-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -7,7 +13,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import unittest, time, re
 
-class SynCh(unittest.TestCase):
+class Editpref(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -15,13 +21,13 @@ class SynCh(unittest.TestCase):
         self.verificationErrors = []
         self.accept_next_alert = True
     
-    def test_syn_ch(self):
+    def test_editpref(self):
         driver = self.driver
         f = open('property')
 	project_name = f.read()
 	f.close()
 	driver.get(self.base_url + "/" + project_name + "/")
-        driver.find_element_by_css_selector("div.ace_content").click()
+	driver.find_element_by_css_selector("div.ace_content").click()
 	driver.find_element_by_class_name("ace_text-input").send_keys("""
 process simple {    
 action x{    
@@ -34,11 +40,17 @@ provides { bar }
 }
 }  
 """)
-        driver.find_element_by_link_text("Tools").click()
-        driver.find_element_by_link_text("Check syntax").click()
-        # Warning: verifyTextPresent may require manual changes
-        try: self.assertRegexpMatches(driver.find_element_by_css_selector("BODY").text, r"^[\s\S]*Total warnings: 3[\s\S]*$")
-        except AssertionError as e: self.verificationErrors.append(str(e))
+        driver.find_element_by_link_text("Edit").click()
+        driver.find_element_by_link_text("Preferences").click()
+	driver.find_element_by_id("setFontSize").clear()
+	driver.find_element_by_id("setFontSize").send_keys("30px")
+	driver.find_element_by_id("setDragDelay").clear()
+	driver.find_element_by_id("setDragDelay").send_keys("1")
+	font = driver.find_element_by_id("textEditor").value_of_css_property("font-size")
+	print font
+	if font != "30px":
+		raise Exception ("Font size is not set") 
+        #driver.find_element_by_xpath("//div[10]").click()
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)

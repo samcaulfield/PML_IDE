@@ -29,7 +29,11 @@ class RegisterSignInSignOut(unittest.TestCase):
 
     def test_register_sign_in_sign_out(self):
         driver = self.driver
-        driver.get(self.base_url + "/seleniumTest")
+        f = open('property')
+	project_name = f.read()
+	f.close()
+	driver.get(self.base_url + "/" + project_name + "/")
+	print "Now testing for registration with new email, signing out & signing back with that email "
         driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
         driver.find_element_by_link_text("Don't have an account?").click()
@@ -39,11 +43,9 @@ class RegisterSignInSignOut(unittest.TestCase):
         driver.find_element_by_id("registerInputPassword").send_keys("123456")
         driver.find_element_by_id("registerSubmitButton").click()
         # ERROR: Caught exception [Error: locator strategy either id or name must be specified explicitly.]
-	driver.execute_script("signOut();")        
+	#driver.execute_script("signOut();")        
 	#driver.find_element_by_id("signInInfo").click()
         #driver.find_element_by_id("signOutLink").click()
-        # ERROR: Caught exception [Error: locator strategy either id or name must be specified explicitly.]
-        # ERROR: Caught exception [ERROR: Unsupported command [selectWindow | null | ]]
 	driver.execute_script("signOut();")
         driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
@@ -52,7 +54,7 @@ class RegisterSignInSignOut(unittest.TestCase):
         driver.find_element_by_id("signInInputPassword").clear()
         driver.find_element_by_id("signInInputPassword").send_keys("123456")
         driver.find_element_by_xpath("//button[@type='submit']").click()
-        # ERROR: Caught exception [Error: locator strategy either id or name must be specified explicitly.]
+
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)

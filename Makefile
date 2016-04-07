@@ -60,4 +60,14 @@ endif
 	else \
 		echo "Smoke test passed."; \
 	fi;
+test:
+ifndef ProjectName
+	$(error ProjectName is not set)
+endif
+	echo  "$(ProjectName)" > ./Test/property
+	cd ./Test && \
+	./test.sh && \
+	cd ..
+	
+
 

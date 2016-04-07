@@ -17,7 +17,10 @@ class SynCh(unittest.TestCase):
     
     def test_syn_ch(self):
         driver = self.driver
-        driver.get(self.base_url + "/seleniumTest/")
+        f = open('property')
+	project_name = f.read()
+	f.close()
+	driver.get(self.base_url + "/" + project_name + "/")
         driver.find_element_by_css_selector("div.ace_content").click()
 	driver.find_element_by_class_name("ace_text-input").send_keys("process a")
         driver.find_element_by_link_text("Tools").click()
