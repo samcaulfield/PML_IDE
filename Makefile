@@ -67,6 +67,7 @@ endif
 	echo  "$(ProjectName)" > ./Test/property
 	cd ./Test && \
 	./test.sh && \
+	rm -rf property && \ 
 	cd ..
 	
 
