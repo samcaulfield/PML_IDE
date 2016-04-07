@@ -16,7 +16,7 @@ Tests performed:
 
 **4. python syntaxAnalysisError.py:**
   * Inputs pml code with on Error
-  * Clicks `Tools--> Syntax Check` and verifies that the box shows `Total Erros: 1`
+  * Clicks `Tools--> Syntax Check` and verifies that the box shows `Total Errors: 1`
   
 **5. editorKeybindingEmulation.py:**
   * This is a test to check if edit--> Preferences works by changing the font size
@@ -25,7 +25,7 @@ Tests performed:
   * Checks if the font size has been changed to 30px by getting the size of the text from the editor css 
   * If not, raises an exception
 
-6. keywordAndResourceCompletion.py:
+**6. keywordAndResourceCompletion.py:**
   * The keywords and the beginnnings of keywords(1st, 2nd, 3rd letters) are stored in a dictionaty
   * Inputs the beginnings of keywords 
   * Checks if the words have been completed when Enter is hit by getting the text from the editor
