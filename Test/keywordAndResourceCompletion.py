@@ -32,10 +32,10 @@ class KeywordCompletion(unittest.TestCase):
 		driver.find_element_by_class_name("ace_text-input").send_keys(key,Keys.RETURN)
 		driver.find_element_by_link_text("File").click()
 		driver.find_element_by_link_text("File").click()
+		driver.implicitly_wait(5)
 		text = driver.find_element_by_id("textEditor").text
-		#ab = re.compile(".*process")
 		if text != "1\n%s" % dic[key]:
-			raise Exception ("Keyword test for %s failed!!!!!" % dic[key])
+			raise Exception ("Keyword test for %s failed!" % dic[key])
 		else:
 			print "The test has passed for %s keyword" %dic[key]	
 	
