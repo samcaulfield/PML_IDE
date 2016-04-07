@@ -1,24 +1,24 @@
 Tests performed:
 
-1. registerSignInSignOut.py:
+**1. registerSignInSignOut.py:**
   * Registers a new Account with an email address (when registering, it will automatically sign in with that account)
   * Signs Out
   * Signs In with the new registered email
   * Generates a random email address every time the test is run 
 
-2. syntaxAnalysisWarn0.py:
+**2. syntaxAnalysisWarn0.py:**
   * Inputs pml code on the editor with 0 warnings
   * Clicks `Tools--> Syntax Check` and verifies that the box shows `Total warnings: 0`
   
-3. syntaxAnalysisWarn3.py:
+**3. syntaxAnalysisWarn3.py:**
   * Inputs pml code with 3 warnings
   * Clicks `Tools--> Syntax Check` and verified that the box for warnings/errors shows `Total warnings: 3`
 
-4. python syntaxAnalysisError.py:
+**4. python syntaxAnalysisError.py:**
   * Inputs pml code with on Error
   * Clicks `Tools--> Syntax Check` and verifies that the box shows `Total Erros: 1`
   
-5. editorKeybindingEmulation.py:
+**5. editorKeybindingEmulation.py:**
   * This is a test to check if edit--> Preferences works by changing the font size
   * Inputs a pml code to the editor, goes to `Edit-->Preferences`
   * Clears the font size, and changes it to 30px
