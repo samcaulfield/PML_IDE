@@ -47,7 +47,10 @@ class RegisterSignInSignOut(unittest.TestCase):
 	driver.implicitly_wait(2)
         driver.find_element_by_id("registerSubmitButton").click()
 	driver.execute_script("signOut();")
-	driver.implicitly_wait(6)
+	#driver.implicitly_wait(6)
+	
+	element = WebDriverWait(driver, 10).until(
+		EC.element_to_be_clickable((By.ID, 'signInInfo')))
         driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
         driver.find_element_by_id("signInInputEmail").clear()
