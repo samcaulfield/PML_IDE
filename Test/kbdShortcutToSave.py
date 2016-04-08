@@ -16,25 +16,25 @@ class Kbrd(unittest.TestCase):
         self.accept_next_alert = True
     
     def test_kbrd(self):
-        driver = self.driver
+	driver = self.driver
 	f = open('property')
 	project_name = f.read()
 	f.close()
 	driver.get(self.base_url + "/" + project_name + "/")
-        driver.find_element_by_css_selector("div.ace_content").click()
+	driver.find_element_by_css_selector("div.ace_content").click()
 	driver.find_element_by_class_name("ace_text-input").send_keys("process w {}")
-        driver.find_element_by_link_text("Edit").click()
-        driver.find_element_by_link_text("Preferences").click()
-        Select(driver.find_element_by_id("setKeyboardHandler")).select_by_visible_text("emacs")
-        driver.find_element_by_xpath("//div[10]").click()
+	driver.find_element_by_link_text("Edit").click()
+	driver.find_element_by_link_text("Preferences").click()
+	Select(driver.find_element_by_id("setKeyboardHandler")).select_by_visible_text("emacs")
+	driver.find_element_by_xpath("//div[10]").click()
 	driver.find_element_by_class_name("ace_text-input").send_keys(Keys.CONTROL,"x","s")
 	time.sleep(1)
 	driver.find_element_by_css_selector("#fileSaveToDiskModal > div.modal-dialog > div.modal-content > div.modal-header > button.close").click()
 	time.sleep(3)
 	driver.find_element_by_link_text("Edit").click()
-        driver.find_element_by_link_text("Preferences").click()
-        Select(driver.find_element_by_id("setKeyboardHandler")).select_by_visible_text("vim")
-        driver.find_element_by_xpath("//div[10]").click()
+	driver.find_element_by_link_text("Preferences").click()
+	Select(driver.find_element_by_id("setKeyboardHandler")).select_by_visible_text("vim")
+	driver.find_element_by_xpath("//div[10]").click()
 	driver.find_element_by_class_name("ace_text-input").send_keys(":","w", Keys.ENTER)
 	time.sleep(1)	
 
