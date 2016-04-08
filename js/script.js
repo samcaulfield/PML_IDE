@@ -167,6 +167,219 @@ function autoComplete(editor)
 		}
 	});
 }
+
+function swimlaneBuilder() {
+	$.post(
+		"php/getSimpleTraverseOutput.php",
+		{value: editor.getSession().getValue()},
+
+		function(data, filename) {
+data = data.replace(/&amp;&amp/g, ',');
+			var dictNodeAgents = {};
+			var dictNodeType = {};
+                        var dictNodeIteration = {};
+			var allNodes = new Array();
+			var stringOfDOT = data;
+			var arrNewLines = data.split("\n");
+			var lengthh = arrNewLines.length;
+			var globalAgents = ['Default Agent'];
+			var uniqueGlobalAgents = []; // this is the  ordered array of swimlanes starting at 'Default Lane'
+                        var twoDArrayConnections = [];
+                        console.log(lengthh); 
+
+			for(i = 0; i < arrNewLines.length; i++){
+					line = arrNewLines[i];
+				if (line.substring(0, 7) == "AGENTS:") {
+                              // console.log("inside substring agent");
+
+				var separators = [ '\\,', '\\\(', '\\\)', '\\&\\&', '\\|\\|'];			
+
+				var tokens = line.split(new RegExp(separators.join('|'), 'g'));
+
+                                // remove whitespace
+                                tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
+
+                                var nameOfNode = tokensRWS[1];
+				var agentsArr = ['Default Agent'];
+				if(tokensRWS.length >2){// has agents// 0=AGENTS: 1=nodeName
+
+				for(k = 2; k < tokensRWS.length; k++){
+					agentsArr.push(tokensRWS[k]);
+					globalAgents.push(tokensRWS[k]);
+
+                                        }  
+                                  // console.log("agents arry now size  : " + agentsArr.length);
+                                    }
+
+                               dictNodeAgents[nameOfNode] = agentsArr;
+}// END OF IF(AGENTS)
+				if (line.substring(0, 15) == "NODE_NAME_TYPE:"){
+				var tokens = line.split(",");
+				tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
+				if(tokensRWS.length >2){//must be 3  NODE_NAME_TYPE/nodeName/TYPE
+
+                                         nodeName = tokensRWS[1];
+                                         nodeType = tokensRWS[2];
+                               dictNodeType[nodeName] = nodeType;
+                               dictNodeIteration[nodeName] = [0,0];      
+                  }
+}// END OF IF(NODE NAME TYPE)
+
+				if (line.substring(0, 10) == "ITERATION:"){
+				var tokens = line.split(" ");
+
+                                var tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
+
+                                var firstNode = tokensRWS[1];
+                                var secondNode = tokensRWS[2];
+
+                                var arrIts = dictNodeIteration[firstNode];
+                                var firstIts = arrIts[0];
+                                var secondIts = arrIts[1];
+                                firstIts++;
+                                var newArr = [firstIts, secondIts];
+                                dictNodeIteration[firstNode] = newArr;
+
+                                var arrIts1 = dictNodeIteration[secondNode];
+                                var firstIts1 = arrIts1[0];
+                                var secondIts1 = arrIts1[1];
+                                secondIts1++;
+                                var newArr1 = [firstIts1, secondIts1];
+                                dictNodeIteration[secondNode] = newArr1;
+                                 
+}//END OF IF(ITERATION)
+
+				if (line.substring(0, 14) == "STANDARD_LINK:"){
+				var tokens = line.split(" ");
+
+                                var tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
+
+                                var firstNode = tokensRWS[1];
+                                var secondNode = tokensRWS[2];
+                                var arrNodePair = [firstNode, secondNode];
+                                twoDArrayConnections.push(arrNodePair);
+}//END OF IF(STANDARD_LINK)
+				
+     
+                  }// END OF MAIN-LINE-FOR-LOOP
+
+uniqueGlobalAgents = ArrNoDupe(globalAgents);
+
+
+// MAKE THE PLANT-UML STRING
+
+var PUstring = "";
+                           for(i = 0; i<twoDArrayConnections.length; i++){
+                                  var node1 = twoDArrayConnections[i][0];
+                                  var node2 = twoDArrayConnections[i][1];
+                                  var nString = ":" + node1 + ";\n";
+                                  slString = getCorrectSwimlaneString(node1)
+                                  PUstring += slString;
+                                  PUstring += nString;
+}
+
+
+
+                               //printFormatAllNodeAgentTypes(dictNodeType);
+                               //justPrintArray(uniqueGlobalAgents);
+                               //printFormatAllNodeIteration(dictNodeIteration);
+                               //printFormatConnections(twoDArrayConnections );
+                                 alert(PUstring);
+	$.post(
+		"php/makeIMG.php",
+		{plantUMLstring: PUstring},
+
+		function(data, filename) {
+
+		var imageRecieved = data;
+		document.getElementById('graphicalEditor').innerHTML =data;
+		
+		
+})
+
+
+
+
+function justPrintArray(arr){
+    for(o = 0; o<arr.length; o++){
+    console.log(arr[o]);
+}
+}
+function formatOutWhiteSpaceSemiColan(tokens){
+				var tokensRWS = []; // remove white space from tokens
+				for(p = 0; p < tokens.length; p++ ){
+ 					if(tokens[p] != " " && tokens[p] != ""){
+                                                var remSpace = tokens[p].replace(/ /g,'')
+                                                var remSC = remSpace.replace(/;/g,'')
+						tokensRWS.push(remSC);
+ 					 					}
+				}
+       return tokensRWS;
+}
+function printFormatConnections(arr){
+for(i = 0; i<arr.length; i++){
+    console.log(arr[i][0] + " --> " + arr[i][1]);
+}
+}
+function printFormatAllNodeAgentDicts(dict){
+console.log("called this function");
+for (i in dict){
+    console.log("\n Node-Agents:");
+    console.log(i);
+    for (key in dict[i]){
+        console.log(dict[i][key]);
+    }
+}
+}
+
+function printFormatAllNodeAgentTypes(dict){
+console.log("called this function");
+for (i in dict){
+    console.log("\n Node-Type:");
+    console.log(i);
+    console.log(dict[i]);
+
+}
+}
+
+function printFormatAllNodeIteration(dict){
+console.log("called this function");
+for (i in dict){
+    console.log("\n Node-Iterate bools:");
+    console.log(i);
+    console.log(dict[i]);
+
+}
+}
+
+function ArrNoDupe(a) {
+    var temp = {};
+    for (var i = 0; i < a.length; i++)
+        temp[a[i]] = true;
+    var r = [];
+    for (var k in temp)
+        r.push(k);
+    return r;
+}
+function getCorrectSwimlaneString(nodeName){
+//check nodes agents - all have at least default
+var arrAgents = dictNodeAgents[nodeName];
+var lane = arrAgents[0]; // default  
+if(arrAgents.length>1){
+   lane = arrAgents[1];
+} 
+laneString = "|" + lane + "|\n";
+return laneString;
+
+}
+
+		}
+	);
+}
+
+
+
+
 // vis.js 
 // Takes DOT output from traverse and imports it to visjs Network graph and displays it in the 'graphicalEditor'
 //
