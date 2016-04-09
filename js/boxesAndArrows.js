@@ -1,7 +1,7 @@
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // Boxes & Arrows PML Builder
 // Author: Sam Caulfield <sam@samcaulfield.com>
-// Date: 03.04.2016
+// Date: 09.04.2016
 // Current Status: Not ready for release (Minimal functionality)
 //
 // Implemented features:
@@ -417,10 +417,12 @@ function onClick(e) {
 					branchInsert(menuClickedNode, "action");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode, "action");
+					iterationInsert(menuClickedNode,
+						"action");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "action");
+					selectionInsert(menuClickedNode,
+						"action");
 					break;
 				}
 				menuOpen = false;
@@ -432,10 +434,12 @@ function onClick(e) {
 					branchInsert(menuClickedNode, "branch");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode, "branch");
+					iterationInsert(menuClickedNode,
+						"branch");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "branch");
+					selectionInsert(menuClickedNode,
+						"branch");
 					break;
 				}
 				menuOpen = false;
@@ -444,13 +448,16 @@ function onClick(e) {
 			case 11: // Insert iteration
 				switch (menuClickedNode.type) {
 				case "branch":
-					branchInsert(menuClickedNode, "iteration");
+					branchInsert(menuClickedNode,
+						"iteration");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode, "iteration");
+					iterationInsert(menuClickedNode,
+						"iteration");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "iteration");
+					selectionInsert(menuClickedNode,
+						"iteration");
 					break;
 				}
 				menuOpen = false;
@@ -459,13 +466,16 @@ function onClick(e) {
 			case 12: // Insert selection
 				switch (menuClickedNode.type) {
 				case "branch":
-					branchInsert(menuClickedNode, "selection");
+					branchInsert(menuClickedNode,
+						"selection");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode, "selection");
+					iterationInsert(menuClickedNode,
+						"selection");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "selection");
+					selectionInsert(menuClickedNode,
+						"selection");
 					break;
 				}
 				menuOpen = false;
@@ -474,28 +484,29 @@ function onClick(e) {
 			}
 			break;
 		}
-	} else if (menuOpen) {
+	} else if (menuOpen) { // But not in bounds of menu
 		menuOpen = false;
 		draw();
-	} else {
+	} else { // Menu not open
 		var node = listHead;
 		var finished = false;
 		var clickedAction = null;
 		while (!finished && node) {
 			var x = screenToWorldX(mx);
 			var y = screenToWorldY(my);
-			if (inBounds(x, y, node.x, node.y, node.width, node.height)) {
+			if (inBounds(x, y, node.x, node.y, node.width,
+				node.height)) {
 				if (node.type == "action") {
 					clickedAction = node;
 					finished = true;
 				} else {
-					var x = findNodeAt(x, y, node);
-					switch (x.type) {
+					var n = findNodeAt(x, y, node);
+					switch (n.type) {
 					case "action":
-						clickedAction = x;
-						finished = true;
+						clickedAction = n;
 						break;
 					}
+					finished = true;
 				}
 			} else {
 				node = node.next;
@@ -955,21 +966,24 @@ function draw() {
 
 		c.fillStyle = branchColourA;
 		c.beginPath();
-		c.fillRect(xOffset, legendY + a * 2, legendBoxSize, legendBoxSize);
+		c.fillRect(xOffset, legendY + a * 2, legendBoxSize,
+			legendBoxSize);
 		c.fillStyle = textColour;
 		c.fillText("branch", xOffset + legendBoxSize * 2,
 			legendY + a * 2 + textSize);
 
 		c.fillStyle = iterationColourA;
 		c.beginPath();
-		c.fillRect(xOffset, legendY + a * 3, legendBoxSize, legendBoxSize);
+		c.fillRect(xOffset, legendY + a * 3, legendBoxSize,
+			legendBoxSize);
 		c.fillStyle = textColour;
 		c.fillText("iteration", xOffset + legendBoxSize * 2,
 			legendY + a * 3 + textSize);
 
 		c.fillStyle = selectionColourA;
 		c.beginPath();
-		c.fillRect(xOffset, legendY + a * 4, legendBoxSize, legendBoxSize);
+		c.fillRect(xOffset, legendY + a * 4, legendBoxSize,
+			legendBoxSize);
 		c.fillStyle = textColour;
 		c.fillText("selection", xOffset + legendBoxSize * 2,
 			legendY + a * 4 + textSize);
