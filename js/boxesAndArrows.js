@@ -1,16 +1,17 @@
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // Boxes & Arrows PML Builder
 // Author: Sam Caulfield <sam@samcaulfield.com>
-// Date: 03.04.2016
-// Current Status: Not ready for release (Minimal functionality)
+// Date: 09.04.2016
+// Current Status: Release 1.0
 //
 // Implemented features:
 // 	- Ability to insert actions, branches, iterations, selections.
-//	- Ability to do above before and after nodes.
-// 	- Ability to nest the above arbitrarily.
+//	- Ability to do above before and after other nodes.
+// 	- Ability to insert nodes into branches, iterations and selections.
 // 	- Support for camera dragging and zooming.
 // 	- Boxes visually connected with arrows.
 //	- Ability to generate PML from the graph.
+//	- Ability to enter action name, script, resources and agents.
 //
 // Details:
 // 	- The program is entirely event driven. Nothing changes without direct
@@ -18,15 +19,16 @@
 // 	- Whenever the UI needs to be updated, *everything* is redrawn.
 //	- Drawing is done using the painter's algorithm.
 // 	- The menu (right click) is the main point of entry for user input.
-// 	- Coordinate systems: Drawable objects have an (x, y) position. The
-// 	  camera has an offset (cx, cy) and zoom z. Objects are drawn at
-// 	  (x * zoom - cx, y * zoom - cy). To detect clicks (mx, my) on an
-// 	  object, check inBounds(mx, my, x * zoom - cx, y * zoom - cy,
-// 	  	objectWidth * zoom, objectHeight * zoom).
-// 	- This seems to run well on Chrome. On Firefox, the framerate is lower
-// 	  and zooming doesn't work.
+// 	- Coordinate systems: Screen space and world space. Drawable objects
+//	  have an (x, y) position. The model is drawn in world space, the menu,
+//	  legend etc are drawn in screen space. The camera has an offset
+//	  (cx, cy) and zoom z. Objects are drawn at
+// 	  (x * zoom - cx, y * zoom - cy). Functions are provided to transform
+//	  between coordinate spaces.
+// 	- This seems to run well on Chrome. On Firefox, the framerate seems to
+// 	  be lower.
 //
-// TODO: Release 1
+// TODO: Release 2.0
 // 	- Implement node deletion
 //
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -417,10 +419,12 @@ function onClick(e) {
 					branchInsert(menuClickedNode, "action");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode, "action");
+					iterationInsert(menuClickedNode,
+						"action");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "action");
+					selectionInsert(menuClickedNode,
+						"action");
 					break;
 				}
 				menuOpen = false;
@@ -432,10 +436,12 @@ function onClick(e) {
 					branchInsert(menuClickedNode, "branch");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode, "branch");
+					iterationInsert(menuClickedNode,
+						"branch");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "branch");
+					selectionInsert(menuClickedNode,
+						"branch");
 					break;
 				}
 				menuOpen = false;
@@ -444,13 +450,16 @@ function onClick(e) {
 			case 11: // Insert iteration
 				switch (menuClickedNode.type) {
 				case "branch":
-					branchInsert(menuClickedNode, "iteration");
+					branchInsert(menuClickedNode,
+						"iteration");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode, "iteration");
+					iterationInsert(menuClickedNode,
+						"iteration");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "iteration");
+					selectionInsert(menuClickedNode,
+						"iteration");
 					break;
 				}
 				menuOpen = false;
@@ -459,13 +468,16 @@ function onClick(e) {
 			case 12: // Insert selection
 				switch (menuClickedNode.type) {
 				case "branch":
-					branchInsert(menuClickedNode, "selection");
+					branchInsert(menuClickedNode,
+						"selection");
 					break;
 				case "iteration":
-					iterationInsert(menuClickedNode, "selection");
+					iterationInsert(menuClickedNode,
+						"selection");
 					break;
 				case "selection":
-					selectionInsert(menuClickedNode, "selection");
+					selectionInsert(menuClickedNode,
+						"selection");
 					break;
 				}
 				menuOpen = false;
@@ -474,28 +486,29 @@ function onClick(e) {
 			}
 			break;
 		}
-	} else if (menuOpen) {
+	} else if (menuOpen) { // But not in bounds of menu
 		menuOpen = false;
 		draw();
-	} else {
+	} else { // Menu not open
 		var node = listHead;
 		var finished = false;
 		var clickedAction = null;
 		while (!finished && node) {
 			var x = screenToWorldX(mx);
 			var y = screenToWorldY(my);
-			if (inBounds(x, y, node.x, node.y, node.width, node.height)) {
+			if (inBounds(x, y, node.x, node.y, node.width,
+				node.height)) {
 				if (node.type == "action") {
 					clickedAction = node;
 					finished = true;
 				} else {
-					var x = findNodeAt(x, y, node);
-					switch (x.type) {
+					var n = findNodeAt(x, y, node);
+					switch (n.type) {
 					case "action":
-						clickedAction = x;
-						finished = true;
+						clickedAction = n;
 						break;
 					}
+					finished = true;
 				}
 			} else {
 				node = node.next;
@@ -955,21 +968,24 @@ function draw() {
 
 		c.fillStyle = branchColourA;
 		c.beginPath();
-		c.fillRect(xOffset, legendY + a * 2, legendBoxSize, legendBoxSize);
+		c.fillRect(xOffset, legendY + a * 2, legendBoxSize,
+			legendBoxSize);
 		c.fillStyle = textColour;
 		c.fillText("branch", xOffset + legendBoxSize * 2,
 			legendY + a * 2 + textSize);
 
 		c.fillStyle = iterationColourA;
 		c.beginPath();
-		c.fillRect(xOffset, legendY + a * 3, legendBoxSize, legendBoxSize);
+		c.fillRect(xOffset, legendY + a * 3, legendBoxSize,
+			legendBoxSize);
 		c.fillStyle = textColour;
 		c.fillText("iteration", xOffset + legendBoxSize * 2,
 			legendY + a * 3 + textSize);
 
 		c.fillStyle = selectionColourA;
 		c.beginPath();
-		c.fillRect(xOffset, legendY + a * 4, legendBoxSize, legendBoxSize);
+		c.fillRect(xOffset, legendY + a * 4, legendBoxSize,
+			legendBoxSize);
 		c.fillStyle = textColour;
 		c.fillText("selection", xOffset + legendBoxSize * 2,
 			legendY + a * 4 + textSize);
