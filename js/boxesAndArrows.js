@@ -2,15 +2,16 @@
 // Boxes & Arrows PML Builder
 // Author: Sam Caulfield <sam@samcaulfield.com>
 // Date: 09.04.2016
-// Current Status: Not ready for release (Minimal functionality)
+// Current Status: Release 1.0
 //
 // Implemented features:
 // 	- Ability to insert actions, branches, iterations, selections.
-//	- Ability to do above before and after nodes.
-// 	- Ability to nest the above arbitrarily.
+//	- Ability to do above before and after other nodes.
+// 	- Ability to insert nodes into branches, iterations and selections.
 // 	- Support for camera dragging and zooming.
 // 	- Boxes visually connected with arrows.
 //	- Ability to generate PML from the graph.
+//	- Ability to enter action name, script, resources and agents.
 //
 // Details:
 // 	- The program is entirely event driven. Nothing changes without direct
@@ -18,15 +19,16 @@
 // 	- Whenever the UI needs to be updated, *everything* is redrawn.
 //	- Drawing is done using the painter's algorithm.
 // 	- The menu (right click) is the main point of entry for user input.
-// 	- Coordinate systems: Drawable objects have an (x, y) position. The
-// 	  camera has an offset (cx, cy) and zoom z. Objects are drawn at
-// 	  (x * zoom - cx, y * zoom - cy). To detect clicks (mx, my) on an
-// 	  object, check inBounds(mx, my, x * zoom - cx, y * zoom - cy,
-// 	  	objectWidth * zoom, objectHeight * zoom).
-// 	- This seems to run well on Chrome. On Firefox, the framerate is lower
-// 	  and zooming doesn't work.
+// 	- Coordinate systems: Screen space and world space. Drawable objects
+//	  have an (x, y) position. The model is drawn in world space, the menu,
+//	  legend etc are drawn in screen space. The camera has an offset
+//	  (cx, cy) and zoom z. Objects are drawn at
+// 	  (x * zoom - cx, y * zoom - cy). Functions are provided to transform
+//	  between coordinate spaces.
+// 	- This seems to run well on Chrome. On Firefox, the framerate seems to
+// 	  be lower.
 //
-// TODO: Release 1
+// TODO: Release 2.0
 // 	- Implement node deletion
 //
 //*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
