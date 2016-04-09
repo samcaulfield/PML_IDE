@@ -13,10 +13,15 @@ var allWarningRows = [];
 var errorNotification = false;
 var notyInstance;
 
+// The name of the project as specified by ProjectName
+var instanceName;
+
 window.onload = function() {
 	if (isLoggedIn()) {
 		signInCommon();
 	}
+
+	instanceName = getInstanceName();
 
 	document.getElementById("fileInput").addEventListener("change", readFile, false);
 
@@ -166,6 +171,21 @@ function autoComplete(editor)
 			editor.execCommand("startAutocomplete");
 		}
 	});
+}
+
+function getInstanceName() {
+	var instance;
+	$.ajax({
+		type: 'POST',
+		url: 'php/getInstanceName.php',
+		data: {},
+		success: function(response) {
+			instance = response;
+		},
+		dataType: 'text',
+		async: false
+	});
+	return instance;
 }
 
 function swimlaneBuilder() {
@@ -973,7 +993,7 @@ function login(emailAddress, password) {
 				// Set the login cookie.
 				// XXX Append instead of replace.
 				document.cookie =
-					'username=' + emailAddress + ';path=/;';
+					'username=' + emailAddress + ';path=/' + instanceName + '/;';
 				success = true;
 			}
 		},
@@ -994,7 +1014,7 @@ function onSignIn(googleUser) {
 	var profile = googleUser.getBasicProfile();
 	var email = profile.getEmail();
 	register(email, Math.random().toString());
-	document.cookie = 'username=' + email + ';path=/;';
+	document.cookie = 'username=' + email + ';path=/' + instanceName + '/;';
 	signInCommon();
 	// XXX Don't know why but this needs to go here..
 	document.getElementById('signInInfo').innerHTML =
@@ -1054,7 +1074,7 @@ function register(emailAddress, password) {
 				// Set the login cookie.
 				// XXX Append instead of replace.
 				document.cookie =
-					'username=' + emailAddress + ';path=/;';
+					'username=' + emailAddress + ';path=/' + instanceName + '/;';
 				result = "success";
 			} else if (trimmedResponse == "failure-registered") {
 				result = "failure-registered";
@@ -1110,7 +1130,7 @@ function signOut() {
 	auth2.signOut().then(function () {
 	});
 
-	document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+	document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/" + instanceName + "/";
 	document.getElementById('signInInfo').innerHTML =
 		'Account (Not signed in) <span class="caret"></span>';
 	document.getElementById('signInButtonList').className = '';
