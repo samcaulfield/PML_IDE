@@ -1417,17 +1417,60 @@ function leftPad(string, num, pre) {
 //
 function generatePML(head, indent) {
 	var PML = "";
+	var unnamedAgentCount = 0;
 	while (head) {
 		switch (head.type) {
 		case "action":
-			PML += leftPad("action " + head.name + " {\n", indent,
-				indentString);
-			PML += leftPad("requires { " + head.requires + " }\n",
-				indent + 1, indentString);
-			PML += leftPad("provides { " + head.provides + " }\n",
-				indent + 1, indentString);
-			PML += leftPad("agent { " + head.agents + " }\n",
-				indent + 1, indentString);
+			// Name
+			PML += leftPad("action ", indent, indentString);
+			if (head.name) {
+				PML += head.name;
+			} else {
+				PML += "a" + unnamedAgentCount;
+				unnamedAgentCount++;
+			}
+
+			// Opening action brace.
+			PML += " {\n";
+
+			// Resources
+			if (head.requires) {
+				PML += leftPad("requires { " + head.requires + " }\n", indent + 1, indentString);
+			}
+
+			if (head.provides) {
+				PML += leftPad("provides { " + head.provides + " }\n", indent + 1, indentString);
+			}
+
+			// Agents
+			if (head.agents) {
+				PML += leftPad("agent { ", indent + 1, indentString);
+				// Add leading/trailing "
+				if (head.agents.charAt(0) != '"') {
+					PML += '"';
+				}
+				PML += head.agents;
+				if (head.agents.charAt(head.script.length - 1) != '"') {
+					PML += '"';
+				}
+				PML += " }\n";
+			}
+
+			// Script
+			if (head.script) {
+				PML += leftPad("script { ", indent + 1, indentString);
+				// Add leading/trailing "
+				if (head.script.charAt(0) != '"') {
+					PML += '"';
+				}
+				PML += head.script;
+				if (head.script.charAt(head.script.length - 1) != '"') {
+					PML += '"';
+				}
+				PML += " }\n";
+			}
+
+			// Closing action brace.
 			PML += leftPad("}\n", indent, indentString);
 			break;
 		case "branch":

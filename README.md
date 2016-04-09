@@ -12,7 +12,7 @@ Contents:
 1. Installation & Testing.
 2. Features And Execution.
 
-### 1. Installation:
+### 1. Installation & Testing:
 
 These instructions are for installing this software on Ubuntu 14.04 64-bit.
 
