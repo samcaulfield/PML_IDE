@@ -4,3 +4,8 @@ python syntaxAnalysisWarn3.py
 python syntaxAnalysisError.py
 python editorKeybindingEmulation.py
 python keywordAndResourceCompletion.py
+python kbdShortcutToSave.py
+python moveToNextPrevWarnings.py
+python saveRetrieveServer.py
+python specifyFileName.py
+
