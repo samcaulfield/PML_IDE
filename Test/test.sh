@@ -1,7 +1,7 @@
 python registerSignInSignOut.py
-python syntaxAnalysisWarn0.py
-python syntaxAnalysisWarn3.py
-python syntaxAnalysisError.py
+python syntaxWarning0.py
+python syntaxWarn3.py
+python syntaxError.py
 python editorKeybindingEmulation.py
 python keywordAndResourceCompletion.py
 python kbdShortcutToSave.py
