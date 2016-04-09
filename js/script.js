@@ -645,7 +645,7 @@ function DOT_to_visjs() {
 			//editor.getSession().setValue(stringOfDOT, 10)  //useful for debugging - prints the DOT code to the editor for viewing
 
 			var parsedData = vis.network.convertDot(stringOfDOT);
-
+			parsedData.nodes[0].hidden = true;
 			var data = {
   				nodes: parsedData.nodes,
   				edges: parsedData.edges
