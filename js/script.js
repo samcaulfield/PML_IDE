@@ -174,10 +174,13 @@ function swimlaneBuilder() {
 		{value: editor.getSession().getValue()},
 
 		function(data, filename) {
-data = data.replace(/&amp;&amp/g, ',');
+			data = data.replace(/&amp;&amp/g, ',');
+			//editor.getSession().setValue(data, 10);  //useful for debugging - prints the simpleTraverse code to the editor for viewing
 			var dictNodeAgents = {};
 			var dictNodeType = {};
                         var dictNodeIteration = {};
+			var dictSelectNodes = {};
+			var dictBranchNodes = {};
 			var allNodes = new Array();
 			var stringOfDOT = data;
 			var arrNewLines = data.split("\n");
@@ -256,8 +259,35 @@ data = data.replace(/&amp;&amp/g, ',');
 
                                 var firstNode = tokensRWS[1];
                                 var secondNode = tokensRWS[2];
+				if(dictNodeType[firstNode] == "SELECTION"){
+					if(!(firstNode in dictSelectNodes)){  //alert("never before " + firstNode)}// first time entry?
+					//if(dictSelectNodes[firstNode] == undefined){  // first time entry?
+						dictSelectNodes[firstNode] = [secondNode];					
+						}
+					else{	// else add to existing value array
+						var selArr = dictSelectNodes[firstNode];
+						selArr.push(secondNode);
+						dictSelectNodes[firstNode] = selArr;
+						//alert("more than 1 in" + selArr[0] +" "+ selArr[1]);			
+						}		
+				}
+
+				else if(dictNodeType[firstNode] == "BRANCH"){
+					if(!(firstNode in dictBranchNodes)){  // first time entry?
+						dictBranchNodes[firstNode] = [secondNode];					
+						}
+					else{	// else add to existing value array
+						var branchArr = dictBranchNodes[firstNode];
+						branchArr.push(secondNode);
+						dictBranchNodes[firstNode] = branchArr;
+			
+						}		
+				}
+				else{		// if not a select add to standard connection pairs
                                 var arrNodePair = [firstNode, secondNode];
+				
                                 twoDArrayConnections.push(arrNodePair);
+					}
 }//END OF IF(STANDARD_LINK)
 				
      
@@ -269,13 +299,28 @@ uniqueGlobalAgents = ArrNoDupe(globalAgents);
 // MAKE THE PLANT-UML STRING
 
 var PUstring = "";
+			  var startingLanes = allSwimLanesString();
+			  PUstring+= startingLanes;
+
                            for(i = 0; i<twoDArrayConnections.length; i++){
-                                  var node1 = twoDArrayConnections[i][0];
-                                  var node2 = twoDArrayConnections[i][1];
-                                  var nString = ":" + node1 + ";\n";
-                                  slString = getCorrectSwimlaneString(node1)
-                                  PUstring += slString;
-                                  PUstring += nString;
+				  var pair = twoDArrayConnections[i]
+                                  var node1 = pair[0];
+                                  var node2 = pair[1];
+
+                                  var nString1 = ":" + node1 + ";\n";
+                                  var nString2 = ":" + node2 + ";\n";
+                                  slString1 = getCorrectSwimlaneString(node1);
+                                  slString2 = getCorrectSwimlaneString(node2);
+				  notes1 = otherAgentNotes(node1);
+				  //var repeats = getIterBefore(node1);
+				  //PUstring += repeats;
+                                  PUstring += slString1;
+                                  PUstring += nString1;
+				  PUstring += notes1;
+                                  //PUstring += slString2;
+                                  //PUstring += nString2;
+				 // var repeatsWhile = getIterAfter(node1);// changed to node 1
+				 // PUstring += repeatsWhile;
 }
 
 
@@ -284,7 +329,8 @@ var PUstring = "";
                                //justPrintArray(uniqueGlobalAgents);
                                //printFormatAllNodeIteration(dictNodeIteration);
                                //printFormatConnections(twoDArrayConnections );
-                                 alert(PUstring);
+
+			//editor.getSession().setValue(PUstring, 10)  //useful for debugging - prints the DOT code to the editor for viewing
 	$.post(
 		"php/makeIMG.php",
 		{plantUMLstring: PUstring},
@@ -297,8 +343,61 @@ var PUstring = "";
 		
 })
 
+function otherAgentNotes(node){
+var otherAgents = "";
+var agents = dictNodeAgents[node];
+if(agents.length >1){
+otherAgents+= "note right\n<b>OTHER AGENTS</b>\n====\n"
+for(u = 0; u<agents.length; u++){
+var dotAgent = "* " +  agents[u] + "\n";
+otherAgents += dotAgent;
+}
+otherAgents += "end note\n";
+}
+return otherAgents;
 
+}
 
+function getIterBefore(node){
+strRepeat = "";
+arrIter = dictNodeIteration[node];
+if(arrIter[0] >1){
+for(y=0; y<arrIter[0]; y++){
+strRepeat += "repeat\n";
+}
+}
+dictNodeIteration[node] = [0,arrIter[1]];
+return strRepeat;
+}
+
+function getIterAfter(node){
+strRepeatWhile = "";
+arrIter = dictNodeIteration[node];
+if(arrIter[1] >1){
+for(v=0; v<arrIter[1]; v++){
+strRepeatWhile += "repeat while()\n";
+}
+}
+dictNodeIteration[node] = [arrIter[0],0];
+return strRepeatWhile;
+}
+
+function allSwimLanesString(){
+	var everySecondOne = 9;
+	var agentLanes = "";
+ for(h = 0; h< uniqueGlobalAgents.length; h++ ){
+	everySecondOne++;
+	var agent = uniqueGlobalAgents[h];
+if(everySecondOne %2 == 0){
+	agentLanes+="|#AntiqueWhite";
+}
+	agentLanes+= "|";
+	agentLanes+=agent;
+	agentLanes+="|\n";
+}
+
+return agentLanes;
+}
 
 function justPrintArray(arr){
     for(o = 0; o<arr.length; o++){
