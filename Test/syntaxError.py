@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import unittest, time, re
 
-class SynCh(unittest.TestCase):
+class SyntaxError(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -15,31 +15,17 @@ class SynCh(unittest.TestCase):
         self.verificationErrors = []
         self.accept_next_alert = True
     
-    def test_syn_ch(self):
+    def test_syntax_error(self):
         driver = self.driver
-        f = open('property')
+	f = open('property')
 	project_name = f.read()
 	f.close()
 	driver.get(self.base_url + "/" + project_name + "/")
-	print "\nNow testing for Syntax analysis Test2"
+	print "\nNow testing for Syntax Analysis - Test 3"
         driver.find_element_by_css_selector("div.ace_content").click()
-	driver.find_element_by_class_name("ace_text-input").send_keys("""
-process simple {    
-action x{    
-requires { foo }    
-provides { foo }    
-}    
-action y{        
-requires { foo }    
-provides { bar }     
-}
-}  
-""")
+	driver.find_element_by_class_name("ace_text-input").send_keys("process a")
         driver.find_element_by_link_text("Tools").click()
         driver.find_element_by_link_text("Check syntax").click()
-        driver.implicitly_wait(6)
-        try: self.assertRegexpMatches(driver.find_element_by_css_selector("BODY").text, r"^[\s\S]*Total warnings: 3[\s\S]*$")
-        except AssertionError as e: self.verificationErrors.append(str(e))
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)

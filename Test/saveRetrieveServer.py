@@ -33,16 +33,24 @@ class SaveRetrieveServer(unittest.TestCase):
         print "\nNow testing Saving to and Retrieving from the server"
         driver.find_element_by_css_selector("div.ace_content").click()
         driver.find_element_by_class_name("ace_text-input").send_keys("process w{}")
-        driver.find_element_by_id("signInInfo").click()
+	driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
+	time.sleep(1)
         driver.find_element_by_link_text("Don't have an account?").click()
+	time.sleep(1)
         driver.find_element_by_id("registerInputEmail").clear()
+	time.sleep(1)
         driver.find_element_by_id("registerInputEmail").send_keys(email)
+	time.sleep(1)
         driver.find_element_by_id("registerInputPassword").clear()
+	time.sleep(1)
         driver.find_element_by_id("registerInputPassword").send_keys("123456")
+	time.sleep(1)
+
         driver.find_element_by_id("registerSubmitButton").click()
+	time.sleep(1)
 	driver.execute_script("attemptSaveToServer();")
-        #driver.find_element_by_link_text("Save to server").click()
+	time.sleep(1)
         driver.find_element_by_id("fileSaveNameInput").clear()
         driver.find_element_by_id("fileSaveNameInput").send_keys("test")
         driver.find_element_by_css_selector("button.btn.btn-default").click()
@@ -51,7 +59,7 @@ class SaveRetrieveServer(unittest.TestCase):
         #driver.find_element_by_link_text("Open from server").click()
         driver.find_element_by_css_selector("button.btn.btn-default").click()
         #driver.find_element_by_link_text("File").click()
-        # ERROR: Caught exception [Error: locator strategy either id or name must be specified explicitly.]
+
     
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)

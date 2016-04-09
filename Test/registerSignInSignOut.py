@@ -38,19 +38,16 @@ class RegisterSignInSignOut(unittest.TestCase):
 	print "\nNow testing for registration with new email, signing out & signing back with that email "
         driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
-	driver.implicitly_wait(3)
         driver.find_element_by_link_text("Don't have an account?").click()
         driver.find_element_by_id("registerInputEmail").clear()
         driver.find_element_by_id("registerInputEmail").send_keys(email)
         driver.find_element_by_id("registerInputPassword").clear()
         driver.find_element_by_id("registerInputPassword").send_keys("123456")
-	driver.implicitly_wait(2)
+	time.sleep(3)
         driver.find_element_by_id("registerSubmitButton").click()
+	time.sleep(3)
 	driver.execute_script("signOut();")
-	#driver.implicitly_wait(6)
-	
-	element = WebDriverWait(driver, 10).until(
-		EC.element_to_be_clickable((By.ID, 'signInInfo')))
+	time.sleep(4)
         driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
         driver.find_element_by_id("signInInputEmail").clear()
