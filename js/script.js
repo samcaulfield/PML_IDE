@@ -199,7 +199,8 @@ function swimlaneBuilder() {
 			var dictNodeAgents = {};
 			var dictNodeType = {};
                         var dictNodeIteration = {};
-			var dictSelectNodes = {};
+			var dictSelectNodes = {};// i think he sometimes treats joins as selects :( like the first join in netbeans
+			var dictJoinNodes = {};
 			var dictBranchNodes = {};
 			var allNodes = new Array();
 			var stringOfDOT = data;
@@ -292,6 +293,19 @@ function swimlaneBuilder() {
 						}		
 				}
 
+				else if(dictNodeType[firstNode] == "JOIN"){
+					if(!(firstNode in dictJoinNodes)){  //alert("never before " + firstNode)}// first time entry?
+					//if(dictJoinNodes[firstNode] == undefined){  // first time entry?
+						dictJoinNodes[firstNode] = [secondNode];					
+						}
+					else{	// else add to existing value array
+						var joinArr = dictJoinNodes[firstNode];
+						joinArr.push(secondNode);
+						dictJoinNodes[firstNode] = joinArr;
+						//alert("more than 1 in" + selArr[0] +" "+ selArr[1]);			
+						}		
+				}
+
 				else if(dictNodeType[firstNode] == "BRANCH"){
 					if(!(firstNode in dictBranchNodes)){  // first time entry?
 						dictBranchNodes[firstNode] = [secondNode];					
@@ -321,47 +335,166 @@ uniqueGlobalAgents = ArrNoDupe(globalAgents);
 var PUstring = "";
 			  var startingLanes = allSwimLanesString();
 			  PUstring+= startingLanes;
+	var firstPair = twoDArrayConnections[0];
+	var notOver = true;
 
-                           for(i = 0; i<twoDArrayConnections.length; i++){
-				  var pair = twoDArrayConnections[i]
-                                  var node1 = pair[0];
-                                  var node2 = pair[1];
+	recurrsiveLoop(firstPair[0]);
 
-                                  var nString1 = ":" + node1 + ";\n";
-                                  var nString2 = ":" + node2 + ";\n";
-                                  slString1 = getCorrectSwimlaneString(node1);
-                                  slString2 = getCorrectSwimlaneString(node2);
-				  notes1 = otherAgentNotes(node1);
-				  //var repeats = getIterBefore(node1);
-				  //PUstring += repeats;
-                                  PUstring += slString1;
-                                  PUstring += nString1;
-				  PUstring += notes1;
-                                  //PUstring += slString2;
-                                  //PUstring += nString2;
-				 // var repeatsWhile = getIterAfter(node1);// changed to node 1
-				 // PUstring += repeatsWhile;
+var globalJoin ="";//= []; //once stopped by a join it needs to remeber where to start from when all selections/branches are complete// these are pushed/popped
+
+var joinNotFromSelect = true;
+
+function recurrsiveLoop(node1){
+			var localGlobal = globalJoin;
+			//alert(" inputting to recurrsive " + node1);
+			if((dictNodeType[node1] !="JOIN") &&(dictNodeType[node1] !="RENDEZVOUS")){
+				if(dictNodeType[node1] !="SELECTION"){
+					if(dictNodeType[node1] !="BRANCH"){
+			addNodeToPUString(node1);
+			node2 = findNextConnectInArray(node1);
+
+					if(node2 != "no_node"){//SHOULD only happen on last node
+					recurrsiveLoop(node2);
+					}
+			else{//alert("no node reached");
+					//doPost();
+				}
+							//}
+			}
+			else{ // if branch
+				handleBranch(node1);}
+			}
+			else{ // if selection
+				handleSelection(node1);}
+			}
+			else{// if join
+				/*if(joinNotFromSelect){	// !! PROBABLY SHOULD KEEP A COUNTER OF HOW DEEP INTO NESTED 'JOIN REQUIRES' WE ARE  if at 0 do this
+
+					handJoin(node1);// in his netbeans he treats a join as a select so my code just stops					
+					}
+			else{*/
+			globalJoin = node1;//.push("join_3");
+			//}
+			}
 }
-
-
-
                                //printFormatAllNodeAgentTypes(dictNodeType);
                                //justPrintArray(uniqueGlobalAgents);
                                //printFormatAllNodeIteration(dictNodeIteration);
                                //printFormatConnections(twoDArrayConnections );
 
 			//editor.getSession().setValue(PUstring, 10)  //useful for debugging - prints the DOT code to the editor for viewing
+
+function doPost(){
 	$.post(
 		"php/makeIMG.php",
 		{plantUMLstring: PUstring},
-
 		function(data, filename) {
-
 		var imageRecieved = data;
-		document.getElementById('graphicalEditor').innerHTML =data;
-		
-		
+		document.getElementById('graphicalEditor').innerHTML =data;		
 })
+
+}
+	$.post(
+		"php/makeIMG.php",
+		{plantUMLstring: PUstring},
+		function(data, filename) {
+		var imageRecieved = data;
+		document.getElementById('graphicalEditor').innerHTML =data;		
+})
+
+function handleBranch(node){
+	nodeChoices = dictBranchNodes[node];
+	//alert("in this handBranch there are: " + nodeChoices.length + " node choices");
+	PUstring+="split\n"
+	recurrsiveLoop(nodeChoices[0]);
+	for(i=1;i<nodeChoices.length;i++){
+		PUstring+="split again\n"
+		recurrsiveLoop(nodeChoices[i]);
+		
+	}
+	PUstring+="end split\n";
+			//editor.getSession().setValue(PUstring, 10)  //useful for debugging - prints the DOT code to the editor for viewing
+	var afterJoin = findNextConnectInArray(globalJoin);//.pop());
+	recurrsiveLoop(afterJoin);
+ //alert("reached handle selection");
+
+}
+
+function handleSelection(node){
+	joinNotFromSelect = false;
+	nodeChoices = dictSelectNodes[node];
+	//alert("in this handleSelction there are: " + nodeChoices.length + " node choices");
+	PUstring+="split\n"
+	recurrsiveLoop(nodeChoices[0]);
+	for(i=1;i<nodeChoices.length;i++){
+		PUstring+="split again\n"
+		recurrsiveLoop(nodeChoices[i]);
+		
+	}
+	PUstring+="end split\n";
+	//var afterJoin = findNextConnectInArray(globalJoin.pop());
+	var popNextJoinNode = globalJoin;//.pop();
+	//alert("popped next join node in array : " + popNextJoinNode);
+	var afterJoinArr = dictJoinNodes[popNextJoinNode];
+	var afterJoin = afterJoinArr[0]; // not sure this is ook with multis - try change to a for loop or at least test if its multi //length >1
+ //alert("AFTER JOIN IS : " + afterJoin);
+	recurrsiveLoop(afterJoin);
+
+//alert(" finished first branch or select");// consider sending a boolean to these handle equations - if it the first make sure ot END WITH THE DRAWING
+}
+
+function handleJoin(node){//**
+	var isMulti= false;
+	//joinNotFromSelect = false;
+	nodeChoices = dictJoinNodes[node];
+	//alert("in this handleJoin there are: " + nodeChoices.length + " node choices");
+	if(nodeChoices.length>1){ isMulti = true;}
+	if(isMulti){
+	PUstring+="split\n"
+	}
+	recurrsiveLoop(nodeChoices[0]);
+	for(i=1;i<nodeChoices.length;i++){
+		PUstring+="split again\n"
+		recurrsiveLoop(nodeChoices[i]);
+		
+	}
+	if(isMulti){
+	PUstring+="end split\n";
+	}
+	var afterJoin = findNextConnectInArray(globalJoin);//.pop());
+ //alert("AFTER JOIN IS : " + afterJoin);
+	
+	//recurrsiveLoop(afterJoin);
+
+//alert(" finished join handle");// consider sending a boolean to these handle equations - if it the first make sure ot END WITH THE DRAWING
+}
+
+
+function addNodeToPUString(node1){
+                        var nString1 = ":" + node1 + ";\n";
+                        var slString1 = getCorrectSwimlaneString(node1);
+			var notes1 = otherAgentNotes(node1);
+
+                        PUstring += slString1;
+                        PUstring += nString1;
+			PUstring += notes1;
+}
+
+
+function findNextConnectInArray(node){
+
+for(i = 0; i<twoDArrayConnections.length; i++){
+	var pair = twoDArrayConnections[i];
+	if(pair[0] == node){
+		twoDArrayConnections.splice(i,1);//remove this from the connections array and return it
+		return pair[1];
+	}
+
+
+	}
+return "no_node";
+
+}
 
 function otherAgentNotes(node){
 var otherAgents = "";
@@ -499,6 +632,7 @@ return laneString;
 
 
 
+
 // vis.js 
 // Takes DOT output from traverse and imports it to visjs Network graph and displays it in the 'graphicalEditor'
 //
@@ -526,7 +660,7 @@ options = {
   //configure: {...},    // defined in the configure module.
   //edges: {...},        // defined in the edges module.
   nodes : {color: {
-		background: '#ff0000'
+		background: '#a3a3ff'
 		}
 	},
   //groups: {...},       // defined in the groups module.
