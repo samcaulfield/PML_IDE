@@ -427,14 +427,28 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
             }
 
             function stringColouredNode(node) {
+		var hasFourPlusNote = false;
+		var strNote = "";
                 var retString = "";
                 var arrAgents = dictNodeAgents[node];
+		if(arrAgents.length>1){
+			arrAgents.splice(0,1);
+		}
+		if(arrAgents.length>4){
+			 strNote = moreThanFourAgents(node);
+			 strNote+="\n";
+			 arrAgents.splice(4,arrAgents.length-4 );
+				//}
+
+
+}
                 var semiColanCount = 0;
                 //partition #CC00EE another {
                 for (z = 0; z < arrAgents.length; z++) {
                     retString += "partition " + dictAgentColour[arrAgents[z]] + " " + arrAgents[z] + " {\n"
                     semiColanCount++;
                 }
+		retString +=strNote;
                 retString += ":";
                 retString += node;
                 retString += ";\n";
@@ -618,6 +632,22 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
                 }
                 return otherAgents;
 
+            }
+
+            function moreThanFourAgents(node) {
+                var otherAgents = "";
+                var agents = dictNodeAgents[node];
+	        //agents.splice(0,4);
+                if (agents.length > 1) {
+                    otherAgents += "note right\nnesting too deep\n<b>OTHER AGENTS</b>\n====\n"
+                    for (u = 4; u < agents.length; u++) {
+                        var dotAgent = "* " + agents[u] + "\n";
+                        otherAgents += dotAgent;
+                    }
+                    otherAgents += "end note\n";
+                }
+                return otherAgents;
+	
             }
 
             function getIterBefore(node) {
