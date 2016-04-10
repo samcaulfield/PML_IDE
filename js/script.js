@@ -416,8 +416,9 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
 
             function agentColouredActions() {
                 var listOfActions = getArrayOfActions(twoDArrayConnections);
+		    if(t < 25){ // more than 24 will not fit on screen acd nd can crash the request
                 for (t = 0; t < listOfActions.length; t++) {
-
+			}
                     colourActionString = stringColouredNode(listOfActions[t]);
                     PUstring += colourActionString;
 
