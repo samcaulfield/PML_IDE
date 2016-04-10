@@ -10,6 +10,5 @@ python editorKeybindingEmulation.py
 python keywordAndResourceCompletion.py
 python kbdShortcutToSave.py
 python moveToNextPrevWarnings.py
-python saveRetrieveServer.py
 python specifyFileName.py
 
