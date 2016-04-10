@@ -189,18 +189,14 @@ function getInstanceName() {
 }
 
 function plantUMLwithSwimlanes(){
-	swimlaneBuilder(true,false);
+	swimlaneBuilder(true);
 }
 
 function plantUMLwithoutSwimlanes(){
-	swimlaneBuilder(false,false);
+	swimlaneBuilder(false);
 }
 
-function buildAgentColouredActionsString(){
-	swimlaneBuilder(false,true);
-	}
-
-function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
+function swimlaneBuilder(bool) {
 	$.post(
 		"php/getSimpleTraverseOutput.php",
 		{value: editor.getSession().getValue()},
@@ -208,8 +204,7 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
 		function(data, filename) {
 			data = data.replace(/&amp;&amp/g, ',');
 			//editor.getSession().setValue(data, 10);  //useful for debugging - prints the simpleTraverse code to the editor for viewing
-			var isSwimlanes = isSwimLanesGraph;
-			var isAgentColouredActions = isAgentActions;
+			var isSwimlanes = bool;
 			var dictNodeAgents = {};
 			var dictNodeType = {};
                         var dictNodeIteration = {};
@@ -220,13 +215,11 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
 			var stringOfDOT = data;
 			var arrNewLines = data.split("\n");
 			var lengthh = arrNewLines.length;
-			var globalAgents = ['Default_Agent'];
+			var globalAgents = ['Default Agent'];
 			var uniqueGlobalAgents = []; // this is the  ordered array of swimlanes starting at 'Default Lane'
                         var twoDArrayConnections = [];
 			var twoDArrayAllConnections = [];
 			var dictSequence = {};
-			var dictAgentColour = {'Default_Agent':'#C8E3F8'};
-			var agentColours = ['#D2B9D6','#F7F5C2','#FCC7CF','#F8D040','#F898C8','#B0A0F8','#98F8F8','#90C0F8','#EEE9B2','#AEC572','#7E7C4A'];
                         console.log(lengthh); 
 
 			for(i = 0; i < arrNewLines.length; i++){
@@ -242,7 +235,7 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
                                 tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
 
                                 var nameOfNode = tokensRWS[1];
-				var agentsArr = ['Default_Agent'];
+				var agentsArr = ['Default Agent'];
 				if(tokensRWS.length >2){// has agents// 0=AGENTS: 1=nodeName
 
 				for(k = 2; k < tokensRWS.length; k++){
@@ -324,6 +317,8 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
 }//END OF IF(STANDARD_LINK)
 
 
+
+
 				if (line.substring(0, 10) == "ITERATION:"){
 				var tokens = line.split(" ");
 
@@ -387,21 +382,10 @@ function findNextAction(node){
 
 uniqueGlobalAgents = ArrNoDupe(globalAgents);
 
-var iter = 0;
-
-for(g=0; g < uniqueGlobalAgents.length; g++){
-	
-	dictAgentColour[uniqueGlobalAgents[g]] = agentColours[iter];
-	if(iter == 10){iter = -1;}
-	iter++;
-	//alert("just assigned" +  uniqueGlobalAgents[g] + " to colour " + agentColours[iter-1]);
-}
-
 
 // MAKE THE PLANT-UML STRING
 
 var PUstring = "";
-if(isAgentColouredActions == false){
 			  var startingLanes = allSwimLanesString();
 		if(isSwimlanes){
 			  PUstring+= startingLanes;  //-------------------------------------
@@ -409,71 +393,11 @@ if(isAgentColouredActions == false){
 	var firstPair = twoDArrayConnections[0];
 	var notOver = true;
 
-
-
 	recurrsiveLoop(firstPair[0]);
-	}
-else{
-
-agentColouredActions();
-}
 
 var globalJoin ="";//= []; //once stopped by a join it needs to remeber where to start from when all selections/branches are complete// these are pushed/popped
 
 var joinNotFromSelect = true;
-
-
-
-
-function agentColouredActions(){
-	var listOfActions = getArrayOfActions(twoDArrayConnections);
-for(t = 0; t<listOfActions.length; t++){
-
-	colourActionString = stringColouredNode(listOfActions[t]);
-	PUstring+=colourActionString;
-	
-}
-	
-
-}
-
-function stringColouredNode(node){
-	var retString = "";
-	var arrAgents = dictNodeAgents[node];
-	var semiColanCount = 0;
-	//partition #CC00EE another {
-	for(z = 0; z<arrAgents.length; z++){
-	retString += "partition "+dictAgentColour[arrAgents[z]]+" " + arrAgents[z] + " {\n"
-	semiColanCount++;	
-	}
-	retString+=":";
-	retString+=node;
-	retString+=";\n";
-
-	for(r=0;r<semiColanCount;r++){
-		retString += "}\n";		
-		}
-	return retString;	
-}
-
-function getArrayOfActions(twodarray){
-	arr = [];
-
-for(e = 0; e<twodarray.length;e++){
-	pair = twodarray[e];
-	if(dictNodeType[pair[0]] == "ACTION"){
-		arr.push(pair[0]);				
-		}
-	if(dictNodeType[pair[1]] == "ACTION"){
-		arr.push(pair[1]);				
-		}
-}
-
-	uniqueActions = ArrNoDupe(arr);
-
-return uniqueActions;
-}
-
 
 function recurrsiveLoop(node1){
 			var localGlobal = globalJoin;
@@ -748,6 +672,8 @@ return laneString;
 		}
 	);
 }
+
+
 
 
 
