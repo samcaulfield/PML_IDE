@@ -1,12 +1,5 @@
 ## A web-based IDE for PML
 
-**Release 2 progress:**
-
-* Feature points implemented: 94/174
-* Feature points tested: 0/174
-* Total completed feature points for Release 2: 0/174 (0%)
-
-
 Contents:
 
 1. Installation & Testing.
@@ -274,4 +267,22 @@ text editor.
 * If the action is a transformer, the name of the action is highlighted in green.
 * If the action is a black hole, the name of the action is highlighted in yellow.
 * If the action is a miracle, the name of the action is highlighted in pink.
+
+**Agent coloured action**
+
+This feature displays a diagram where the actions are coloured according to
+the agent performing them.
+* Open PML studio
+* Enter PML code into the editor
+* Click `Tools > Agent Coloured Actions`
+* The agent coloured actions diagram will be displayed in the diagram area
+
+**Swim lanes**
+
+This features allows the user to visualise the model in a way that makes the
+agents associated with actions obvious.
+* Open PML studio
+* Enter PML code into the editor
+* Click `Tools > Swimlanes plantUML`
+* The swim lanes diagram will be displayed in the diagram area
 
