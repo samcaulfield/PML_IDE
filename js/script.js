@@ -622,7 +622,9 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
             function otherAgentNotes(node) {
                 var otherAgents = "";
                 var agents = dictNodeAgents[node];
+	        agents.splice(0,1);
                 if (agents.length > 1) {
+		    agents.splice(0,1);
                     otherAgents += "note right\n<b>OTHER AGENTS</b>\n====\n"
                     for (u = 0; u < agents.length; u++) {
                         var dotAgent = "* " + agents[u] + "\n";
