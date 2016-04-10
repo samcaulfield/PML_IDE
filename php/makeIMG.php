@@ -1,5 +1,6 @@
 <?php 
-
+$execution_time_limit = 60;
+set_time_limit($execution_time_limit);
 $img = "<img src=http://www.plantuml.com/plantuml/img/"; 
 $img .= encodep($_POST["plantUMLstring"]); 
 $img .= ">";  
