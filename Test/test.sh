@@ -1,5 +1,5 @@
 # Run in a virtual framebuffer.
-Xvfb :10 &
+Xvfb :10 2>/dev/null &
 export DISPLAY=:10
 
 python registerSignInSignOut.py

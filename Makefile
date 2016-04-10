@@ -37,7 +37,8 @@ install-deps:
 		fi; \
 		cp peos/pml/graph/traverse thirdparty/traverse; \
 	fi; \
-	sudo apt-get install apache2 php5 php5-sqlite xvfb python-selenium;
+	sudo apt-get install apache2 php5 php5-sqlite xvfb \
+	python-selenium xfonts-100dpi xfonts-75dpi xfonts-cyrillic;
 
 smoke-test:
 ifndef ProjectName
