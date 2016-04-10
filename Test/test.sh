@@ -1,3 +1,7 @@
+# Run in a virtual framebuffer.
+Xvfb :10 &
+export DISPLAY=:10
+
 python registerSignInSignOut.py
 python syntaxWarning0.py
 python syntaxWarn3.py

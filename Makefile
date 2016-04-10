@@ -31,15 +31,13 @@ install-deps:
 		git clone https://github.com/jnoll/peos.git; \
 		sudo apt-get install tcl tcl-dev check expect libxml2 bison \
 		flex libreadline6-dev libncurses-dev; \
-		sudo apt-get install python-pip; \
-		sudo pip install selenium; \
 		if [ -d peos ]; then \
 			cd peos/pml/ && make && cp check/pmlcheck \
 			../../thirdparty/pmlcheck/pmlcheck && cd ../..; \
 		fi; \
 		cp peos/pml/graph/traverse thirdparty/traverse; \
 	fi; \
-	sudo apt-get install apache2 php5 php5-sqlite
+	sudo apt-get install apache2 php5 php5-sqlite xvfb python-selenium;
 
 smoke-test:
 ifndef ProjectName
