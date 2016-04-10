@@ -212,7 +212,7 @@ function initBoxesAndArrows() {
 	$("#canvas").on("mousewheel", onMouseWheel);
 
 	$("#generatePML").on("click", function(e) {
-		editor.setValue("process a {\n" + generatePML(listHead, 1) + "}");
+		editor.setValue("process a {\n" + getPML(listHead) + "}");
 	});
 
 	$("#clearModel").on("click", function(e) {
@@ -1412,12 +1412,18 @@ function leftPad(string, num, pre) {
 	return string;
 }
 
+var unnamedActionCount;
+
+function getPML(head) {
+	unnamedActionCount = 0;
+	return generatePML(head, 1);
+}
+
 //
 // Generate PML from the graph
 //
 function generatePML(head, indent) {
 	var PML = "";
-	var unnamedAgentCount = 0;
 	while (head) {
 		switch (head.type) {
 		case "action":
@@ -1426,8 +1432,8 @@ function generatePML(head, indent) {
 			if (head.name) {
 				PML += head.name;
 			} else {
-				PML += "a" + unnamedAgentCount;
-				unnamedAgentCount++;
+				PML += "a" + unnamedActionCount;
+				unnamedActionCount++;
 			}
 
 			// Opening action brace.
