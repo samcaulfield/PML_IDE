@@ -188,568 +188,560 @@ function getInstanceName() {
 	return instance;
 }
 
-function plantUMLwithSwimlanes(){
-	swimlaneBuilder(true,false);
+function plantUMLwithSwimlanes() {
+    swimlaneBuilder(true, false);
 }
 
-function plantUMLwithoutSwimlanes(){
-	swimlaneBuilder(false,false);
+function plantUMLwithoutSwimlanes() {
+    swimlaneBuilder(false, false);
 }
 
-function buildAgentColouredActionsString(){
-	swimlaneBuilder(false,true);
-	}
+function buildAgentColouredActionsString() {
+    swimlaneBuilder(false, true);
+}
 
 function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
-	$.post(
-		"php/getSimpleTraverseOutput.php",
-		{value: editor.getSession().getValue()},
+    $.post(
+        "php/getSimpleTraverseOutput.php", {
+            value: editor.getSession().getValue()
+        },
 
-		function(data, filename) {
-			data = data.replace(/&amp;&amp/g, ',');
-			//editor.getSession().setValue(data, 10);  //useful for debugging - prints the simpleTraverse code to the editor for viewing
-			var isSwimlanes = isSwimLanesGraph;
-			var isAgentColouredActions = isAgentActions;
-			var dictNodeAgents = {};
-			var dictNodeType = {};
-                        var dictNodeIteration = {};
-			var dictSelectNodes = {};// i think he sometimes treats joins as selects :( like the first join in netbeans
-			var dictJoinNodes = {};
-			var dictBranchNodes = {};
-			var allNodes = new Array();
-			var stringOfDOT = data;
-			var arrNewLines = data.split("\n");
-			var lengthh = arrNewLines.length;
-			var globalAgents = ['Default_Agent'];
-			var uniqueGlobalAgents = []; // this is the  ordered array of swimlanes starting at 'Default Lane'
-                        var twoDArrayConnections = [];
-			var twoDArrayAllConnections = [];
-			var dictSequence = {};
-			var dictAgentColour = {'Default_Agent':'#C8E3F8'};
-			var agentColours = ['#D2B9D6','#F7F5C2','#FCC7CF','#F8D040','#F898C8','#B0A0F8','#98F8F8','#90C0F8','#EEE9B2','#AEC572','#7E7C4A'];
-                        console.log(lengthh); 
+        function(data, filename) {
+            data = data.replace(/&amp;&amp/g, ',');
+            //editor.getSession().setValue(data, 10);  //useful for debugging - prints the simpleTraverse code to the editor for viewing
+            var isSwimlanes = isSwimLanesGraph;
+            var isAgentColouredActions = isAgentActions;
+            var dictNodeAgents = {};
+            var dictNodeType = {};
+            var dictNodeIteration = {};
+            var dictSelectNodes = {}; // i think he sometimes treats joins as selects :( like the first join in netbeans
+            var dictJoinNodes = {};
+            var dictBranchNodes = {};
+            var allNodes = new Array();
+            var stringOfDOT = data;
+            var arrNewLines = data.split("\n");
+            var lengthh = arrNewLines.length;
+            var globalAgents = ['Default_Agent'];
+            var uniqueGlobalAgents = []; // this is the  ordered array of swimlanes starting at 'Default Lane'
+            var twoDArrayConnections = [];
+            var twoDArrayAllConnections = [];
+            var dictSequence = {};
+            var dictAgentColour = {
+                'Default_Agent': '#C8E3F8'
+            };
+            var agentColours = ['#D2B9D6', '#F7F5C2', '#FCC7CF', '#F8D040', '#F898C8', '#B0A0F8', '#98F8F8', '#90C0F8', '#EEE9B2', '#AEC572', '#7E7C4A'];
+            console.log(lengthh);
 
-			for(i = 0; i < arrNewLines.length; i++){
-					line = arrNewLines[i];
-				if (line.substring(0, 7) == "AGENTS:") {
-                              // console.log("inside substring agent");
+            for (i = 0; i < arrNewLines.length; i++) {
+                line = arrNewLines[i];
+                if (line.substring(0, 7) == "AGENTS:") {
+                    // console.log("inside substring agent");
 
-				var separators = [ '\\,', '\\\(', '\\\)', '\\&\\&', '\\|\\|'];			
+                    var separators = ['\\,', '\\\(', '\\\)', '\\&\\&', '\\|\\|'];
 
-				var tokens = line.split(new RegExp(separators.join('|'), 'g'));
+                    var tokens = line.split(new RegExp(separators.join('|'), 'g'));
 
-                                // remove whitespace
-                                tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
+                    // remove whitespace
+                    tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
 
-                                var nameOfNode = tokensRWS[1];
-				var agentsArr = ['Default_Agent'];
-				if(tokensRWS.length >2){// has agents// 0=AGENTS: 1=nodeName
+                    var nameOfNode = tokensRWS[1];
+                    var agentsArr = ['Default_Agent'];
+                    if (tokensRWS.length > 2) { // has agents// 0=AGENTS: 1=nodeName
 
-				for(k = 2; k < tokensRWS.length; k++){
-					agentsArr.push(tokensRWS[k]);
-					globalAgents.push(tokensRWS[k]);
+                        for (k = 2; k < tokensRWS.length; k++) {
+                            agentsArr.push(tokensRWS[k]);
+                            globalAgents.push(tokensRWS[k]);
 
-                                        }  
-                                  // console.log("agents arry now size  : " + agentsArr.length);
-                                    }
+                        }
+                        // console.log("agents arry now size  : " + agentsArr.length);
+                    }
 
-                               dictNodeAgents[nameOfNode] = agentsArr;
-}// END OF IF(AGENTS)
-				if (line.substring(0, 15) == "NODE_NAME_TYPE:"){
-				var tokens = line.split(",");
-				tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
-				if(tokensRWS.length >2){//must be 3  NODE_NAME_TYPE/nodeName/TYPE
+                    dictNodeAgents[nameOfNode] = agentsArr;
+                } // END OF IF(AGENTS)
+                if (line.substring(0, 15) == "NODE_NAME_TYPE:") {
+                    var tokens = line.split(",");
+                    tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
+                    if (tokensRWS.length > 2) { //must be 3  NODE_NAME_TYPE/nodeName/TYPE
 
-                                         nodeName = tokensRWS[1];
-                                         nodeType = tokensRWS[2];
-                               dictNodeType[nodeName] = nodeType;
-                               dictNodeIteration[nodeName] = [0,0];      
-                  }
-}// END OF IF(NODE NAME TYPE)
-
-
-
-				if (line.substring(0, 14) == "STANDARD_LINK:"){
-				var tokens = line.split(" ");
-
-                                var tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
-
-                                var firstNode = tokensRWS[1];
-                                var secondNode = tokensRWS[2];
-
-                                dictSequence[firstNode] = secondNode;
-
-
-				if(dictNodeType[firstNode] == "SELECTION"){
-					if(!(firstNode in dictSelectNodes)){  //alert("never before " + firstNode)}// first time entry?
-						dictSelectNodes[firstNode] = [secondNode];					
-						}
-					else{	// else add to existing value array
-						var selArr = dictSelectNodes[firstNode];
-						selArr.push(secondNode);
-						dictSelectNodes[firstNode] = selArr;
-						//alert("more than 1 in" + selArr[0] +" "+ selArr[1]);			
-						}		
-				}
-
-				else if(dictNodeType[firstNode] == "JOIN"){
-					if(!(firstNode in dictJoinNodes)){  //alert("never before " + firstNode)}// first time entry?
-						dictJoinNodes[firstNode] = [secondNode];					
-						}
-					else{	// else add to existing value array
-						var joinArr = dictJoinNodes[firstNode];
-						joinArr.push(secondNode);
-						dictJoinNodes[firstNode] = joinArr;
-						//alert("more than 1 in" + selArr[0] +" "+ selArr[1]);			
-						}		
-				}
-
-				else if(dictNodeType[firstNode] == "BRANCH"){
-					if(!(firstNode in dictBranchNodes)){  // first time entry?
-						dictBranchNodes[firstNode] = [secondNode];					
-						}
-					else{	// else add to existing value array
-						var branchArr = dictBranchNodes[firstNode];
-						branchArr.push(secondNode);
-						dictBranchNodes[firstNode] = branchArr;
-			
-						}		
-				}
-				else{		// if not a select add to standard connection pairs
-                                var arrNodePair = [firstNode, secondNode];
-				
-                                twoDArrayConnections.push(arrNodePair);
-					}
-
-}//END OF IF(STANDARD_LINK)
-
-
-				if (line.substring(0, 10) == "ITERATION:"){
-				var tokens = line.split(" ");
-
-                                var tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
-
-                                var firstNode = tokensRWS[1];
-                                var secondNode = tokensRWS[2];
-
-				if((dictNodeType[firstNode]== "ACTION") && (dictNodeType[secondNode] == "ACTION"))
-				{
-				/*if(dictNodeType[firstNode] == "JOIN"){ //||"RENDEZVOUS" || "SELECTION")){
-				getIt = dictSequence[firstNode];
-
-				firstNode = getIt;
-				alert("just " + getIt);
-				alert("changed iter " + firstNode + "going to " + secondNode);
-				}*/
-                                var arrIts = dictNodeIteration[firstNode];
-                                var firstIts = arrIts[0];
-                                var secondIts = arrIts[1];
-                                firstIts++;
-                                var newArr = [firstIts, secondIts];
-                                dictNodeIteration[firstNode] = newArr;
-
-                                var arrIts1 = dictNodeIteration[secondNode];
-                                var firstIts1 = arrIts1[0];
-                                var secondIts1 = arrIts1[1];
-                                secondIts1++;
-                                var newArr1 = [firstIts1, secondIts1];
-                                dictNodeIteration[secondNode] = newArr1;
-				}
-                                 
-}//END OF IF(ITERATION)				
-     
-                  }// END OF MAIN-LINE-FOR-LOOP
-
-				/*for(x in dictNodeIteration){
-					
-					if(dictNodeType[x] == "JOIN"){
-					alert("found node " + x);
-					
-					var nextNode = findNextAction(x);
-
-					dictNodeIteration[nextNode] = dictNodeIteration[x];
-					
-					alert("made new iteration entry for " + nextNode + "and removed" + x);// says ACTION?
-					delete dictNodeIteration[x];
-						}
-					}*/
-
-function findNextAction(node){
-		xx = dictNodeType[node];
-		y = node;
-	while (xx != "ACTION"){
-		y = dictSequence[node];
-		xx = dictNodeType[y];
-	}
-	return y;
-
-}
-
-uniqueGlobalAgents = ArrNoDupe(globalAgents);
-
-var iter = 0;
-
-for(g=0; g < uniqueGlobalAgents.length; g++){
-	
-	dictAgentColour[uniqueGlobalAgents[g]] = agentColours[iter];
-	if(iter == 10){iter = -1;}
-	iter++;
-	//alert("just assigned" +  uniqueGlobalAgents[g] + " to colour " + agentColours[iter-1]);
-}
-
-
-// MAKE THE PLANT-UML STRING
-
-var PUstring = "";
-if(isAgentColouredActions == false){
-			  var startingLanes = allSwimLanesString();
-		if(isSwimlanes){
-			  PUstring+= startingLanes;  //-------------------------------------
-				}
-	var firstPair = twoDArrayConnections[0];
-	var notOver = true;
+                        nodeName = tokensRWS[1];
+                        nodeType = tokensRWS[2];
+                        dictNodeType[nodeName] = nodeType;
+                        dictNodeIteration[nodeName] = [0, 0];
+                    }
+                } // END OF IF(NODE NAME TYPE)
 
 
 
-	recurrsiveLoop(firstPair[0]);
-	}
-else{
+                if (line.substring(0, 14) == "STANDARD_LINK:") {
+                    var tokens = line.split(" ");
 
-agentColouredActions();
-}
+                    var tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
 
-var globalJoin ="";//= []; //once stopped by a join it needs to remeber where to start from when all selections/branches are complete// these are pushed/popped
+                    var firstNode = tokensRWS[1];
+                    var secondNode = tokensRWS[2];
 
-var joinNotFromSelect = true;
+                    dictSequence[firstNode] = secondNode;
+
+
+                    if (dictNodeType[firstNode] == "SELECTION") {
+                        if (!(firstNode in dictSelectNodes)) { //alert("never before " + firstNode)}// first time entry?
+                            dictSelectNodes[firstNode] = [secondNode];
+                        } else { // else add to existing value array
+                            var selArr = dictSelectNodes[firstNode];
+                            selArr.push(secondNode);
+                            dictSelectNodes[firstNode] = selArr;
+                            //alert("more than 1 in" + selArr[0] +" "+ selArr[1]);			
+                        }
+                    } else if (dictNodeType[firstNode] == "JOIN") {
+                        if (!(firstNode in dictJoinNodes)) { //alert("never before " + firstNode)}// first time entry?
+                            dictJoinNodes[firstNode] = [secondNode];
+                        } else { // else add to existing value array
+                            var joinArr = dictJoinNodes[firstNode];
+                            joinArr.push(secondNode);
+                            dictJoinNodes[firstNode] = joinArr;
+                            //alert("more than 1 in" + selArr[0] +" "+ selArr[1]);			
+                        }
+                    } else if (dictNodeType[firstNode] == "BRANCH") {
+                        if (!(firstNode in dictBranchNodes)) { // first time entry?
+                            dictBranchNodes[firstNode] = [secondNode];
+                        } else { // else add to existing value array
+                            var branchArr = dictBranchNodes[firstNode];
+                            branchArr.push(secondNode);
+                            dictBranchNodes[firstNode] = branchArr;
+
+                        }
+                    } else { // if not a select add to standard connection pairs
+                        var arrNodePair = [firstNode, secondNode];
+
+                        twoDArrayConnections.push(arrNodePair);
+                    }
+
+                } //END OF IF(STANDARD_LINK)
+
+
+                if (line.substring(0, 10) == "ITERATION:") {
+                    var tokens = line.split(" ");
+
+                    var tokensRWS = formatOutWhiteSpaceSemiColan(tokens);
+
+                    var firstNode = tokensRWS[1];
+                    var secondNode = tokensRWS[2];
+
+                    if ((dictNodeType[firstNode] == "ACTION") && (dictNodeType[secondNode] == "ACTION")) {
+
+                        var arrIts = dictNodeIteration[firstNode];
+                        var firstIts = arrIts[0];
+                        var secondIts = arrIts[1];
+                        firstIts++;
+                        var newArr = [firstIts, secondIts];
+                        dictNodeIteration[firstNode] = newArr;
+
+                        var arrIts1 = dictNodeIteration[secondNode];
+                        var firstIts1 = arrIts1[0];
+                        var secondIts1 = arrIts1[1];
+                        secondIts1++;
+                        var newArr1 = [firstIts1, secondIts1];
+                        dictNodeIteration[secondNode] = newArr1;
+                    }
+
+                } //END OF IF(ITERATION)				
+
+            } // END OF MAIN-LINE-FOR-LOOP
+
+            /*for(x in dictNodeIteration){
+            	
+            	if(dictNodeType[x] == "JOIN"){
+            	alert("found node " + x);
+            	
+            	var nextNode = findNextAction(x);
+
+            	dictNodeIteration[nextNode] = dictNodeIteration[x];
+            	
+            	alert("made new iteration entry for " + nextNode + "and removed" + x);// says ACTION?
+            	delete dictNodeIteration[x];
+            		}
+            	}*/
+
+            function findNextAction(node) {
+                xx = dictNodeType[node];
+                y = node;
+                while (xx != "ACTION") {
+                    y = dictSequence[node];
+                    xx = dictNodeType[y];
+                }
+                return y;
+
+            }
+
+            uniqueGlobalAgents = ArrNoDupe(globalAgents);
+
+            var iter = 0;
+
+            for (g = 0; g < uniqueGlobalAgents.length; g++) {
+
+                dictAgentColour[uniqueGlobalAgents[g]] = agentColours[iter];
+                if (iter == 10) {
+                    iter = -1;
+                }
+                iter++;
+                //alert("just assigned" +  uniqueGlobalAgents[g] + " to colour " + agentColours[iter-1]);
+            }
+
+
+            // MAKE THE PLANT-UML STRING
+
+            var PUstring = "";
+            if (isAgentColouredActions == false) {
+                var startingLanes = allSwimLanesString();
+                if (isSwimlanes) {
+                    PUstring += startingLanes; //-------------------------------------
+                }
+                var firstPair = twoDArrayConnections[0];
+                var notOver = true;
+
+
+
+                recurrsiveLoop(firstPair[0]);
+            } else {
+
+                agentColouredActions();
+            }
+
+            var globalJoin = ""; //= []; //once stopped by a join it needs to remeber where to start from when all selections/branches are complete// these are pushed/popped
+
+            var joinNotFromSelect = true;
 
 
 
 
-function agentColouredActions(){
-	var listOfActions = getArrayOfActions(twoDArrayConnections);
-for(t = 0; t<listOfActions.length; t++){
+            function agentColouredActions() {
+                var listOfActions = getArrayOfActions(twoDArrayConnections);
+                for (t = 0; t < listOfActions.length; t++) {
 
-	colourActionString = stringColouredNode(listOfActions[t]);
-	PUstring+=colourActionString;
-	
-}
-	
+                    colourActionString = stringColouredNode(listOfActions[t]);
+                    PUstring += colourActionString;
 
-}
-
-function stringColouredNode(node){
-	var retString = "";
-	var arrAgents = dictNodeAgents[node];
-	var semiColanCount = 0;
-	//partition #CC00EE another {
-	for(z = 0; z<arrAgents.length; z++){
-	retString += "partition "+dictAgentColour[arrAgents[z]]+" " + arrAgents[z] + " {\n"
-	semiColanCount++;	
-	}
-	retString+=":";
-	retString+=node;
-	retString+=";\n";
-
-	for(r=0;r<semiColanCount;r++){
-		retString += "}\n";		
-		}
-	return retString;	
-}
-
-function getArrayOfActions(twodarray){
-	arr = [];
-
-for(e = 0; e<twodarray.length;e++){
-	pair = twodarray[e];
-	if(dictNodeType[pair[0]] == "ACTION"){
-		arr.push(pair[0]);				
-		}
-	if(dictNodeType[pair[1]] == "ACTION"){
-		arr.push(pair[1]);				
-		}
-}
-
-	uniqueActions = ArrNoDupe(arr);
-
-return uniqueActions;
-}
+                }
 
 
-function recurrsiveLoop(node1){
-			var localGlobal = globalJoin;
-			//alert(" inputting to recurrsive " + node1);
-			if((dictNodeType[node1] !="JOIN") &&(dictNodeType[node1] !="RENDEZVOUS")){
-				if(dictNodeType[node1] !="SELECTION"){
-					if(dictNodeType[node1] !="BRANCH"){
-			addNodeToPUString(node1);
-			node2 = findNextConnectInArray(node1);
+            }
 
-					if(node2 != "no_node"){//SHOULD only happen on last node
-					recurrsiveLoop(node2);
-					}
-			else{
-					// this is the end of traverse  - a dot - no node is reached 
-				}
-							//}
-			}
-			else{ // if branch
-				handleBranch(node1);}
-			}
-			else{ // if selection
-				handleSelection(node1);}
-			}
-			else{// if join
-				/*if(joinNotFromSelect){	// !! PROBABLY SHOULD KEEP A COUNTER OF HOW DEEP INTO NESTED 'JOIN REQUIRES' WE ARE  if at 0 do this
+            function stringColouredNode(node) {
+                var retString = "";
+                var arrAgents = dictNodeAgents[node];
+                var semiColanCount = 0;
+                //partition #CC00EE another {
+                for (z = 0; z < arrAgents.length; z++) {
+                    retString += "partition " + dictAgentColour[arrAgents[z]] + " " + arrAgents[z] + " {\n"
+                    semiColanCount++;
+                }
+                retString += ":";
+                retString += node;
+                retString += ";\n";
+
+                for (r = 0; r < semiColanCount; r++) {
+                    retString += "}\n";
+                }
+                return retString;
+            }
+
+            function getArrayOfActions(twodarray) {
+                arr = [];
+
+                for (e = 0; e < twodarray.length; e++) {
+                    pair = twodarray[e];
+                    if (dictNodeType[pair[0]] == "ACTION") {
+                        arr.push(pair[0]);
+                    }
+                    if (dictNodeType[pair[1]] == "ACTION") {
+                        arr.push(pair[1]);
+                    }
+                }
+
+                uniqueActions = ArrNoDupe(arr);
+
+                return uniqueActions;
+            }
+
+
+            function recurrsiveLoop(node1) {
+                var localGlobal = globalJoin;
+                //alert(" inputting to recurrsive " + node1);
+                if ((dictNodeType[node1] != "JOIN") && (dictNodeType[node1] != "RENDEZVOUS")) {
+                    if (dictNodeType[node1] != "SELECTION") {
+                        if (dictNodeType[node1] != "BRANCH") {
+                            addNodeToPUString(node1);
+                            node2 = findNextConnectInArray(node1);
+
+                            if (node2 != "no_node") { //SHOULD only happen on last node
+                                recurrsiveLoop(node2);
+                            } else {
+                                // this is the end of traverse  - a dot - no node is reached 
+                            }
+                            //}
+                        } else { // if branch
+                            handleBranch(node1);
+                        }
+                    } else { // if selection
+                        handleSelection(node1);
+                    }
+                } else { // if join
+                    /*if(joinNotFromSelect){	// !! PROBABLY SHOULD KEEP A COUNTER OF HOW DEEP INTO NESTED 'JOIN REQUIRES' WE ARE  if at 0 do this
 
 					handJoin(node1);// in his netbeans he treats a join as a select so my code just stops					
 					}
 			else{*/
-			globalJoin = node1;//.push("join_3");
-			//}
-			}
+                    globalJoin = node1; //.push("join_3");
+                    //}
+                }
+            }
+            //printFormatAllNodeAgentTypes(dictNodeType);
+            //justPrintArray(uniqueGlobalAgents);
+            //printFormatAllNodeIteration(dictNodeIteration);
+            //printFormatConnections(twoDArrayConnections );
+
+            //editor.getSession().setValue(PUstring, 10)  //useful for debugging - can see the PlantUML code in editor
+
+            $.post(
+                "php/makeIMG.php", {
+                    plantUMLstring: PUstring
+                },
+                function(data, filename) {
+                    var imageRecieved = data;
+                    document.getElementById('graphicalEditor').innerHTML = data;
+                })
+
+            function handleBranch(node) {
+                nodeChoices = dictBranchNodes[node];
+                PUstring += "split\n"
+                recurrsiveLoop(nodeChoices[0]);
+                for (i = 1; i < nodeChoices.length; i++) {
+                    PUstring += "split again\n"
+                    recurrsiveLoop(nodeChoices[i]);
+
+                }
+                PUstring += "end split\n";
+                var afterJoin = findNextConnectInArray(globalJoin); //.pop());
+                recurrsiveLoop(afterJoin);
+
+            }
+
+            function handleSelection(node) {
+                joinNotFromSelect = false;
+                nodeChoices = dictSelectNodes[node];
+                PUstring += "split\n"
+                recurrsiveLoop(nodeChoices[0]);
+                for (i = 1; i < nodeChoices.length; i++) {
+                    PUstring += "split again\n"
+                    recurrsiveLoop(nodeChoices[i]);
+
+                }
+                PUstring += "end split\n";
+                //var afterJoin = findNextConnectInArray(globalJoin.pop());
+                var popNextJoinNode = globalJoin; //.pop();
+                var afterJoinArr = dictJoinNodes[popNextJoinNode];
+                var afterJoin = afterJoinArr[0]; // not sure this is ook with multis - try change to a for loop or at least test if its multi //length >1
+                recurrsiveLoop(afterJoin);
+            }
+
+            function handleJoin(node) { //**
+                var isMulti = false;
+                //joinNotFromSelect = false;
+                nodeChoices = dictJoinNodes[node];
+                if (nodeChoices.length > 1) {
+                    isMulti = true;
+                }
+                if (isMulti) {
+                    PUstring += "split\n"
+                }
+                recurrsiveLoop(nodeChoices[0]);
+                for (i = 1; i < nodeChoices.length; i++) {
+                    PUstring += "split again\n"
+                    recurrsiveLoop(nodeChoices[i]);
+
+                }
+                if (isMulti) {
+                    PUstring += "end split\n";
+                }
+                var afterJoin = findNextConnectInArray(globalJoin); //.pop());
+
+                //recurrsiveLoop(afterJoin);
+
+            }
+
+
+            function addNodeToPUString(node1) {
+                var nString1 = ":" + node1 + ";\n";
+                var slString1 = getCorrectSwimlaneString(node1);
+                var notes1 = otherAgentNotes(node1);
+
+                var repeats = getIterBefore(node1);
+                if (isSwimlanes) {
+                    PUstring += slString1;
+                }
+                PUstring += repeats;
+                PUstring += nString1;
+                if (isSwimlanes) {
+                    PUstring += notes1;
+                }
+                var repeatsWhile = getIterAfter(node1);
+                PUstring += repeatsWhile;
+            }
+
+
+            function findNextConnectInArray(node) {
+
+                for (i = 0; i < twoDArrayConnections.length; i++) {
+                    var pair = twoDArrayConnections[i];
+                    if (pair[0] == node) {
+                        twoDArrayConnections.splice(i, 1); //remove this from the connections array and return it
+                        return pair[1];
+                    }
+
+
+                }
+                return "no_node";
+
+            }
+
+
+            function otherAgentNotes(node) {
+                var otherAgents = "";
+                var agents = dictNodeAgents[node];
+                if (agents.length > 1) {
+                    otherAgents += "note right\n<b>OTHER AGENTS</b>\n====\n"
+                    for (u = 0; u < agents.length; u++) {
+                        var dotAgent = "* " + agents[u] + "\n";
+                        otherAgents += dotAgent;
+                    }
+                    otherAgents += "end note\n";
+                }
+                return otherAgents;
+
+            }
+
+            function getIterBefore(node) {
+
+                strRepeat = "";
+                arrIter = dictNodeIteration[node];
+                if (arrIter[1] > 0) {
+                    for (y = 0; y < arrIter[1]; y++) {
+                        strRepeat += "repeat\n";
+                    }
+                }
+                dictNodeIteration[node] = [arrIter[0], 0];
+                return strRepeat;
+            }
+
+            function getIterAfter(node) {
+                strRepeatWhile = "";
+                arrIter = dictNodeIteration[node];
+                if (arrIter[0] > 0) {
+                    for (v = 0; v < arrIter[0]; v++) {
+                        strRepeatWhile += "repeat while()\n";
+                    }
+                }
+                dictNodeIteration[node] = [0, arrIter[1]];
+                return strRepeatWhile;
+            }
+
+            function allSwimLanesString() {
+                var everySecondOne = 9;
+                var agentLanes = "";
+                for (h = 0; h < uniqueGlobalAgents.length; h++) {
+                    everySecondOne++;
+                    var agent = uniqueGlobalAgents[h];
+                    if (everySecondOne % 2 == 0) {
+                        agentLanes += "|#AntiqueWhite";
+                    }
+                    agentLanes += "|";
+                    agentLanes += agent;
+                    agentLanes += "|\n";
+                }
+
+                return agentLanes;
+            }
+
+            function justPrintArray(arr) {
+                for (o = 0; o < arr.length; o++) {
+                    console.log(arr[o]);
+                }
+            }
+
+            function formatOutWhiteSpaceSemiColan(tokens) {
+                var tokensRWS = []; // remove white space from tokens
+                for (p = 0; p < tokens.length; p++) {
+                    if (tokens[p] != " " && tokens[p] != "") {
+                        var remSpace = tokens[p].replace(/ /g, '')
+                        var remSC = remSpace.replace(/;/g, '')
+                        tokensRWS.push(remSC);
+                    }
+                }
+                return tokensRWS;
+            }
+
+            function printFormatConnections(arr) {
+                for (i = 0; i < arr.length; i++) {
+                    console.log(arr[i][0] + " --> " + arr[i][1]);
+                }
+            }
+
+            function printFormatAllNodeAgentDicts(dict) {
+                console.log("called this function");
+                for (i in dict) {
+                    console.log("\n Node-Agents:");
+                    console.log(i);
+                    for (key in dict[i]) {
+                        console.log(dict[i][key]);
+                    }
+                }
+            }
+
+            function printFormatAllNodeAgentTypes(dict) {
+                console.log("called this function");
+                for (i in dict) {
+                    console.log("\n Node-Type:");
+                    console.log(i);
+                    console.log(dict[i]);
+
+                }
+            }
+
+            function printFormatAllNodeIteration(dict) {
+                console.log("called this function");
+                for (i in dict) {
+                    console.log("\n Node-Iterate bools:");
+                    console.log(i);
+                    console.log(dict[i]);
+
+                }
+            }
+
+            function ArrNoDupe(a) {
+                var temp = {};
+                for (var i = 0; i < a.length; i++)
+                    temp[a[i]] = true;
+                var r = [];
+                for (var k in temp)
+                    r.push(k);
+                return r;
+            }
+
+            function getCorrectSwimlaneString(nodeName) {
+                //check nodes agents - all have at least default
+                var arrAgents = dictNodeAgents[nodeName];
+                var lane = arrAgents[0]; // default  
+                if (arrAgents.length > 1) {
+                    lane = arrAgents[1];
+                }
+                laneString = "|" + lane + "|\n";
+                return laneString;
+
+            }
+
+        }
+    );
 }
-                               //printFormatAllNodeAgentTypes(dictNodeType);
-                               //justPrintArray(uniqueGlobalAgents);
-                               //printFormatAllNodeIteration(dictNodeIteration);
-                               //printFormatConnections(twoDArrayConnections );
-
-			//editor.getSession().setValue(PUstring, 10)  //useful for debugging - can see the PlantUML code in editor
-
-	$.post(
-		"php/makeIMG.php",
-		{plantUMLstring: PUstring},
-		function(data, filename) {
-		var imageRecieved = data;
-		document.getElementById('graphicalEditor').innerHTML =data;		
-})
-
-function handleBranch(node){
-	nodeChoices = dictBranchNodes[node];
-	PUstring+="split\n"
-	recurrsiveLoop(nodeChoices[0]);
-	for(i=1;i<nodeChoices.length;i++){
-		PUstring+="split again\n"
-		recurrsiveLoop(nodeChoices[i]);
-		
-	}
-	PUstring+="end split\n";
-	var afterJoin = findNextConnectInArray(globalJoin);//.pop());
-	recurrsiveLoop(afterJoin);
-
-}
-
-function handleSelection(node){
-	joinNotFromSelect = false;
-	nodeChoices = dictSelectNodes[node];
-	PUstring+="split\n"
-	recurrsiveLoop(nodeChoices[0]);
-	for(i=1;i<nodeChoices.length;i++){
-		PUstring+="split again\n"
-		recurrsiveLoop(nodeChoices[i]);
-		
-	}
-	PUstring+="end split\n";
-	//var afterJoin = findNextConnectInArray(globalJoin.pop());
-	var popNextJoinNode = globalJoin;//.pop();
-	var afterJoinArr = dictJoinNodes[popNextJoinNode];
-	var afterJoin = afterJoinArr[0]; // not sure this is ook with multis - try change to a for loop or at least test if its multi //length >1
-	recurrsiveLoop(afterJoin);
-}
-
-function handleJoin(node){//**
-	var isMulti= false;
-	//joinNotFromSelect = false;
-	nodeChoices = dictJoinNodes[node];
-	if(nodeChoices.length>1){ isMulti = true;}
-	if(isMulti){
-	PUstring+="split\n"
-	}
-	recurrsiveLoop(nodeChoices[0]);
-	for(i=1;i<nodeChoices.length;i++){
-		PUstring+="split again\n"
-		recurrsiveLoop(nodeChoices[i]);
-		
-	}
-	if(isMulti){
-	PUstring+="end split\n";
-	}
-	var afterJoin = findNextConnectInArray(globalJoin);//.pop());
-	
-	//recurrsiveLoop(afterJoin);
-
-}
-
-
-function addNodeToPUString(node1){
-                        var nString1 = ":" + node1 + ";\n";
-                        var slString1 = getCorrectSwimlaneString(node1);
-			var notes1 = otherAgentNotes(node1);
-			
-			var repeats = getIterBefore(node1);
-			if(isSwimlanes){
-                        PUstring += slString1;
-				}
-			PUstring+= repeats;
-                        PUstring += nString1;
-			if(isSwimlanes){
-			PUstring += notes1;
-			}
-			var repeatsWhile = getIterAfter(node1);
-			PUstring+=repeatsWhile;
-}
-
-
-function findNextConnectInArray(node){
-
-for(i = 0; i<twoDArrayConnections.length; i++){
-	var pair = twoDArrayConnections[i];
-	if(pair[0] == node){
-		twoDArrayConnections.splice(i,1);//remove this from the connections array and return it
-		return pair[1];
-	}
-
-
-	}
-return "no_node";
-
-}
-
-
-function otherAgentNotes(node){
-var otherAgents = "";
-var agents = dictNodeAgents[node];
-if(agents.length >1){
-otherAgents+= "note right\n<b>OTHER AGENTS</b>\n====\n"
-for(u = 0; u<agents.length; u++){
-var dotAgent = "* " +  agents[u] + "\n";
-otherAgents += dotAgent;
-}
-otherAgents += "end note\n";
-}
-return otherAgents;
-
-}
-
-function getIterBefore(node){
-
-strRepeat = "";
-arrIter = dictNodeIteration[node];
-if(arrIter[1] >0){
-for(y=0; y<arrIter[1]; y++){
-strRepeat += "repeat\n";
-}
-}
-dictNodeIteration[node] = [arrIter[0],0];
-return strRepeat;
-}
-
-function getIterAfter(node){
-strRepeatWhile = "";
-arrIter = dictNodeIteration[node];
-if(arrIter[0] >0){
-for(v=0; v<arrIter[0]; v++){
-strRepeatWhile += "repeat while()\n";
-}
-}
-dictNodeIteration[node] = [0,arrIter[1]];
-return strRepeatWhile;
-}
-
-function allSwimLanesString(){
-	var everySecondOne = 9;
-	var agentLanes = "";
- for(h = 0; h< uniqueGlobalAgents.length; h++ ){
-	everySecondOne++;
-	var agent = uniqueGlobalAgents[h];
-if(everySecondOne %2 == 0){
-	agentLanes+="|#AntiqueWhite";
-}
-	agentLanes+= "|";
-	agentLanes+=agent;
-	agentLanes+="|\n";
-}
-
-return agentLanes;
-}
-
-function justPrintArray(arr){
-    for(o = 0; o<arr.length; o++){
-    console.log(arr[o]);
-}
-}
-function formatOutWhiteSpaceSemiColan(tokens){
-				var tokensRWS = []; // remove white space from tokens
-				for(p = 0; p < tokens.length; p++ ){
- 					if(tokens[p] != " " && tokens[p] != ""){
-                                                var remSpace = tokens[p].replace(/ /g,'')
-                                                var remSC = remSpace.replace(/;/g,'')
-						tokensRWS.push(remSC);
- 					 					}
-				}
-       return tokensRWS;
-}
-function printFormatConnections(arr){
-for(i = 0; i<arr.length; i++){
-    console.log(arr[i][0] + " --> " + arr[i][1]);
-}
-}
-function printFormatAllNodeAgentDicts(dict){
-console.log("called this function");
-for (i in dict){
-    console.log("\n Node-Agents:");
-    console.log(i);
-    for (key in dict[i]){
-        console.log(dict[i][key]);
-    }
-}
-}
-
-function printFormatAllNodeAgentTypes(dict){
-console.log("called this function");
-for (i in dict){
-    console.log("\n Node-Type:");
-    console.log(i);
-    console.log(dict[i]);
-
-}
-}
-
-function printFormatAllNodeIteration(dict){
-console.log("called this function");
-for (i in dict){
-    console.log("\n Node-Iterate bools:");
-    console.log(i);
-    console.log(dict[i]);
-
-}
-}
-
-function ArrNoDupe(a) {
-    var temp = {};
-    for (var i = 0; i < a.length; i++)
-        temp[a[i]] = true;
-    var r = [];
-    for (var k in temp)
-        r.push(k);
-    return r;
-}
-function getCorrectSwimlaneString(nodeName){
-//check nodes agents - all have at least default
-var arrAgents = dictNodeAgents[nodeName];
-var lane = arrAgents[0]; // default  
-if(arrAgents.length>1){
-   lane = arrAgents[1];
-} 
-laneString = "|" + lane + "|\n";
-return laneString;
-
-}
-
-		}
-	);
-}
-
-
 
 // vis.js 
 // Takes DOT output from traverse and imports it to visjs Network graph and displays it in the 'graphicalEditor'
