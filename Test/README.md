@@ -56,17 +56,7 @@
   * Clicks on the previous button, checks if the message has changed to Showing warning #2 of 3
   * Clicks on the previous button, checks if the message has changed to Showing warning #1 of 3
 
-**9. saveRetrieveServer.py**
-  * This test ensures the feature `Save to and Open from Server` works
-  * Registers with a randomly generated email address (Need to be signed in in order to save to server)
-  * Inputs pml code in the editor
-  * Clicks `File--> Save to Server`
-  * Enters a name of the file as 'test' and `Save button`
-  * Clicks `File--> Open from Server`
-  * From the popup, chooses the file 'test' and clicks on it to open the file
-  * Checks if the content of the file is the same as of the file that was saved earlier
-  
-**10. specifyFileName.py**
+**9. specifyFileName.py**
   * This test ensures that the user can specify the name of the file when saving it to disk
   * Inputs pml code in the editor
   * Clicks `File--> Save to Disk`
