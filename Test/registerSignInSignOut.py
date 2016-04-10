@@ -45,8 +45,10 @@ class RegisterSignInSignOut(unittest.TestCase):
         driver.find_element_by_id("registerInputPassword").send_keys("123456")
 	time.sleep(3)
         driver.find_element_by_id("registerSubmitButton").click()
+	print("Registered as %s" %email)
 	time.sleep(3)
 	driver.execute_script("signOut();")
+	print("Signed out from %s" %email)
 	time.sleep(4)
         driver.find_element_by_id("signInInfo").click()
         driver.find_element_by_id("signInLink").click()
@@ -55,6 +57,7 @@ class RegisterSignInSignOut(unittest.TestCase):
         driver.find_element_by_id("signInInputPassword").clear()
         driver.find_element_by_id("signInInputPassword").send_keys("123456")
         driver.find_element_by_xpath("//button[@type='submit']").click()
+	print("Signed in as %s" %email)
 
     
     def is_element_present(self, how, what):

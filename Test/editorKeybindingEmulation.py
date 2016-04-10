@@ -49,7 +49,7 @@ provides { bar }
 	driver.find_element_by_id("setDragDelay").send_keys("1")
 	driver.implicitly_wait(2)
 	font = driver.find_element_by_id("textEditor").value_of_css_property("font-size")
-	print font
+	print "Changed font to %s" %font
 	if font != "30px":
 		raise Exception ("Font size is not set") 
     
