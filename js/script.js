@@ -188,19 +188,23 @@ function getInstanceName() {
 	return instance;
 }
 
+function plantUMLwithSwimlanesSimple(){
+    swimlaneBuilder(true, false, true);
+}
+
 function plantUMLwithSwimlanes() {
-    swimlaneBuilder(true, false);
+    swimlaneBuilder(true, false,false);
 }
 
 function plantUMLwithoutSwimlanes() {
-    swimlaneBuilder(false, false);
+    swimlaneBuilder(false, false,false);
 }
 
 function buildAgentColouredActionsString() {
-    swimlaneBuilder(false, true);
+    swimlaneBuilder(false, true,false);
 }
 
-function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
+function swimlaneBuilder(isSwimLanesGraph, isAgentActions, isSimpleActionsOnlySwimlanes) {
     $.post(
         "php/getSimpleTraverseOutput.php", {
             value: editor.getSession().getValue()
@@ -211,6 +215,7 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
             //editor.getSession().setValue(data, 10);  //useful for debugging - prints the simpleTraverse code to the editor for viewing
             var isSwimlanes = isSwimLanesGraph;
             var isAgentColouredActions = isAgentActions;
+	    var isSimpleSwim = isSimpleActionsOnlySwimlanes;
             var dictNodeAgents = {};
             var dictNodeType = {};
             var dictNodeIteration = {};
@@ -399,9 +404,12 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
                 var firstPair = twoDArrayConnections[0];
                 var notOver = true;
 
-
-
-                recurrsiveLoop(firstPair[0]);
+		if(isSimpleSwim == true){
+		justActionsNoBranchesEtc();
+		}
+		else{
+                recursiveLoop(firstPair[0]);
+			}
             } else {
 
                 agentColouredActions();
@@ -411,6 +419,15 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
 
             var joinNotFromSelect = true;
 
+
+	   function justActionsNoBranchesEtc(){
+		var listOfActions = getArrayOfActions(twoDArrayConnections);
+		for(w = 0; w < listOfActions.length; w ++){
+			var action = listOfActions[w];
+			addNodeToPUString(action);
+			
+			}		
+			}
 
 
 
@@ -479,7 +496,7 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
             }
 
 
-            function recurrsiveLoop(node1) {
+            function recursiveLoop(node1) {
                 var localGlobal = globalJoin;
                 //alert(" inputting to recurrsive " + node1);
                 if ((dictNodeType[node1] != "JOIN") && (dictNodeType[node1] != "RENDEZVOUS")) {
@@ -489,7 +506,7 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
                             node2 = findNextConnectInArray(node1);
 
                             if (node2 != "no_node") { //SHOULD only happen on last node
-                                recurrsiveLoop(node2);
+                                recursiveLoop(node2);
                             } else {
                                 // this is the end of traverse  - a dot - no node is reached 
                             }
@@ -527,36 +544,50 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
                 })
 
             function handleBranch(node) {
-                nodeChoices = dictBranchNodes[node];
+                var nodeChoices = dictBranchNodes[node];
                 PUstring += "split\n"
-                recurrsiveLoop(nodeChoices[0]);
-                for (i = 1; i < nodeChoices.length; i++) {
-                    PUstring += "split again\n"
-                    recurrsiveLoop(nodeChoices[i]);
+                recursiveLoop(nodeChoices[0]);
+	                    PUstring += "split again\n"
+			var p = 1;
 
-                }
+		while(p < nodeChoices.length -1){
+			if(nodeChoices[p] != undefined){// hideous recreation of a 'for' loop as after much debugging the for loop didn't do its last iteration for some reason
+                    recursiveLoop(nodeChoices[p]);
+                    PUstring += "split again\n"
+		}
+		p++;
+		}
+
+		recursiveLoop(nodeChoices[nodeChoices.length-1]);                
                 PUstring += "end split\n";
                 var afterJoin = findNextConnectInArray(globalJoin); //.pop());
-                recurrsiveLoop(afterJoin);
+                recursiveLoop(afterJoin);
 
             }
 
             function handleSelection(node) {
                 joinNotFromSelect = false;
-                nodeChoices = dictSelectNodes[node];
+                var nodeChoices1 = dictSelectNodes[node];
                 PUstring += "split\n"
-                recurrsiveLoop(nodeChoices[0]);
-                for (i = 1; i < nodeChoices.length; i++) {
-                    PUstring += "split again\n"
-                    recurrsiveLoop(nodeChoices[i]);
+                recursiveLoop(nodeChoices1[0]);
+	                    PUstring += "split again\n"
+			var b = 1;
 
-                }
+		while(b < nodeChoices1.length -1){
+			if((nodeChoices1[b] != undefined) && (nodeChoices1[b] != node)){// hideous recreation of a 'for' loop as after much debugging the for loop didn't do its last iteration for some reason
+                    recursiveLoop(nodeChoices1[b]);
+                    PUstring += "split again\n"
+			}
+		b++;
+		}
+
+		recursiveLoop(nodeChoices1[nodeChoices1.length-1]);                
                 PUstring += "end split\n";
                 //var afterJoin = findNextConnectInArray(globalJoin.pop());
                 var popNextJoinNode = globalJoin; //.pop();
                 var afterJoinArr = dictJoinNodes[popNextJoinNode];
                 var afterJoin = afterJoinArr[0]; // not sure this is ook with multis - try change to a for loop or at least test if its multi //length >1
-                recurrsiveLoop(afterJoin);
+                recursiveLoop(afterJoin);
             }
 
             function handleJoin(node) { //**
@@ -569,10 +600,10 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
                 if (isMulti) {
                     PUstring += "split\n"
                 }
-                recurrsiveLoop(nodeChoices[0]);
+                recursiveLoop(nodeChoices[0]);
                 for (i = 1; i < nodeChoices.length; i++) {
                     PUstring += "split again\n"
-                    recurrsiveLoop(nodeChoices[i]);
+                    recursiveLoop(nodeChoices[i]);
 
                 }
                 if (isMulti) {
@@ -580,7 +611,7 @@ function swimlaneBuilder(isSwimLanesGraph, isAgentActions) {
                 }
                 var afterJoin = findNextConnectInArray(globalJoin); //.pop());
 
-                //recurrsiveLoop(afterJoin);
+                //recursiveLoop(afterJoin);
 
             }
 
