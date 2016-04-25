@@ -864,13 +864,14 @@ var network = new vis.Network(container, data, options);
 //This focuses on the provides and requires needed by actions.
 function DOT_to_RF() 
 {//This method uses the dot string to make a graph, supported by vis.js
+
 	$.post(
-		"php/echo.php",
+		"php/get_pro_req.php",
 		{value: editor.getSession().getValue()},
 		function(data, filename) {
 			var stringOfDOT =  data
-			stringOfDOT = PML_To_List(stringOfDOT)
-			//editor.getSession().setValue(stringOfDOT, 10)  //useful for debugging - prints the DOT code to the editor for viewing
+			stringOfDOT = Read_traverse_Pro_Req(stringOfDOT)
+			editor.getSession().setValue(stringOfDOT, 10)  //useful for debugging - prints the DOT code to the editor for viewing
 
 			var parsedData = vis.network.convertDot(stringOfDOT);
 
@@ -904,9 +905,167 @@ function DOT_to_RF()
 function CreateNode()
 {//Create nodes
 	return {name: "",	//Name of action
+		type: "",	//type
 		requires: new Array(0),//Requires of action
 		provides: new Array(0),//Provides of action
 		next: null};
+}
+
+function Read_traverse_Pro_Req(input)
+{
+
+	//Search strings
+	var action = "NODE_NAME_TYPE";
+	var provides = "PROVIDES";
+	var requires = "REQUIRES";
+
+	//Nodes
+	var start = CreateNode();
+	var list = start;
+
+	var found = false;
+
+	//iterator
+	var j = 0;
+	var temp;//temp storage
+	var temp_01 = "";
+	var current = "";
+
+	//Read in text line by line
+	var new_input = input.split('\n');
+	for(i = 0; i < new_input.length; i++)
+	{
+		
+		if(new_input[i].substring(0, action.length) == action)
+		{//If you find the type, action/branch/iteration
+			
+			temp = new_input[i].split(',');
+			//input += temp[1];
+			if(temp[2] == " ACTION ")
+			{
+				list.next = CreateNode();
+				list = list.next;
+
+				list.name = temp[1];
+				list.type = "ACTION";
+
+			}else if(temp[2] == " BRANCH ")
+			{
+				list.next = CreateNode();
+				list = list.next;
+
+				list.name = temp[1];
+				list.type = "BRANCH";
+			}else if(temp[2] == " RENDEZVOUS ")
+			{
+				list.next = CreateNode();
+				list = list.next;
+
+				list.name = temp[1];
+				list.type = "RENDEZVOUS";
+			}//else if(temp[2] == "??")
+
+			current += temp[1];
+			
+		}else if(new_input[i].substring(0, provides.length) == requires)
+		{
+			temp = new_input[i].split(',');
+			//ignore the first [] - [0] is PROVIDES, and name is [1]
+
+			//Add to the node - working with temp[2]
+			j = 0;
+			temp_01 = "";
+			current = temp[2];		
+			while(j < current.length)
+			{
+				if(current.substring(j, j+1) == ' ')
+				{//Blank spaces are ignores
+				}else if(current.substring(j, j+1) == ',')
+				{//Ignore Commas
+				}else if(current.substring(j, j+1) == '&')
+				{
+					list.requires.push(temp_01);
+					temp_01 = "";
+					j++;
+				}else if(current.substring(j, j+1) == '.')
+				{//Take only the main of variable, eg take blood of blood.type
+					list.requires.push(temp_01);
+					temp_01 = "";
+					
+					//Move over value stored
+					while(current.substring(j, j+1) != '"' && j < current.length)
+					{//Move over everything else
+						j++;
+					}
+					j++;
+					//Move over second "
+					while(current.substring(j, j+1) != '"' && j < current.length)
+					{//Move over everything else
+						j++;
+					}
+					
+				}else
+				{
+					temp_01 += current.substring(j, j+1);
+				}
+				j++;
+			}
+			if(temp_01 != "")
+				list.requires.push(temp_01);
+
+		}else if(new_input[i].substring(0, provides.length) == provides)
+		{
+			temp = new_input[i].split(',');
+			//ignore the first [] - [0] is PROVIDES, ....
+
+
+			//Add to the node - working with temp[2]
+			j = 0;
+			temp_01 = "";
+			current = temp[2];
+			while(j < current.length)
+			{
+				if(current.substring(j, j+1) == ' ')
+				{//Blank spaces are ignores
+				}else if(current.substring(j, j+1) == ',')
+				{//Ignore Commas
+				}else if(current.substring(j, j+1) == '&')
+				{
+					list.provides.push(temp_01);
+					temp_01 = "";
+					j++;
+				}else if(current.substring(j, j+1) == '.')
+				{//Take only the main of variable, eg take blood of blood.type
+					list.provides.push(temp_01);
+					temp_01 = "";
+					
+					//Move over value stored
+					while(current.substring(j, j+1) != '"' && j < current.length)
+					{//Move over everything else
+						j++;
+					}
+					j++;
+					//Move over second "
+					while(current.substring(j, j+1) != '"'&& j < current.length)
+					{//Move over everything else
+						j++;
+					}
+					
+				}else
+				{
+					temp_01 += current.substring(j, j+1);
+				}
+				j++;
+			}
+			if(temp_01 != "")
+				list.provides.push(temp_01);
+		}
+	}
+	
+	var output = ListToDOT(start);
+
+	return output;
+
 }
 
 //Translate the generated linked list into DOT
@@ -917,70 +1076,96 @@ function ListToDOT(a)
 	var DOT = "PML{";
 	var i = 0;
 	var j = 0;
+	//var found = false;
+	//var setalready = false;
 
-
-	while(a.next !=null){
-		
-		/*for(i = 0; i < a.provides.length; i++)	//default case where an action requires and provides the same thing
+	do{
+		a = a.next;
+		found = false;
+		setalready = false;
+		//For transforms
+		if(a.type == "ACTION")
+		{
+			for(i = 0; i < a.provides.length && !found; i++)
 			{
-				for(j = 0; j < b.requires.length; j++)
+				for(j = 0; j < a.requires.length && !found; j++)
 				{
-					if((a.provides[i] == b.requires[j]) && (a.provides.length > 0 && a.requires.length > 0))
+					if(a.provides[i] == a.requires[j])
 					{
 						DOT += a.name;
-						DOT+= "[color = ";
+						DOT += "[color = ";
 						DOT += '"';
-						DOT += "purple";
+						DOT += "green";
 						DOT += '"';
-						DOT += "]";
-						DOT += ";\n";
+						DOT += " weigth=0.5";
+						DOT += " nodesep=2.0]\n";
+						found = true;
+						setalready = true;
 					}
 				}
-			}*/
-		if(a.requires.length > 0 && a.provides.length > 0)//transformer
-			{
-				DOT+= a.name;
-				DOT+= "[color = ";
-				DOT += '"';
-				DOT += "green";
-				DOT += '"';
-				DOT += "]";
-				DOT += ";\n";
-		
-		
-		
-		}else if(a.requires.length > 0 && a.provides.length == 0)//blackhole
-		{
-			DOT+= a.name;
-			DOT+= "[color = ";
-			DOT += '"';
-			DOT += "yellow";
-			DOT += '"';
-			DOT += "]";
-			DOT += ";\n";
-			
+			}
 
-		}
+			//Check if a miracle
+			if(!setalready)
+			{
+				for(i = 0; i < a.requires.length; i++)
+				{
+					for(j = 0; j < a.provides.length; j++)
+					{
+						if(a.requires[i] == a.provides[j])
+						{
+							found = true;
+						}
+					}
+				}
 	
-		else if (a.requires.length == 0 && a.provides.length > 0)//miracle
+				if(!found)
+				{
+					DOT += a.name;
+					DOT += "[color = ";
+					DOT += '"';
+					DOT += "yellow";
+					DOT += '"';DOT += " weigth=0.5";
+					DOT += " nodesep=2.0]\n";
+					found = true;
+				}
+			}
+
+			if(!found && !setalready)
+			{//Last option, must be a blackhole
+				DOT += a.name;
+				DOT += "[color = ";
+				DOT += '"';
+				DOT += "blue";
+				DOT += '"';
+				DOT += " weigth=0.5";
+				DOT += " nodesep=2.0]\n";
+			}
+
+			
+		}/*else
 		{
-			DOT+= a.name;
-			DOT+= "[color = ";
+			DOT += "BRANCH";
+			DOT += "[color = ";
 			DOT += '"';
-			DOT += "pink";
+			DOT += "red";
 			DOT += '"';
 			DOT += "]";
 			DOT += ";\n";
-		}
-		a = a.next;
-	}
-		a = start;
+		}*/	
+
+
+	}while(a.next !=null)
+
+	a = start;
 
 	while(a.next != null)
 	{
 		b = a;
-		while(b.next != null)
+		do
 		{
+			//Connect provides and requires
+			b = b.next;
 			for(i = 0; i < a.provides.length; i++)
 			{
 				for(j = 0; j < b.requires.length; j++)
@@ -990,12 +1175,16 @@ function ListToDOT(a)
 						DOT += a.name;
 						DOT += " -> ";
 						DOT += b.name;
-						DOT += ";\n";
+						DOT += "[label=";
+						DOT += '"';
+						DOT += a.provides[i];
+						DOT += '"';
+						DOT += "];\n";
 					}
 				}
 			}
-			b = b.next;
-		}
+			
+		}while(b.next != null)
 		i++;
 		a = a.next;
 	}
